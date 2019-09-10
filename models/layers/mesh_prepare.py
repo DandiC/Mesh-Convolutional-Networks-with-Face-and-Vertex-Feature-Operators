@@ -13,7 +13,7 @@ def fill_mesh(mesh2fill, file: str, opt):
                             edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
                             filename=mesh_data.filename, sides=mesh_data.sides,
                             edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                            features=mesh_data.features)
+                            features=mesh_data.features, faces=mesh_data.faces, face_areas=mesh_data.face_areas)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -25,6 +25,8 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.edge_areas = mesh_data['edge_areas']
     mesh2fill.features = mesh_data['features']
     mesh2fill.sides = mesh_data['sides']
+    mesh2fill.faces = mesh_data['faces']
+    mesh2fill.face_areas = mesh_data['face_areas']
 
 def get_mesh_path(file: str, num_aug: int):
     filename, _ = os.path.splitext(file)
@@ -53,15 +55,16 @@ def from_scratch(file, opt):
     mesh_data.edge_areas = []
     mesh_data.vs, faces = fill_from_file(mesh_data, file)
     mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
-    faces, face_areas = remove_non_manifolds(mesh_data, faces)
+    mesh_data.faces, mesh_data.face_areas = remove_non_manifolds(mesh_data, faces)
     if opt.num_aug > 1:
-        faces = augmentation(mesh_data, opt, faces)
-    build_gemm(mesh_data, faces, face_areas)
+        mesh_data.faces = augmentation(mesh_data, opt, mesh_data.faces)
+    build_gemm(mesh_data)
     if opt.num_aug > 1:
         post_augmentation(mesh_data, opt)
     mesh_data.features = extract_features(mesh_data)
     return mesh_data
 
+# Fills vertices and faces by reading the OBJ file line by line
 def fill_from_file(mesh, file):
     mesh.filename = ntpath.split(file)[1]
     mesh.fullfilename = file
@@ -113,7 +116,7 @@ def remove_non_manifolds(mesh, faces):
     return faces[mask], face_areas[mask]
 
 
-def build_gemm(mesh, faces, face_areas):
+def build_gemm(mesh):
     mesh.ve = [[] for _ in mesh.vs]
     edge_nb = []
     sides = []
@@ -121,7 +124,7 @@ def build_gemm(mesh, faces, face_areas):
     edges = []
     edges_count = 0
     nb_count = []
-    for face_id, face in enumerate(faces):
+    for face_id, face in enumerate(mesh.faces):
         faces_edges = []
         for i in range(3):
             cur_edge = (face[i], face[(i + 1) % 3])
@@ -139,7 +142,7 @@ def build_gemm(mesh, faces, face_areas):
                 mesh.edge_areas.append(0)
                 nb_count.append(0)
                 edges_count += 1
-            mesh.edge_areas[edge2key[edge]] += face_areas[face_id] / 3
+            mesh.edge_areas[edge2key[edge]] += mesh.face_areas[face_id] / 3
         for idx, edge in enumerate(faces_edges):
             edge_key = edge2key[edge]
             edge_nb[edge_key][nb_count[edge_key]] = edge2key[faces_edges[(idx + 1) % 3]]
@@ -153,7 +156,7 @@ def build_gemm(mesh, faces, face_areas):
     mesh.gemm_edges = np.array(edge_nb, dtype=np.int64)
     mesh.sides = np.array(sides, dtype=np.int64)
     mesh.edges_count = edges_count
-    mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(face_areas) #todo whats the difference between edge_areas and edge_lenghts?
+    mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(mesh.face_areas) #todo whats the difference between edge_areas and edge_lenghts?
 
 
 def compute_face_normals_and_areas(mesh, faces):
@@ -308,6 +311,10 @@ def extract_features(mesh):
     set_edge_lengths(mesh, edge_points)
     with np.errstate(divide='raise'):
         try:
+            # for i in range(0,2):
+            #     feature = mesh.vs[mesh.edges[:,i]]
+            #     features.append(feature)
+            # return np.concatenate(features, axis=1)
             for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
                 feature = extractor(mesh, edge_points)
                 features.append(feature)

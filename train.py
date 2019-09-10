@@ -6,7 +6,10 @@ from util.writer import Writer
 from test import run_test
 
 if __name__ == '__main__':
+    #Parse options from arguments
     opt = TrainOptions().parse()
+
+    #Load dataset ready for training (with extracted features)
     dataset = DataLoader(opt)
     dataset_size = len(dataset)
     print('#training meshes = %d' % dataset_size)
@@ -14,6 +17,10 @@ if __name__ == '__main__':
     model = create_model(opt)
     writer = Writer(opt)
     total_steps = 0
+
+    import wandb
+    wandb.init(project="meshcnn")
+    # wandb.watch(model)
 
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
@@ -34,11 +41,13 @@ if __name__ == '__main__':
                 t = (time.time() - iter_start_time) / opt.batch_size
                 writer.print_current_losses(epoch, epoch_iter, loss, t, t_data)
                 writer.plot_loss(loss, epoch, epoch_iter, dataset_size)
+                wandb.log({"Loss": loss})
 
             if i % opt.save_latest_freq == 0:
                 print('saving the latest model (epoch %d, total_steps %d)' %
                       (epoch, total_steps))
                 model.save_network('latest')
+
 
             iter_data_time = time.time()
         if epoch % opt.save_epoch_freq == 0:
@@ -56,5 +65,6 @@ if __name__ == '__main__':
         if epoch % opt.run_test_freq == 0:
             acc = run_test(epoch)
             writer.plot_acc(acc, epoch)
+            wandb.log({"Test Accuracy": acc})
 
     writer.close()

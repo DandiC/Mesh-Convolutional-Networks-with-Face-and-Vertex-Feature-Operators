@@ -61,6 +61,12 @@ class MeshConv(nn.Module):
         f = f.view(Gishape[0], Gishape[1], Gishape[2], -1)
         f = f.permute(0, 3, 1, 2)
 
+        # Features without symmetric functions
+        # x_1 = f[:, :, :, 1]
+        # x_2 = f[:, :, :, 2]
+        # x_3 = f[:, :, :, 3]
+        # x_4 = f[:, :, :, 4]
+
         # apply the symmetric functions for an equivariant conv
         x_1 = f[:, :, :, 1] + f[:, :, :, 3]
         x_2 = f[:, :, :, 2] + f[:, :, :, 4]

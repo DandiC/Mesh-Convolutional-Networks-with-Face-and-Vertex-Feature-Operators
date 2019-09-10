@@ -1,6 +1,6 @@
 name: meshcnn
 channels:
-  - pytorch
+  - pytorch=1.0
   - defaults
 dependencies:
   - python=3.6.8

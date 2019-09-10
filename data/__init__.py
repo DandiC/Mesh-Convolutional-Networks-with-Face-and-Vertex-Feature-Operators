@@ -18,6 +18,7 @@ class DataLoader:
 
     def __init__(self, opt):
         self.opt = opt
+        # Create dataset with features
         self.dataset = CreateDataset(opt)
         self.dataloader = torch.utils.data.DataLoader(
             self.dataset,

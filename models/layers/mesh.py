@@ -13,6 +13,7 @@ class Mesh:
         self.vs = self.v_mask = self.filename = self.features = self.edge_areas = None
         self.edges = self.gemm_edges = self.sides = None
         self.pool_count = 0
+        # Extracts information from OBJ meshes (vertices, edges, features etc.)
         fill_mesh(self, file, opt)
         self.export_folder = export_folder
         self.history_data = None
