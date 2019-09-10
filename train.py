@@ -6,8 +6,13 @@ from util.writer import Writer
 from test import run_test
 
 if __name__ == '__main__':
+    
+    import wandb
+    wandb.init(project="meshcnn")
+
     #Parse options from arguments
     opt = TrainOptions().parse()
+    wandb.config.update(opt)
 
     #Load dataset ready for training (with extracted features)
     dataset = DataLoader(opt)
@@ -18,8 +23,6 @@ if __name__ == '__main__':
     writer = Writer(opt)
     total_steps = 0
 
-    import wandb
-    wandb.init(project="meshcnn")
     # wandb.watch(model)
 
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
