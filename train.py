@@ -23,7 +23,7 @@ if __name__ == '__main__':
     writer = Writer(opt)
     total_steps = 0
 
-    # wandb.watch(model)
+    wandb.watch(model.net)
 
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
