@@ -23,7 +23,7 @@ if __name__ == '__main__':
     writer = Writer(opt)
     total_steps = 0
 
-    wandb.watch(model.net)
+    wandb.watch(model.net, log="all")
 
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                 t = (time.time() - iter_start_time) / opt.batch_size
                 writer.print_current_losses(epoch, epoch_iter, loss, t, t_data)
                 writer.plot_loss(loss, epoch, epoch_iter, dataset_size)
-                wandb.log({"Loss": loss})
+                wandb.log({"loss": loss})
 
             if i % opt.save_latest_freq == 0:
                 print('saving the latest model (epoch %d, total_steps %d)' %

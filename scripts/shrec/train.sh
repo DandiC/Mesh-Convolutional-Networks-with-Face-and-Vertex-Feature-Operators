@@ -1,4 +1,18 @@
-#!/usr/bin/env bash
+#!/bin/bash -l
+
+#SBATCH --job-name=shrec
+#SBATCH --output=outputs/shrec.txt
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=dpere013@odu.edu
+
+enable_lmod
+
+module load python/3.6
+module load cuda/9.2
+module load pytorch/1.0
+module load wandb
 
 ## run the training
 python train.py \
