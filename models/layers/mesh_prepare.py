@@ -5,15 +5,15 @@ import ntpath
 
 def fill_mesh(mesh2fill, file: str, opt):
     load_path = get_mesh_path(file, opt.num_aug)
-    if os.path.exists(load_path):
-        mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
-    else:
-        mesh_data = from_scratch(file, opt)
-        np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-                            edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                            filename=mesh_data.filename, sides=mesh_data.sides,
-                            edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                            features=mesh_data.features, faces=mesh_data.faces, face_areas=mesh_data.face_areas)
+    # if os.path.exists(load_path):
+    #     mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+    # else:
+    mesh_data = from_scratch(file, opt)
+        # np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+        #                     edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+        #                     filename=mesh_data.filename, sides=mesh_data.sides,
+        #                     edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+        #                     features=mesh_data.features, faces=mesh_data.faces, face_areas=mesh_data.face_areas)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -61,7 +61,7 @@ def from_scratch(file, opt):
     build_gemm(mesh_data)
     if opt.num_aug > 1:
         post_augmentation(mesh_data, opt)
-    mesh_data.features = extract_features(mesh_data)
+    mesh_data.features = extract_features(mesh_data, opt)
     return mesh_data
 
 # Fills vertices and faces by reading the OBJ file line by line
@@ -124,14 +124,19 @@ def build_gemm(mesh):
     edges = []
     edges_count = 0
     nb_count = []
+    faces_edges = []
+    face_nb = -np.ones(mesh.faces.shape)
+    face_nb_count = []
+    edges_in_faces = -np.ones(mesh.faces.shape)
     for face_id, face in enumerate(mesh.faces):
-        faces_edges = []
+        face_edges = []
+        face_nb_count.append(0)
         for i in range(3):
             cur_edge = (face[i], face[(i + 1) % 3])
-            faces_edges.append(cur_edge)
-        for idx, edge in enumerate(faces_edges):
+            face_edges.append(cur_edge)
+        for idx, edge in enumerate(face_edges):
             edge = tuple(sorted(list(edge)))
-            faces_edges[idx] = edge
+            face_edges[idx] = edge
             if edge not in edge2key:
                 edge2key[edge] = edges_count
                 edges.append(list(edge))
@@ -143,17 +148,37 @@ def build_gemm(mesh):
                 nb_count.append(0)
                 edges_count += 1
             mesh.edge_areas[edge2key[edge]] += mesh.face_areas[face_id] / 3
-        for idx, edge in enumerate(faces_edges):
+
+            #Find face neighbors
+            neighbor = np.where(edges_in_faces==edge2key[edge])[0]
+            if neighbor.size == 1:
+                n_id = neighbor[0]
+                face_nb[n_id, face_nb_count[n_id]] = face_id
+                face_nb[face_id, face_nb_count[face_id]] = n_id
+                face_nb_count[n_id] += 1
+                face_nb_count[face_id] += 1
+            #Set edge indices in the face
+            edges_in_faces[face_id,idx] = edge2key[edge]
+
+        for idx, edge in enumerate(face_edges):
+            #Edge neighbors
             edge_key = edge2key[edge]
-            edge_nb[edge_key][nb_count[edge_key]] = edge2key[faces_edges[(idx + 1) % 3]]
-            edge_nb[edge_key][nb_count[edge_key] + 1] = edge2key[faces_edges[(idx + 2) % 3]]
+            edge_nb[edge_key][nb_count[edge_key]] = edge2key[face_edges[(idx + 1) % 3]]
+            edge_nb[edge_key][nb_count[edge_key] + 1] = edge2key[face_edges[(idx + 2) % 3]]
             nb_count[edge_key] += 2
-        for idx, edge in enumerate(faces_edges):
+
+            #Face neighbors
+            a=1
+
+        for idx, edge in enumerate(face_edges):
             edge_key = edge2key[edge]
-            sides[edge_key][nb_count[edge_key] - 2] = nb_count[edge2key[faces_edges[(idx + 1) % 3]]] - 1
-            sides[edge_key][nb_count[edge_key] - 1] = nb_count[edge2key[faces_edges[(idx + 2) % 3]]] - 2
+            sides[edge_key][nb_count[edge_key] - 2] = nb_count[edge2key[face_edges[(idx + 1) % 3]]] - 1
+            sides[edge_key][nb_count[edge_key] - 1] = nb_count[edge2key[face_edges[(idx + 2) % 3]]] - 2
+        faces_edges.append(face_edges)
+
     mesh.edges = np.array(edges, dtype=np.int32)
     mesh.gemm_edges = np.array(edge_nb, dtype=np.int64)
+    mesh.gemm_faces = face_nb.astype(np.int64)
     mesh.sides = np.array(sides, dtype=np.int64)
     mesh.edges_count = edges_count
     mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(mesh.face_areas) #todo whats the difference between edge_areas and edge_lenghts?
@@ -305,7 +330,7 @@ def set_edge_lengths(mesh, edge_points=None):
     mesh.edge_lengths = edge_lengths
 
 
-def extract_features(mesh):
+def extract_features(mesh, opt):
     features = []
     edge_points = get_edge_points(mesh)
     set_edge_lengths(mesh, edge_points)

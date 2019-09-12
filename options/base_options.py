@@ -11,7 +11,7 @@ class BaseOptions:
 
     def initialize(self):
         # data params
-        self.parser.add_argument('--dataroot', default='datasets/shrec_16', help='path to meshes (should have subfolders train, test)')
+        self.parser.add_argument('--dataroot', default='datasets/debug', help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation"}, default='classification')
         self.parser.add_argument('--ninput_edges', type=int, default=750, help='# of input edges (will include dummy edges)')
         # network params
