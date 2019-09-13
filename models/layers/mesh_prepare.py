@@ -55,7 +55,7 @@ def from_scratch(file, opt):
     mesh_data.edge_areas = []
     mesh_data.vs, faces = fill_from_file(mesh_data, file)
     mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
-    mesh_data.faces, mesh_data.face_areas = remove_non_manifolds(mesh_data, faces)
+    mesh_data.faces, mesh_data.face_areas, mesh_data.face_normals = remove_non_manifolds(mesh_data, faces)
     if opt.num_aug > 1:
         mesh_data.faces = augmentation(mesh_data, opt, mesh_data.faces)
     build_gemm(mesh_data)
@@ -94,7 +94,7 @@ def remove_non_manifolds(mesh, faces):
     mesh.ve = [[] for _ in mesh.vs]
     edges_set = set()
     mask = np.ones(len(faces), dtype=bool)
-    _, face_areas = compute_face_normals_and_areas(mesh, faces)
+    face_normals, face_areas = compute_face_normals_and_areas(mesh, faces)
     for face_id, face in enumerate(faces):
         if face_areas[face_id] == 0:
             mask[face_id] = False
@@ -113,7 +113,7 @@ def remove_non_manifolds(mesh, faces):
         else:
             for idx, edge in enumerate(faces_edges):
                 edges_set.add(edge)
-    return faces[mask], face_areas[mask]
+    return faces[mask], face_areas[mask], face_normals[mask]
 
 
 def build_gemm(mesh):
@@ -331,23 +331,96 @@ def set_edge_lengths(mesh, edge_points=None):
 
 
 def extract_features(mesh, opt):
-    features = []
-    edge_points = get_edge_points(mesh)
-    set_edge_lengths(mesh, edge_points)
-    with np.errstate(divide='raise'):
-        try:
-            # for i in range(0,2):
-            #     feature = mesh.vs[mesh.edges[:,i]]
-            #     features.append(feature)
-            # return np.concatenate(features, axis=1)
-            for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
-                feature = extractor(mesh, edge_points)
-                features.append(feature)
-            return np.concatenate(features, axis=0)
-        except Exception as e:
-            print(e)
-            raise ValueError(mesh.filename, 'bad features')
+    if opt.feat_from == 'edge':
+        features = []
+        edge_points = get_edge_points(mesh)
+        set_edge_lengths(mesh, edge_points)
+        with np.errstate(divide='raise'):
+            try:
+                for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
+                    feature = extractor(mesh, edge_points)
+                    features.append(feature)
+                return np.concatenate(features, axis=0)
+            except Exception as e:
+                print(e)
+                raise ValueError(mesh.filename, 'bad features')
+    elif opt.feat_from == 'face':
+        features = []
+        with np.errstate(divide='raise'):
+            try:
+                for extractor in [face_angles, face_dihedral_angles, area_ratios]:
+                    feature = extractor(mesh)
+                    features.append(feature)
+                return np.concatenate(features, axis=0)
+            except Exception as e:
+                print(e)
+                raise ValueError(mesh.filename, 'bad features')
+    else:
+        raise ValueError(opt.feat_from, 'Wrong parameter value in --feat_from')
 
+def face_angles(mesh):
+    angles_a = get_angles(mesh, 0)
+    angles_b = get_angles(mesh, 1)
+    angles_c = get_angles(mesh, 2)
+    angles = np.concatenate((np.expand_dims(angles_a, 0), np.expand_dims(angles_b, 0), np.expand_dims(angles_c, 0)), axis=0)
+    return np.sort(angles, axis=0)
+
+def get_angles(mesh, side):
+    edges_a = mesh.vs[mesh.faces[:, (side-1) % 3]] - mesh.vs[mesh.faces[:, side]]
+    edges_b = mesh.vs[mesh.faces[:, (side+1) % 3]] - mesh.vs[mesh.faces[:, side]]
+
+    edges_a /= fixed_division(np.linalg.norm(edges_a, ord=2, axis=1), epsilon=0.1)[:, np.newaxis]
+    edges_b /= fixed_division(np.linalg.norm(edges_b, ord=2, axis=1), epsilon=0.1)[:, np.newaxis]
+    dot = np.sum(edges_a * edges_b, axis=1).clip(-1, 1) #TODO: why clipping?
+    return np.arccos(dot)
+
+# TODO: Generalize for other types of mesh (not only trimesh)
+def face_dihedral_angles(mesh):
+
+    #Get normals from neighbors
+    normals_a = mesh.face_normals[mesh.gemm_faces[:,0]]
+    normals_b = mesh.face_normals[mesh.gemm_faces[:, 1]]
+    normals_c = mesh.face_normals[mesh.gemm_faces[:, 2]]
+
+    #Dot product between normals
+    dot_a = np.sum(normals_a * mesh.face_normals, axis=1).clip(-1, 1)
+    dot_b = np.sum(normals_b * mesh.face_normals, axis=1).clip(-1, 1)
+    dot_c = np.sum(normals_c * mesh.face_normals, axis=1).clip(-1, 1)
+
+    #Dihedral angle between two faces is 180-arccos(dot product)
+    #TODO: If an angle is greater than 180, this method does not return the proper value
+    angles_a = np.pi - np.arccos(dot_a)
+    angles_b = np.pi - np.arccos(dot_b)
+    angles_c = np.pi - np.arccos(dot_c)
+
+    #Mask if neighbor does not exist
+    mask = mesh.gemm_faces == -1
+    angles_a[mask[:,0]] = 0
+    angles_b[mask[:,1]] = 0
+    angles_c[mask[:,2]] = 0
+
+    return np.concatenate((np.expand_dims(angles_a, 0), np.expand_dims(angles_b, 0), np.expand_dims(angles_c, 0)), axis=0)
+
+def area_ratios(mesh):
+
+    #Get areas from neighbors
+    areas_a = mesh.face_areas[mesh.gemm_faces[:,0]]
+    areas_b = mesh.face_areas[mesh.gemm_faces[:, 1]]
+    areas_c = mesh.face_areas[mesh.gemm_faces[:, 2]]
+
+    # Mask if neighbor does not exist
+    #TODO: Compare this approach against duplicating a neighbor
+    mask = mesh.gemm_faces == -1
+    areas_a[mask[:, 0]] = 0
+    areas_b[mask[:, 1]] = 0
+    areas_c[mask[:, 2]] = 0
+
+    #compute ratios
+    ratios = np.concatenate((np.expand_dims(areas_a / mesh.face_areas, 0),
+                             np.expand_dims(areas_b / mesh.face_areas, 0),
+                             np.expand_dims(areas_c / mesh.face_areas, 0)), axis=0)
+    ratios = np.sort(ratios, axis=0) #TODO: Think and check if sorting is a good idea
+    return ratios
 
 def dihedral_angle(mesh, edge_points):
     normals_a = get_normals(mesh, edge_points, 0)
@@ -449,9 +522,10 @@ def get_ratios(mesh, edge_points, side):
     d = np.linalg.norm(point_o - closest_point, ord=2, axis=1)
     return d / edges_lengths
 
+
 def fixed_division(to_div, epsilon):
     if epsilon == 0:
-        to_div[to_div == 0] = 0.1
+        to_div[to_div == 0] = 0.01
     else:
         to_div += epsilon
     return to_div
