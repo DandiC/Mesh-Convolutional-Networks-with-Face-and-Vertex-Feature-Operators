@@ -9,11 +9,12 @@ def fill_mesh(mesh2fill, file: str, opt):
     #     mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
     # else:
     mesh_data = from_scratch(file, opt)
-        # np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-        #                     edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-        #                     filename=mesh_data.filename, sides=mesh_data.sides,
-        #                     edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-        #                     features=mesh_data.features, faces=mesh_data.faces, face_areas=mesh_data.face_areas)
+    np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+                        edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+                        filename=mesh_data.filename, sides=mesh_data.sides,
+                        edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+                        edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
+                        faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -23,10 +24,17 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.filename = str(mesh_data['filename'])
     mesh2fill.edge_lengths = mesh_data['edge_lengths']
     mesh2fill.edge_areas = mesh_data['edge_areas']
-    mesh2fill.features = mesh_data['features']
     mesh2fill.sides = mesh_data['sides']
     mesh2fill.faces = mesh_data['faces']
     mesh2fill.face_areas = mesh_data['face_areas']
+    mesh2fill.gemm_faces = mesh_data['gemm_faces']
+
+    if opt.feat_from == 'edge':
+        mesh2fill.features = mesh_data['edge_features']
+    elif opt.feat_from == 'face':
+        mesh2fill.features = mesh_data['face_features']
+    else:
+        raise ValueError(opt.feat_from, 'Wrong parameter value in --feat_from')
 
 def get_mesh_path(file: str, num_aug: int):
     filename, _ = os.path.splitext(file)
@@ -61,7 +69,7 @@ def from_scratch(file, opt):
     build_gemm(mesh_data)
     if opt.num_aug > 1:
         post_augmentation(mesh_data, opt)
-    mesh_data.features = extract_features(mesh_data, opt)
+    mesh_data.edge_features, mesh_data.face_features = extract_features(mesh_data, opt)
     return mesh_data
 
 # Fills vertices and faces by reading the OBJ file line by line
@@ -86,6 +94,11 @@ def fill_from_file(mesh, file):
     f.close()
     vs = np.asarray(vs)
     faces = np.asarray(faces, dtype=int)
+
+    # Randomize faces (experiment to see if the order of the vertices matters)
+    ridx = np.random.permutation(faces.shape[0])
+    faces = faces[ridx,:]
+
     assert np.logical_and(faces >= 0, faces < len(vs)).all()
     return vs, faces
 
@@ -331,32 +344,32 @@ def set_edge_lengths(mesh, edge_points=None):
 
 
 def extract_features(mesh, opt):
-    if opt.feat_from == 'edge':
-        features = []
-        edge_points = get_edge_points(mesh)
-        set_edge_lengths(mesh, edge_points)
-        with np.errstate(divide='raise'):
-            try:
-                for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
-                    feature = extractor(mesh, edge_points)
-                    features.append(feature)
-                return np.concatenate(features, axis=0)
-            except Exception as e:
-                print(e)
-                raise ValueError(mesh.filename, 'bad features')
-    elif opt.feat_from == 'face':
-        features = []
-        with np.errstate(divide='raise'):
-            try:
-                for extractor in [face_angles, face_dihedral_angles, area_ratios]:
-                    feature = extractor(mesh)
-                    features.append(feature)
-                return np.concatenate(features, axis=0)
-            except Exception as e:
-                print(e)
-                raise ValueError(mesh.filename, 'bad features')
-    else:
-        raise ValueError(opt.feat_from, 'Wrong parameter value in --feat_from')
+   #Extraction of Edge Features
+    edge_features = []
+    edge_points = get_edge_points(mesh)
+    set_edge_lengths(mesh, edge_points)
+    with np.errstate(divide='raise'):
+        try:
+            for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
+                feature = extractor(mesh, edge_points)
+                edge_features.append(feature)
+            edge_features = np.concatenate(edge_features, axis=0)
+        except Exception as e:
+            print(e)
+            raise ValueError(mesh.filename, 'bad edge features')
+    # Extraction of Face Features
+    face_features = []
+    with np.errstate(divide='raise'):
+        try:
+            for extractor in [face_angles, face_dihedral_angles, area_ratios]:
+                feature = extractor(mesh)
+                face_features.append(feature)
+            face_features = np.concatenate(face_features, axis=0)
+        except Exception as e:
+            print(e)
+            raise ValueError(mesh.filename, 'bad face features')
+
+    return edge_features, face_features
 
 def face_angles(mesh):
     angles_a = get_angles(mesh, 0)
