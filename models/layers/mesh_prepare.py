@@ -1,20 +1,20 @@
 import numpy as np
 import os
 import ntpath
-
+import random
 
 def fill_mesh(mesh2fill, file: str, opt):
     load_path = get_mesh_path(file, opt.num_aug)
-    # if os.path.exists(load_path):
-    #     mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
-    # else:
-    mesh_data = from_scratch(file, opt)
-    np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-                        edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                        filename=mesh_data.filename, sides=mesh_data.sides,
-                        edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                        edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                        faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces)
+    if os.path.exists(load_path):
+        mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+    else:
+        mesh_data = from_scratch(file, opt)
+        np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+                            edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+                            filename=mesh_data.filename, sides=mesh_data.sides,
+                            edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+                            edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
+                            faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -96,8 +96,12 @@ def fill_from_file(mesh, file):
     faces = np.asarray(faces, dtype=int)
 
     # Randomize faces (experiment to see if the order of the vertices matters)
-    ridx = np.random.permutation(faces.shape[0])
-    faces = faces[ridx,:]
+    # ridx = np.random.permutation(faces.shape[0])
+    # faces = faces[ridx,:]
+
+    #Shift faces (experiment to see if the ordering matters)
+    rint = random.randint(0, faces.shape[0]-1)
+    faces = np.roll(faces, rint, axis=0)
 
     assert np.logical_and(faces >= 0, faces < len(vs)).all()
     return vs, faces
@@ -195,6 +199,17 @@ def build_gemm(mesh):
     mesh.sides = np.array(sides, dtype=np.int64)
     mesh.edges_count = edges_count
     mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(mesh.face_areas) #todo whats the difference between edge_areas and edge_lenghts?
+
+    # Randomize edges (experiment to see if the order of the vertices matters)
+    # ridx = np.random.permutation(mesh.edges.shape[0])
+    # mesh.edges = mesh.edges[ridx,:]
+    # mesh.gemm_edges = mesh.gemm_edges[ridx, :]
+    # mesh.sides = mesh.sides[ridx, :]
+    # mesh.edge_areas = mesh.edge_areas[ridx]
+    # for ve in mesh.ve:
+    #     for ve_id, edge in enumerate(ve):
+    #         ve[ve_id] = np.where(ridx==edge)[0][0]
+
 
 
 def compute_face_normals_and_areas(mesh, faces):
