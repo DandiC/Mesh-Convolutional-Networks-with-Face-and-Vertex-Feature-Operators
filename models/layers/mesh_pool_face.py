@@ -6,10 +6,10 @@ import numpy as np
 from heapq import heappop, heapify
 
 
-class MeshPool(nn.Module):
+class MeshPoolFace(nn.Module):
     
     def __init__(self, target, multi_thread=False):
-        super(MeshPool, self).__init__()
+        super(MeshPoolFace, self).__init__()
         self.__out_target = target
         self.__multi_thread = multi_thread
         self.__fe = None
@@ -40,24 +40,22 @@ class MeshPool(nn.Module):
 
     def __pool_main(self, mesh_index):
         mesh = self.__meshes[mesh_index]
-        queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.edges_count], mesh.edges_count)
+        queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.faces.shape[0]], mesh.faces.shape[0])
         # recycle = []
         # last_queue_len = len(queue)
-        last_count = mesh.edges_count + 1
-        mask = np.ones(mesh.edges_count, dtype=np.uint8)
-        edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
-        while mesh.edges_count > self.__out_target:
-            value, edge_id = heappop(queue)
-            edge_id = int(edge_id)
-            if mask[edge_id]:
-                self.__pool_edge(mesh, edge_id, mask, edge_groups)
+        last_count = mesh.faces.shape[0] + 1
+        mask = np.ones(mesh.faces.shape[0], dtype=np.uint8)
+        edge_groups = MeshUnion(mesh.faces.shape[0], self.__fe.device)
+        while mesh.faces.shape[0] > self.__out_target:
+            value, face_id = heappop(queue)
+            face_id = int(face_id)
+            if mask[face_id]:
+                self.__pool_edge(mesh, face_id, mask, edge_groups)
         mesh.clean(mask, edge_groups)
         fe = edge_groups.rebuild_features(self.__fe[mesh_index], mask, self.__out_target)
         self.__updated_fe[mesh_index] = fe
 
     def __pool_edge(self, mesh, edge_id, mask, edge_groups):
-        # Not pool if the edge or one of its neighbors is in a boundary
-        # TODO: why?
         if self.has_boundaries(mesh, edge_id):
             return False
         elif self.__clean_side(mesh, edge_id, mask, edge_groups, 0)\
@@ -67,19 +65,19 @@ class MeshPool(nn.Module):
             self.__merge_edges[1] = self.__pool_side(mesh, edge_id, mask, edge_groups, 2)
             mesh.merge_vertices(edge_id)
             mask[edge_id] = False
-            MeshPool.__remove_group(mesh, edge_groups, edge_id)
-            mesh.edges_count -= 1
+            MeshPoolFace.__remove_group(mesh, edge_groups, edge_id)
+            mesh.faces.shape[0] -= 1
             return True
         else:
             return False
 
     def __clean_side(self, mesh, edge_id, mask, edge_groups, side):
-        if mesh.edges_count <= self.__out_target:
+        if mesh.faces.shape[0] <= self.__out_target:
             return False
-        invalid_edges = MeshPool.__get_invalids(mesh, edge_id, edge_groups, side)
-        while len(invalid_edges) != 0 and mesh.edges_count > self.__out_target:
+        invalid_edges = MeshPoolFace.__get_invalids(mesh, edge_id, edge_groups, side)
+        while len(invalid_edges) != 0 and mesh.faces.shape[0] > self.__out_target:
             self.__remove_triplete(mesh, mask, edge_groups, invalid_edges)
-            if mesh.edges_count <= self.__out_target:
+            if mesh.faces.shape[0] <= self.__out_target:
                 return False
             if self.has_boundaries(mesh, edge_id):
                 return False
@@ -102,23 +100,23 @@ class MeshPool(nn.Module):
         return len(shared) == 2
 
     def __pool_side(self, mesh, edge_id, mask, edge_groups, side):
-        info = MeshPool.__get_face_info(mesh, edge_id, side)
+        info = MeshPoolFace.__get_face_info(mesh, edge_id, side)
         key_a, key_b, side_a, side_b, _, other_side_b, _, other_keys_b = info
         self.__redirect_edges(mesh, key_a, side_a - side_a % 2, other_keys_b[0], mesh.sides[key_b, other_side_b])
         self.__redirect_edges(mesh, key_a, side_a - side_a % 2 + 1, other_keys_b[1], mesh.sides[key_b, other_side_b + 1])
-        MeshPool.__union_groups(mesh, edge_groups, key_b, key_a)
-        MeshPool.__union_groups(mesh, edge_groups, edge_id, key_a)
+        MeshPoolFace.__union_groups(mesh, edge_groups, key_b, key_a)
+        MeshPoolFace.__union_groups(mesh, edge_groups, edge_id, key_a)
         mask[key_b] = False
-        MeshPool.__remove_group(mesh, edge_groups, key_b)
+        MeshPoolFace.__remove_group(mesh, edge_groups, key_b)
         mesh.remove_edge(key_b)
-        mesh.edges_count -= 1
+        mesh.faces.shape[0] -= 1
         return key_a
 
     @staticmethod
     def __get_invalids(mesh, edge_id, edge_groups, side):
-        info = MeshPool.__get_face_info(mesh, edge_id, side)
+        info = MeshPoolFace.__get_face_info(mesh, edge_id, side)
         key_a, key_b, side_a, side_b, other_side_a, other_side_b, other_keys_a, other_keys_b = info
-        shared_items = MeshPool.__get_shared_items(other_keys_a, other_keys_b)
+        shared_items = MeshPoolFace.__get_shared_items(other_keys_a, other_keys_b)
         if len(shared_items) == 0:
             return []
         else:
@@ -128,15 +126,15 @@ class MeshPool(nn.Module):
             update_key_b = other_keys_b[1 - shared_items[1]]
             update_side_a = mesh.sides[key_a, other_side_a + 1 - shared_items[0]]
             update_side_b = mesh.sides[key_b, other_side_b + 1 - shared_items[1]]
-            MeshPool.__redirect_edges(mesh, edge_id, side, update_key_a, update_side_a)
-            MeshPool.__redirect_edges(mesh, edge_id, side + 1, update_key_b, update_side_b)
-            MeshPool.__redirect_edges(mesh, update_key_a, MeshPool.__get_other_side(update_side_a), update_key_b, MeshPool.__get_other_side(update_side_b))
-            MeshPool.__union_groups(mesh, edge_groups, key_a, edge_id)
-            MeshPool.__union_groups(mesh, edge_groups, key_b, edge_id)
-            MeshPool.__union_groups(mesh, edge_groups, key_a, update_key_a)
-            MeshPool.__union_groups(mesh, edge_groups, middle_edge, update_key_a)
-            MeshPool.__union_groups(mesh, edge_groups, key_b, update_key_b)
-            MeshPool.__union_groups(mesh, edge_groups, middle_edge, update_key_b)
+            MeshPoolFace.__redirect_edges(mesh, edge_id, side, update_key_a, update_side_a)
+            MeshPoolFace.__redirect_edges(mesh, edge_id, side + 1, update_key_b, update_side_b)
+            MeshPoolFace.__redirect_edges(mesh, update_key_a, MeshPoolFace.__get_other_side(update_side_a), update_key_b, MeshPoolFace.__get_other_side(update_side_b))
+            MeshPoolFace.__union_groups(mesh, edge_groups, key_a, edge_id)
+            MeshPoolFace.__union_groups(mesh, edge_groups, key_b, edge_id)
+            MeshPoolFace.__union_groups(mesh, edge_groups, key_a, update_key_a)
+            MeshPoolFace.__union_groups(mesh, edge_groups, middle_edge, update_key_a)
+            MeshPoolFace.__union_groups(mesh, edge_groups, key_b, update_key_b)
+            MeshPoolFace.__union_groups(mesh, edge_groups, middle_edge, update_key_b)
             return [key_a, key_b, middle_edge]
 
     @staticmethod
@@ -177,8 +175,8 @@ class MeshPool(nn.Module):
         for edge_key in invalid_edges:
             vertex &= set(mesh.edges[edge_key])
             mask[edge_key] = False
-            MeshPool.__remove_group(mesh, edge_groups, edge_key)
-        mesh.edges_count -= 3
+            MeshPoolFace.__remove_group(mesh, edge_groups, edge_key)
+        mesh.faces.shape[0] -= 3
         vertex = list(vertex)
         assert(len(vertex) == 1)
         mesh.remove_vertex(vertex[0])
@@ -188,8 +186,8 @@ class MeshPool(nn.Module):
         squared_magnitude = torch.sum(features * features, 0)
         if squared_magnitude.shape[-1] != 1:
             squared_magnitude = squared_magnitude.unsqueeze(-1)
-        edge_ids = torch.arange(edges_count, device=squared_magnitude.device, dtype=torch.float32).unsqueeze(-1)
-        heap = torch.cat((squared_magnitude, edge_ids), dim=-1).tolist()
+        face_ids = torch.arange(edges_count, device=squared_magnitude.device, dtype=torch.float32).unsqueeze(-1)
+        heap = torch.cat((squared_magnitude, face_ids), dim=-1).tolist()
         heapify(heap)
         return heap
 
