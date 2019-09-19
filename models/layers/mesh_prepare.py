@@ -5,16 +5,16 @@ import random
 
 def fill_mesh(mesh2fill, file: str, opt):
     load_path = get_mesh_path(file, opt.num_aug)
-    if os.path.exists(load_path):
-        mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
-    else:
-        mesh_data = from_scratch(file, opt)
-        np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-                            edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                            filename=mesh_data.filename, sides=mesh_data.sides,
-                            edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                            edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                            faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces)
+    # if os.path.exists(load_path):
+    #     mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+    # else:
+    mesh_data = from_scratch(file, opt)
+    np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+                        edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+                        filename=mesh_data.filename, sides=mesh_data.sides,
+                        edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+                        edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
+                        faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -28,6 +28,7 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.faces = mesh_data['faces']
     mesh2fill.face_areas = mesh_data['face_areas']
     mesh2fill.gemm_faces = mesh_data['gemm_faces']
+
 
     if opt.feat_from == 'edge':
         mesh2fill.features = mesh_data['edge_features']
@@ -100,7 +101,7 @@ def fill_from_file(mesh, file):
     # faces = faces[ridx,:]
 
     #Shift faces (experiment to see if the ordering matters)
-    rint = random.randint(0, faces.shape[0]-1)
+    rint = 0 #random.randint(0, faces.shape[0]-1)
     faces = np.roll(faces, rint, axis=0)
 
     assert np.logical_and(faces >= 0, faces < len(vs)).all()
@@ -427,7 +428,9 @@ def face_dihedral_angles(mesh):
     angles_b[mask[:,1]] = 0
     angles_c[mask[:,2]] = 0
 
-    return np.concatenate((np.expand_dims(angles_a, 0), np.expand_dims(angles_b, 0), np.expand_dims(angles_c, 0)), axis=0)
+    angles = np.concatenate((np.expand_dims(angles_a, 0), np.expand_dims(angles_b, 0), np.expand_dims(angles_c, 0)), axis=0)
+
+    return np.sort(angles, axis=0)
 
 def area_ratios(mesh):
 
@@ -447,8 +450,8 @@ def area_ratios(mesh):
     ratios = np.concatenate((np.expand_dims(areas_a / mesh.face_areas, 0),
                              np.expand_dims(areas_b / mesh.face_areas, 0),
                              np.expand_dims(areas_c / mesh.face_areas, 0)), axis=0)
-    ratios = np.sort(ratios, axis=0) #TODO: Think and check if sorting is a good idea
-    return ratios
+    #TODO: Think and check if sorting is a good idea
+    return np.sort(ratios, axis=0)
 
 def dihedral_angle(mesh, edge_points):
     normals_a = get_normals(mesh, edge_points, 0)

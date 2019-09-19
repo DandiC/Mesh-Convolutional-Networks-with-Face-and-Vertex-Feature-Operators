@@ -19,7 +19,7 @@ class ClassifierModel:
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         self.save_dir = join(opt.checkpoints_dir, opt.name)
         self.optimizer = None
-        self.edge_features = None
+        self.features = None
         self.labels = None
         self.mesh = None
         self.soft_label = None
@@ -29,8 +29,8 @@ class ClassifierModel:
         self.nclasses = opt.nclasses
 
         # load/define networks
-        self.net = networks.define_classifier(opt.input_nc, opt.ncf, opt.ninput_edges, opt.nclasses, opt,
-                                              self.gpu_ids, opt.arch, opt.init_type, opt.init_gain)
+        self.net = networks.define_classifier(opt.input_nc, opt.ncf, opt.ninput_features, opt.nclasses, opt,
+                                              self.gpu_ids, opt.arch, opt.init_type, opt.init_gain, opt.feat_from)
         self.net.train(self.is_train)
         self.criterion = networks.define_loss(opt).to(self.device)
 
@@ -43,10 +43,10 @@ class ClassifierModel:
             self.load_network(opt.which_epoch)
 
     def set_input(self, data):
-        input_edge_features = torch.from_numpy(data['edge_features']).float()
+        input_features = torch.from_numpy(data['features']).float()
         labels = torch.from_numpy(data['label']).long()
         # set inputs
-        self.edge_features = input_edge_features.to(self.device).requires_grad_(self.is_train)
+        self.features = input_features.to(self.device).requires_grad_(self.is_train)
         self.labels = labels.to(self.device)
         self.mesh = data['mesh']
         if self.opt.dataset_mode == 'segmentation' and not self.is_train:
@@ -54,7 +54,7 @@ class ClassifierModel:
 
 
     def forward(self):
-        out = self.net(self.edge_features, self.mesh)
+        out = self.net(self.features, self.mesh)
         return out
 
     def backward(self, out):
