@@ -26,7 +26,7 @@ class BaseOptions:
         self.parser.add_argument('--init_type', type=str, default='normal', help='network initialization [normal|xavier|kaiming|orthogonal]')
         self.parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
         # general params
-        self.parser.add_argument('--feat_from', type=str, default='edge', help='Primitive to extract features from. One of: edge, face')
+        self.parser.add_argument('--feat_from', type=str, default='face', help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         self.parser.add_argument('--name', type=str, default='debug2', help='name of the experiment. It decides where to store samples and models')

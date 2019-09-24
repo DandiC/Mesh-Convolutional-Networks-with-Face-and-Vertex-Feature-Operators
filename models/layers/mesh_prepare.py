@@ -14,7 +14,8 @@ def fill_mesh(mesh2fill, file: str, opt):
                         filename=mesh_data.filename, sides=mesh_data.sides,
                         edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
                         edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                        faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces)
+                        faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
+                        face_count=mesh_data.face_count)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -28,6 +29,7 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.faces = mesh_data['faces']
     mesh2fill.face_areas = mesh_data['face_areas']
     mesh2fill.gemm_faces = mesh_data['gemm_faces']
+    mesh2fill.face_count = mesh_data['face_count']
 
 
     if opt.feat_from == 'edge':
@@ -65,6 +67,7 @@ def from_scratch(file, opt):
     mesh_data.vs, faces = fill_from_file(mesh_data, file)
     mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
     mesh_data.faces, mesh_data.face_areas, mesh_data.face_normals = remove_non_manifolds(mesh_data, faces)
+    mesh_data.face_count = mesh_data.faces.shape[0]
     if opt.num_aug > 1:
         mesh_data.faces = augmentation(mesh_data, opt, mesh_data.faces)
     build_gemm(mesh_data)
