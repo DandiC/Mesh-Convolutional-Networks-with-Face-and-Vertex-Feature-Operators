@@ -278,12 +278,12 @@ class MeshPoolFace(nn.Module):
         assert (len(vertex) == 1)
         mesh.remove_vertex(vertex[0])
 
-    def __build_queue(self, features, edges_count):
+    def __build_queue(self, features, face_count):
         # delete edges with smallest norm
         squared_magnitude = torch.sum(features * features, 0)
         if squared_magnitude.shape[-1] != 1:
             squared_magnitude = squared_magnitude.unsqueeze(-1)
-        face_ids = torch.arange(edges_count, device=squared_magnitude.device, dtype=torch.float32).unsqueeze(-1)
+        face_ids = torch.arange(face_count, device=squared_magnitude.device, dtype=torch.float32).unsqueeze(-1)
         heap = torch.cat((squared_magnitude, face_ids), dim=-1).tolist()
         heapify(heap)
         return heap
