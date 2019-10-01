@@ -47,10 +47,14 @@ class MeshPoolFace(nn.Module):
         mask = np.ones(mesh.face_count, dtype=np.uint8)
         edge_groups = MeshUnion(mesh.face_count, self.__fe.device)
         fe = self.__fe[mesh_index, :, :mesh.face_count, :]
+        # print('Pooling mesh ', mesh.filename)
         while mesh.face_count > self.__out_target:
             value, face_id = heappop(queue)
             face_id = int(face_id)
-            fe, queue = self.__pool_face(mesh, face_id, fe, queue)
+            if face_id != -1:
+                fe, queue = self.__pool_face(mesh, face_id, fe, queue)
+
+        # print('')
         # mesh.clean(mask, edge_groups)
         # fe = edge_groups.rebuild_features(self.__fe[mesh_index], mask, self.__out_target)
         self.__updated_fe[mesh_index] = fe
@@ -66,42 +70,53 @@ class MeshPoolFace(nn.Module):
         # mesh.face_count = 8
         # mesh.face_areas = np.random.rand(mesh.face_count,)
         # fe = fe[:,:mesh.face_count,:]
-
+        assert np.where(np.unique(mesh.gemm_faces, return_counts=True)[1] != 3)[0].size == 0
         if self.has_boundaries(mesh, face_id):
-            return False
+            return fe, queue
         else:
             # Compute center as average between 3 points
             center = np.mean(mesh.vs[mesh.faces[face_id]], axis=0)
             # Move first vertex (arbitrary) towards the center
+
             mesh.vs[mesh.faces[face_id, 0]] = center
             # Delete other vertices and make their faces point to "center"
             for i in range(1, mesh.faces[face_id].shape[0]):
                 v_id = mesh.faces[face_id, i]
                 mesh.faces[np.where(mesh.faces == v_id)] = mesh.faces[face_id, 0]
+                mesh.v_mask[v_id] = False
 
             # Set new neighbors
+            # print(mesh.gemm_faces[mesh.gemm_faces[face_id]])
+            # print(face_id)
             for face in mesh.gemm_faces[face_id]:
+                # print('    ', face)
                 # Get neighbors of the neighbor (ommiting the selected face)
                 neighbors = mesh.gemm_faces[face]
+                # print('      neighbors:', neighbors)
                 neighbors = neighbors[neighbors != face_id]
                 assert len(neighbors) == 2
                 # print(len(neighbors))
                 # Set new neighbors (only for trimeshes)
+                # print('        neighbors of', neighbors[0],':',mesh.gemm_faces[neighbors[0]])
+                # print('        neighbors of', neighbors[1], ':', mesh.gemm_faces[neighbors[1]])
+                # print('In pool: ', mesh.gemm_faces[neighbors[0]], mesh.gemm_faces[neighbors[1]])
+                assert np.where(mesh.gemm_faces[neighbors[0]]==neighbors[1])[0].size==0 and np.where(mesh.gemm_faces[neighbors[1]]==neighbors[0])[0].size==0
                 # TODO: Extend for other types of mesh
-                mesh.gemm_faces[neighbors[0], np.where(mesh.gemm_faces[neighbors[0]] == face)] = neighbors[1]
-                mesh.gemm_faces[neighbors[1], np.where(mesh.gemm_faces[neighbors[1]] == face)] = neighbors[0]
+                mesh.gemm_faces[neighbors[0], np.where(mesh.gemm_faces[neighbors[0]] == face)[0][0]] = neighbors[1]
+                mesh.gemm_faces[neighbors[1], np.where(mesh.gemm_faces[neighbors[1]] == face)[0][0]] = neighbors[0]
 
+            assert all(mesh.gemm_faces[:, 0] != mesh.gemm_faces[:, 1]) and all(
+                mesh.gemm_faces[:, 1] != mesh.gemm_faces[:, 2]) and all(mesh.gemm_faces[:, 0] != mesh.gemm_faces[:, 2])
             # Delete face and its neighbors
-            # TODO: CONTINUE HERE. PROBLEM: DELETING FACES CHANGES FACES INDICES AND WILL AFFECT GEMM
             todelete = np.concatenate(([face_id], mesh.gemm_faces[face_id]))
             npqueue = np.asarray(queue)
-            mask = np.ones(npqueue.shape[0], dtype=np.uint8)
+            # mask = np.ones(npqueue.shape[0], dtype=np.uint8)
 
-            # Delete elements from queue
+            # Delete elements from queue (only neighbors, face_id is already out)
             for f in todelete[1:]:
-                mask[np.where(npqueue[:, 1] == f)[0][0]] = 0
-            npqueue = npqueue[mask == 1, :]
-
+                npqueue[npqueue[:,1]==f, 1] =-1
+            # assert np.where(mask == 0)[0].size == 3
+            # npqueue[mask == 0, 1] = -1
             mask = np.ones(mesh.face_count, dtype=np.uint8)
             mask[todelete] = 0
 
@@ -110,16 +125,20 @@ class MeshPoolFace(nn.Module):
             mesh.face_areas = mesh.face_areas[mask == 1]
             mesh.gemm_faces = mesh.gemm_faces[mask == 1, :]
 
+
             # Update references to face ids in gemm and queue
-            for f in todelete:
+            todelete.sort()
+            for f in todelete[::-1]:
                 mesh.gemm_faces[np.where(mesh.gemm_faces >= f)] -= 1
                 npqueue[np.where(npqueue[:, 1] >= f), 1] -= 1
+
 
             # Update face count
             mesh.face_count -= todelete.shape[0]
 
             # Delete features
             fe = fe[:, np.where(mask == 1)]
+            # print(todelete)
 
             return torch.reshape(fe, [fe.shape[0], fe.shape[2], fe.shape[3]]), npqueue.tolist()
 
@@ -151,8 +170,20 @@ class MeshPoolFace(nn.Module):
 
     @staticmethod
     def has_boundaries(mesh, face_id):
+        prev_neighbors = []
         for face in mesh.gemm_faces[face_id]:
-            if face == -1 or -1 in mesh.gemm_edges[face]:
+            if face == -1 or -1 in mesh.gemm_faces[face]:
+                return True
+            if face in mesh.gemm_faces[mesh.gemm_faces[face_id]]:
+                return True
+            neighbors = mesh.gemm_faces[face]
+            neighbors = neighbors[neighbors != face_id]
+            if neighbors[0] in prev_neighbors or neighbors[1] in prev_neighbors:
+                return True
+            prev_neighbors.append(neighbors[0])
+            prev_neighbors.append(neighbors[1])
+            # print('In has_boundaries: ', mesh.gemm_faces[neighbors[0]], mesh.gemm_faces[neighbors[1]])
+            if not (np.where(mesh.gemm_faces[neighbors[0]]==neighbors[1])[0].size==0 and np.where(mesh.gemm_faces[neighbors[1]]==neighbors[0])[0].size==0):
                 return True
         return False
 

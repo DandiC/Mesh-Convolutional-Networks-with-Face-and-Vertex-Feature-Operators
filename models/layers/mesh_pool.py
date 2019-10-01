@@ -57,7 +57,6 @@ class MeshPool(nn.Module):
 
     def __pool_edge(self, mesh, edge_id, mask, edge_groups):
         # Not pool if the edge or one of its neighbors is in a boundary
-        # TODO: why?
         if self.has_boundaries(mesh, edge_id):
             return False
         elif self.__clean_side(mesh, edge_id, mask, edge_groups, 0)\
