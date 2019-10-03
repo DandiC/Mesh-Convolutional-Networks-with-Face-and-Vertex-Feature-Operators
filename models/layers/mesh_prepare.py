@@ -5,18 +5,17 @@ import random
 
 def fill_mesh(mesh2fill, file: str, opt):
     load_path = get_mesh_path(file, opt.num_aug)
-    # TODO: Uncomment this (right now is not working for an unknown reason)
-    # if os.path.exists(load_path):
-    #     mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
-    # else:
-    mesh_data = from_scratch(file, opt)
-    np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-                        edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                        filename=mesh_data.filename, sides=mesh_data.sides,
-                        edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                        edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                        faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
-                        face_count=mesh_data.face_count)
+    if os.path.exists(load_path):
+        mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+    else:
+        mesh_data = from_scratch(file, opt)
+        np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+                            edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+                            filename=mesh_data.filename, sides=mesh_data.sides,
+                            edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+                            edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
+                            faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
+                            face_count=mesh_data.face_count)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -30,7 +29,7 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.faces = mesh_data['faces']
     mesh2fill.face_areas = mesh_data['face_areas']
     mesh2fill.gemm_faces = mesh_data['gemm_faces']
-    mesh2fill.face_count = mesh_data['face_count']
+    mesh2fill.face_count = int(mesh_data['face_count'])
 
 
     if opt.feat_from == 'edge':
