@@ -10,7 +10,7 @@ class MeshConvFace(nn.Module):
     and applies convolution
     """
     # TODO: Set neighbors (k) automatically to adapt meshes different than trimesh
-    def __init__(self, in_channels, out_channels, k=4, bias=True):
+    def __init__(self, in_channels, out_channels, k=3, bias=True):
         super(MeshConvFace, self).__init__()
         self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(1, k), bias=bias)
         self.k = k
@@ -68,11 +68,14 @@ class MeshConvFace(nn.Module):
         x_3 = f[:, :, :, 3]
 
         # TODO: Consider symmetric functions as in MeshCNN
+        x_1 = f[:, :, :, 1] + f[:, :, :, 2] + f[:, :, :, 3]
+        # x_2 = f[:, :, :, 1] * f[:, :, :, 2] * f[:, :, :, 3]
+        x_3 = f[:,:,:,1] * f[:, :, :, 2] + f[:,:,:,1] * f[:, :, :, 3] + f[:,:,:,2] * f[:, :, :, 3]
         # x_1 = f[:, :, :, 1] + f[:, :, :, 3]
         # x_2 = f[:, :, :, 2] + f[:, :, :, 4]
         # x_3 = torch.abs(f[:, :, :, 1] - f[:, :, :, 3])
         # x_4 = torch.abs(f[:, :, :, 2] - f[:, :, :, 4])
-        f = torch.stack([f[:, :, :, 0], x_1, x_2, x_3], dim=3)
+        f = torch.stack([f[:, :, :, 0], x_1, x_3], dim=3)
         return f
 
     def pad_gemm(self, m, xsz, device):
