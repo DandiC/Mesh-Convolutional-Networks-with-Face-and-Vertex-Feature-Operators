@@ -15,7 +15,7 @@ def fill_mesh(mesh2fill, file: str, opt):
                             edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
                             edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
                             faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
-                            face_count=mesh_data.face_count)
+                            face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -30,7 +30,7 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.face_areas = mesh_data['face_areas']
     mesh2fill.gemm_faces = mesh_data['gemm_faces']
     mesh2fill.face_count = int(mesh_data['face_count'])
-
+    mesh2fill.edges_in_face = mesh_data['edges_in_face']
 
     if opt.feat_from == 'edge':
         mesh2fill.features = mesh_data['edge_features']
@@ -203,7 +203,7 @@ def build_gemm(mesh):
     mesh.sides = np.array(sides, dtype=np.int64)
     mesh.edges_count = edges_count
     mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(mesh.face_areas) #todo whats the difference between edge_areas and edge_lenghts?
-
+    mesh.edges_in_face = edges_in_faces.astype(np.int64)
     # Randomize edges (experiment to see if the order of the vertices matters)
     # ridx = np.random.permutation(mesh.edges.shape[0])
     # mesh.edges = mesh.edges[ridx,:]

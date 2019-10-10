@@ -88,23 +88,23 @@ class MeshPoolFace(nn.Module):
                 mesh.v_mask[v_id] = False
 
             # Set new neighbors
-            # print(mesh.gemm_faces[mesh.gemm_faces[face_id]])
-            # print(face_id)
+            print(mesh.gemm_faces[mesh.gemm_faces[face_id]])
+            print(face_id)
             skip = []
             for face in mesh.gemm_faces[face_id]:
                 if face in skip:
-                    # print('    skipping', face)
+                    print('    skipping', face)
                     continue
-                # print('    ', face)
+                print('    ', face)
                 # Get neighbors of the neighbor (ommiting the selected face)
                 neighbors = mesh.gemm_faces[face]
-                # print('      neighbors:', neighbors)
+                print('      neighbors:', neighbors)
                 neighbors = neighbors[neighbors != face_id]
                 assert len(neighbors) == 2
                 # print(len(neighbors))
                 # Set new neighbors (only for trimeshes)
-                # print('        neighbors of', neighbors[0],':',mesh.gemm_faces[neighbors[0]])
-                # print('        neighbors of', neighbors[1], ':', mesh.gemm_faces[neighbors[1]])
+                print('        neighbors of', neighbors[0],':',mesh.gemm_faces[neighbors[0]])
+                print('        neighbors of', neighbors[1], ':', mesh.gemm_faces[neighbors[1]])
                 # print('In pool: ', mesh.gemm_faces[neighbors[0]], mesh.gemm_faces[neighbors[1]])
                 assert np.where(mesh.gemm_faces[neighbors[0]]==neighbors[1])[0].size==0 and np.where(mesh.gemm_faces[neighbors[1]]==neighbors[0])[0].size==0
                 # TODO: Extend for other types of mesh
@@ -195,36 +195,72 @@ class MeshPoolFace(nn.Module):
         for face in mesh.gemm_faces[face_id]:
             if face == -1 or -1 in mesh.gemm_faces[face]:
                 return True
+
+            # Skip if the face (lets say a) is neighbor of the other faces (lets say b, c)
+            other_faces = mesh.gemm_faces[face_id]
+            other_faces = other_faces[other_faces!=face]
+            if face in mesh.gemm_faces[other_faces[0]] and face in mesh.gemm_faces[other_faces[1]]:
+                return True
+
             neighbors = mesh.gemm_faces[face]
             neighbors = neighbors[neighbors != face_id]
             # TODO: Check why do I do this
-            # if neighbors[0] in prev_neighbors or neighbors[1] in prev_neighbors:
-            #     return True
+            if neighbors[0] in prev_neighbors or neighbors[1] in prev_neighbors:
+                print("IN HAS BOUNDARIES: FaceID =",face_id)
+                print(mesh.gemm_faces[face_id])
+                print(mesh.gemm_faces[mesh.gemm_faces[face_id]])
+                return False
             # if face in mesh.gemm_faces[mesh.gemm_faces[face_id]]:
             #     return True
+
+            # Skip the 4N cases
             if neighbors[0] in mesh.gemm_faces[face_id]:
                 n1 = mesh.gemm_faces[neighbors[0]]
                 n1 = n1[n1 != face_id]
                 n1 = n1[n1 != face]
 
                 n2 = mesh.gemm_faces[face]
-                n2 = n2[n2 != face]
+                n2 = n2[n2 != face_id]
                 n2 = n2[n2 != neighbors[0]]
-                if n2 in mesh.gemm_faces[n1] or n1 in mesh.gemm_faces[n2]:
+                assert n2.size == 1 and n1.size == 1
+                if n2[0] in mesh.gemm_faces[n1] or n1[0] in mesh.gemm_faces[n2]:
                     return True
+
+                # Also skip if neighbor of face_id is neighbor with both n1 and n2
+                other_face = mesh.gemm_faces[face_id]
+                other_face = other_face[other_face!=face]
+                other_face = other_face[other_face!=neighbors[0]][0]
+                if n1 in mesh.gemm_faces[other_face] and n2 in mesh.gemm_faces[other_face]:
+                    return True
+
             elif neighbors[1] in mesh.gemm_faces[face_id]:
                 n1 = mesh.gemm_faces[neighbors[1]]
                 n1 = n1[n1 != face_id]
                 n1 = n1[n1 != face]
 
                 n2 = mesh.gemm_faces[face]
-                n2 = n2[n2 != face]
+                n2 = n2[n2 != face_id]
                 n2 = n2[n2 != neighbors[1]]
-                if n2 in mesh.gemm_faces[n1] or n1 in mesh.gemm_faces[n2]:
+                assert n2.size==1 and n1.size==1
+                if n2[0] in mesh.gemm_faces[n1] or n1[0] in mesh.gemm_faces[n2]:
                     return True
 
-            if neighbors[0] in mesh.gemm_faces[prev_neighbors] or neighbors[1] in mesh.gemm_faces[prev_neighbors]:
-                return True
+                # Also skip if neighbor of face_id is neighbor with both n1 and n2
+                other_face = mesh.gemm_faces[face_id]
+                other_face = other_face[other_face != face]
+                other_face = other_face[other_face != neighbors[1]][0]
+                if n1 in mesh.gemm_faces[other_face] and n2 in mesh.gemm_faces[other_face]:
+                    return True
+
+            # If 2 neighbors are neighbors, they cannot share a face (a,b,c) that is a neighbor of face_id
+            if neighbors[0] in mesh.gemm_faces[prev_neighbors]:
+                n = prev_neighbors[np.where(mesh.gemm_faces[prev_neighbors] == neighbors[0])[0][0]]
+                if face in mesh.gemm_faces[n]:
+                    return True
+            elif neighbors[1] in mesh.gemm_faces[prev_neighbors]:
+                n = prev_neighbors[np.where(mesh.gemm_faces[prev_neighbors] == neighbors[1])[0][0]]
+                if face in mesh.gemm_faces[n]:
+                    return True
             prev_neighbors.append(neighbors[0])
             prev_neighbors.append(neighbors[1])
 
@@ -232,6 +268,8 @@ class MeshPoolFace(nn.Module):
             #     return True
 
             # print('In has_boundaries: ', mesh.gemm_faces[neighbors[0]], mesh.gemm_faces[neighbors[1]])
+
+            # Skips the 3N cases
             if not (np.where(mesh.gemm_faces[neighbors[0]]==neighbors[1])[0].size==0 and np.where(mesh.gemm_faces[neighbors[1]]==neighbors[0])[0].size==0):
                 return True
         return False
