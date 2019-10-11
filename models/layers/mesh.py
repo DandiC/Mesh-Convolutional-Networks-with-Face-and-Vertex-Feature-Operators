@@ -34,9 +34,11 @@ class Mesh:
         v_a.__iadd__(v_b)
         v_a.__itruediv__(2)
         self.v_mask[edge[1]] = False
+        self.faces[self.faces == edge[1]] = edge[0]
         mask = self.edges == edge[1]
         self.ve[edge[0]].extend(self.ve[edge[1]])
         self.edges[mask] = edge[0]
+
 
     def remove_vertex(self, v):
         self.v_mask[v] = False
