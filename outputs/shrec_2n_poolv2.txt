@@ -1,0 +1,525 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 135484
+wandb: Wandb version 0.8.12 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20191007_175248-vt0cibj2
+wandb: Syncing run silvery-brook-51: https://app.wandb.ai/2cdanielperez/meshcnn/runs/vt0cibj2?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+tensorboard X not installed, visualizing wont be available
+
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+face_pool: v2
+fc_n: 100
+feat_from: face
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: face_2n_poolV2_shrec16
+ncf: [128, 256, 256, 512]
+ninput_features: 500
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [440, 380, 340, 300]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.979 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.155, data: 0.791) loss: 3.398 
+(epoch: 1, iters: 160, time: 0.159, data: 0.000) loss: 3.398 
+(epoch: 1, iters: 240, time: 0.156, data: 0.000) loss: 3.400 
+(epoch: 1, iters: 320, time: 0.151, data: 0.048) loss: 3.390 
+(epoch: 1, iters: 400, time: 0.143, data: 0.000) loss: 3.421 
+(epoch: 1, iters: 480, time: 0.142, data: 0.014) loss: 3.406 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 200 	 Time Taken: 78 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/face_2n_poolV2_shrec16/latest_net.pth
+
+wandb: Waiting for W&B process to finish, PID 135484
+Traceback (most recent call last):
+  File "train.py", line 70, in <module>
+    acc = run_test(epoch)
+  File "/home/dpere013/MeshCNN/test.py", line 18, in run_test
+    ncorrect, nexamples = model.test()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 110, in test
+    out = self.forward()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 57, in forward
+    out = self.net(self.features, self.mesh)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/parallel/data_parallel.py", line 141, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/dpere013/MeshCNN/models/networks.py", line 155, in forward
+    x = getattr(self, 'pool{}'.format(i))(x, mesh)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 21, in __call__
+    return self.forward(fe, meshes)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 34, in forward
+    self.__pool_main(mesh_index)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 56, in __pool_main
+    fe, queue, skips = self.__pool_face(mesh, face_id, fe, queue, skips)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 109, in __pool_face
+    assert np.where(mesh.gemm_faces[neighbors[0]]==neighbors[1])[0].size==0 and np.where(mesh.gemm_faces[neighbors[1]]==neighbors[0])[0].size==0
+AssertionError
+wandb: Program failed with code 1. Press ctrl-c to abort syncing.
+wandb: Run summary:
+wandb:         loss 3.4059395790100098
+wandb:     _runtime 88.16799879074097
+wandb:   _timestamp 1570470853.9877925
+wandb:        Iters 480
+wandb:        _step 6
+wandb:        Epoch 1
+wandb: Syncing 8 W&B file(s) and 0 media file(s)
+wandb: - 0.00MB of 0.00MB uploadedwandb: \ 0.00MB of 0.00MB uploadedwandb: | 0.00MB of 0.00MB uploadedwandb: / 0.00MB of 0.00MB uploadedwandb: - 0.00MB of 0.00MB uploadedwandb: \ 0.00MB of 0.00MB uploadedwandb: | 0.00MB of 0.00MB uploadedwandb:                                                                                
+wandb: Synced silvery-brook-51: https://app.wandb.ai/2cdanielperez/meshcnn/runs/vt0cibj2?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 117304
+wandb: Wandb version 0.8.12 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20191007_201303-xl071gvk
+wandb: Syncing run lively-valley-52: https://app.wandb.ai/2cdanielperez/meshcnn/runs/xl071gvk?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+face_pool: v2
+fc_n: 100
+feat_from: face
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: face_2n_poolV2_shrec16
+ncf: [128, 256, 256, 512]
+ninput_features: 500
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [460, 420, 380, 340]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.979 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.114, data: 0.740) loss: 3.412 
+(epoch: 1, iters: 160, time: 0.119, data: 0.000) loss: 3.414 
+(epoch: 1, iters: 240, time: 0.115, data: 0.013) loss: 3.410 
+
+wandb: Waiting for W&B process to finish, PID 117304
+Traceback (most recent call last):
+  File "train.py", line 40, in <module>
+    model.optimize_parameters()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 66, in optimize_parameters
+    out = self.forward()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 57, in forward
+    out = self.net(self.features, self.mesh)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/parallel/data_parallel.py", line 141, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/dpere013/MeshCNN/models/networks.py", line 155, in forward
+    x = getattr(self, 'pool{}'.format(i))(x, mesh)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 21, in __call__
+    return self.forward(fe, meshes)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 34, in forward
+    self.__pool_main(mesh_index)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 56, in __pool_main
+    fe, queue, skips = self.__pool_face(mesh, face_id, fe, queue, skips)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 109, in __pool_face
+    assert np.where(mesh.gemm_faces[neighbors[0]]==neighbors[1])[0].size==0 and np.where(mesh.gemm_faces[neighbors[1]]==neighbors[0])[0].size==0
+AssertionError
+wandb: Program failed with code 1. Press ctrl-c to abort syncing.
+wandb: Run summary:
+wandb:        _step 2
+wandb:     _runtime 38.42903280258179
+wandb:         loss 3.4101829528808594
+wandb:        Iters 240
+wandb:   _timestamp 1570479220.0096438
+wandb: Syncing 7 W&B file(s) and 0 media file(s)
+wandb: - 0.00MB of 0.00MB uploadedwandb: \ 0.00MB of 0.00MB uploadedwandb: | 0.00MB of 0.00MB uploadedwandb: / 0.00MB of 0.00MB uploadedwandb: - 0.00MB of 0.00MB uploadedwandb: \ 0.00MB of 0.00MB uploadedwandb:                                                                                
+wandb: Synced lively-valley-52: https://app.wandb.ai/2cdanielperez/meshcnn/runs/xl071gvk?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 117601
+wandb: Wandb version 0.8.12 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20191007_212149-3pui01l2
+wandb: Syncing run easy-shadow-53: https://app.wandb.ai/2cdanielperez/meshcnn/runs/3pui01l2?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+face_pool: v2
+fc_n: 100
+feat_from: face
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: face_2n_poolV2_shrec16
+ncf: [128, 256, 256, 512]
+ninput_features: 500
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [460, 420, 380, 340]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.979 M
+-----------------------------------------------
+
+wandb: Waiting for W&B process to finish, PID 117601
+Traceback (most recent call last):
+  File "train.py", line 40, in <module>
+    model.optimize_parameters()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 66, in optimize_parameters
+    out = self.forward()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 57, in forward
+    out = self.net(self.features, self.mesh)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/parallel/data_parallel.py", line 141, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/dpere013/MeshCNN/models/networks.py", line 155, in forward
+    x = getattr(self, 'pool{}'.format(i))(x, mesh)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 21, in __call__
+    return self.forward(fe, meshes)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 34, in forward
+    self.__pool_main(mesh_index)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 53, in __pool_main
+    value, face_id = heappop(queue)
+IndexError: index out of range
+wandb: Program failed with code 1. Press ctrl-c to abort syncing.
+wandb: Process crashed early, not syncing files
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 117727
+wandb: Wandb version 0.8.12 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20191007_213019-yinmkqwr
+wandb: Syncing run sparkling-sunset-54: https://app.wandb.ai/2cdanielperez/meshcnn/runs/yinmkqwr?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+face_pool: v2
+fc_n: 100
+feat_from: face
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: face_2n_poolV2_shrec16
+ncf: [128, 256, 256, 512]
+ninput_features: 500
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [460, 420, 380, 360]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.979 M
+-----------------------------------------------
+
+wandb: Waiting for W&B process to finish, PID 117727
+Traceback (most recent call last):
+  File "train.py", line 40, in <module>
+    model.optimize_parameters()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 66, in optimize_parameters
+    out = self.forward()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 57, in forward
+    out = self.net(self.features, self.mesh)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/parallel/data_parallel.py", line 141, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/dpere013/MeshCNN/models/networks.py", line 155, in forward
+    x = getattr(self, 'pool{}'.format(i))(x, mesh)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 21, in __call__
+    return self.forward(fe, meshes)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 34, in forward
+    self.__pool_main(mesh_index)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 53, in __pool_main
+    value, face_id = heappop(queue)
+IndexError: index out of range
+wandb: Program failed with code 1. Press ctrl-c to abort syncing.
+wandb: Process crashed early, not syncing files
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 117865
+wandb: Wandb version 0.8.12 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20191007_215523-ug92s9my
+wandb: Syncing run olive-jazz-55: https://app.wandb.ai/2cdanielperez/meshcnn/runs/ug92s9my?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+face_pool: v2
+fc_n: 100
+feat_from: face
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: face_2n_poolV2_shrec16
+ncf: [128, 256, 256, 512]
+ninput_features: 500
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [460, 440, 420, 400]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.979 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.123, data: 0.669) loss: 3.416 
+(epoch: 1, iters: 160, time: 0.119, data: 0.000) loss: 3.413 
+(epoch: 1, iters: 240, time: 0.119, data: 0.060) loss: 3.412 
+(epoch: 1, iters: 320, time: 0.113, data: 0.000) loss: 3.386 
+(epoch: 1, iters: 400, time: 0.116, data: 0.012) loss: 3.403 
+(epoch: 1, iters: 480, time: 0.104, data: 0.000) loss: 3.400 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 200 	 Time Taken: 60 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/face_2n_poolV2_shrec16/latest_net.pth
+epoch: 1, TEST ACC: [2.5 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.121, data: 0.608) loss: 3.409 
+(epoch: 2, iters: 160, time: 0.124, data: 0.000) loss: 3.422 
+(epoch: 2, iters: 240, time: 0.119, data: 0.059) loss: 3.392 
+(epoch: 2, iters: 320, time: 0.119, data: 0.000) loss: 3.406 
+(epoch: 2, iters: 400, time: 0.115, data: 0.013) loss: 3.400 
+(epoch: 2, iters: 480, time: 0.109, data: 0.000) loss: 3.388 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/face_2n_poolV2_shrec16/latest_net.pth
+epoch: 2, TEST ACC: [4.1667 %]
+
+saving the latest model (epoch 3, total_steps 976)
+(epoch: 3, iters: 80, time: 0.107, data: 0.630) loss: 3.411 
+(epoch: 3, iters: 160, time: 0.109, data: 0.000) loss: 3.404 
+(epoch: 3, iters: 240, time: 0.121, data: 0.000) loss: 3.403 
+(epoch: 3, iters: 320, time: 0.121, data: 0.044) loss: 3.395 
+
+wandb: Waiting for W&B process to finish, PID 117865
+Traceback (most recent call last):
+  File "train.py", line 40, in <module>
+    model.optimize_parameters()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 66, in optimize_parameters
+    out = self.forward()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 57, in forward
+    out = self.net(self.features, self.mesh)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/parallel/data_parallel.py", line 141, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/dpere013/MeshCNN/models/networks.py", line 155, in forward
+    x = getattr(self, 'pool{}'.format(i))(x, mesh)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 21, in __call__
+    return self.forward(fe, meshes)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 34, in forward
+    self.__pool_main(mesh_index)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool_face.py", line 53, in __pool_main
+    value, face_id = heappop(queue)
+IndexError: index out of range
+wandb: Program failed with code 1. Press ctrl-c to abort syncing.
+wandb: Run summary:
+wandb:            loss 3.3954098224639893
+wandb:        _runtime 184.28162097930908
+wandb:      _timestamp 1570485507.264479
+wandb:           _step 19
+wandb:           Iters 1280
+wandb:           Epoch 2
+wandb:   Test Accuracy 0.041666666666666664
+wandb: Syncing 7 W&B file(s) and 0 media file(s)
+wandb: - 0.00MB of 0.00MB uploadedwandb: \ 0.00MB of 0.00MB uploadedwandb: | 0.00MB of 0.00MB uploadedwandb: / 0.00MB of 0.00MB uploadedwandb: - 0.00MB of 0.00MB uploadedwandb: \ 0.00MB of 0.00MB uploadedwandb:                                                                                
+wandb: Synced olive-jazz-55: https://app.wandb.ai/2cdanielperez/meshcnn/runs/ug92s9my?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd

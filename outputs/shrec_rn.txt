@@ -1,0 +1,3993 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 4218
+wandb: Wandb version 0.8.10 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20190913_171546-f2g70tlf
+wandb: Syncing run ancient-dew-15: https://app.wandb.ai/2cdanielperez/meshcnn/runs/f2g70tlf?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+tensorboard X not installed, visualizing wont be available
+
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+feat_from: edge
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: shrec16
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 180]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+slurmstepd: error: *** JOB 8927785 ON coreV3-23-k40-009 CANCELLED AT 2019-09-13T13:17:23 ***
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 4355
+wandb: Wandb version 0.8.10 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20190913_172002-90n0lq4e
+wandb: Syncing run youthful-yogurt-16: https://app.wandb.ai/2cdanielperez/meshcnn/runs/90n0lq4e?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+tensorboard X not installed, visualizing wont be available
+
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+feat_from: edge
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: shrec16_rn
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 180]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.231, data: 6.279) loss: 3.394 
+(epoch: 1, iters: 160, time: 0.221, data: 0.056) loss: 3.422 
+(epoch: 1, iters: 240, time: 0.234, data: 0.043) loss: 3.396 
+(epoch: 1, iters: 320, time: 0.233, data: 0.012) loss: 3.371 
+(epoch: 1, iters: 400, time: 0.148, data: 0.000) loss: 3.376 
+(epoch: 1, iters: 480, time: 0.111, data: 0.000) loss: 3.333 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 1, TEST ACC: [13.333 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.236, data: 6.160) loss: 3.313 
+(epoch: 2, iters: 160, time: 0.232, data: 0.000) loss: 3.320 
+(epoch: 2, iters: 240, time: 0.222, data: 0.027) loss: 3.330 
+(epoch: 2, iters: 320, time: 0.223, data: 0.027) loss: 3.300 
+(epoch: 2, iters: 400, time: 0.148, data: 0.012) loss: 3.318 
+(epoch: 2, iters: 480, time: 0.111, data: 0.000) loss: 3.282 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 200 	 Time Taken: 111 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 2, TEST ACC: [15.0 %]
+
+saving the latest model (epoch 3, total_steps 976)
+(epoch: 3, iters: 80, time: 0.228, data: 6.277) loss: 3.175 
+(epoch: 3, iters: 160, time: 0.234, data: 0.000) loss: 3.138 
+(epoch: 3, iters: 240, time: 0.232, data: 0.000) loss: 3.230 
+(epoch: 3, iters: 320, time: 0.233, data: 0.044) loss: 3.202 
+(epoch: 3, iters: 400, time: 0.147, data: 0.028) loss: 3.056 
+(epoch: 3, iters: 480, time: 0.110, data: 0.013) loss: 3.097 
+saving the model at the end of epoch 3, iters 1440
+End of epoch 3 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 3, TEST ACC: [13.333 %]
+
+saving the latest model (epoch 4, total_steps 1456)
+(epoch: 4, iters: 80, time: 0.228, data: 6.003) loss: 3.017 
+(epoch: 4, iters: 160, time: 0.253, data: 0.000) loss: 3.113 
+(epoch: 4, iters: 240, time: 0.229, data: 0.029) loss: 3.090 
+(epoch: 4, iters: 320, time: 0.233, data: 0.029) loss: 3.004 
+(epoch: 4, iters: 400, time: 0.146, data: 0.012) loss: 2.858 
+(epoch: 4, iters: 480, time: 0.109, data: 0.000) loss: 2.878 
+saving the model at the end of epoch 4, iters 1920
+End of epoch 4 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 4, TEST ACC: [13.333 %]
+
+saving the latest model (epoch 5, total_steps 1936)
+(epoch: 5, iters: 80, time: 0.227, data: 6.239) loss: 2.883 
+(epoch: 5, iters: 160, time: 0.231, data: 0.000) loss: 2.664 
+(epoch: 5, iters: 240, time: 0.216, data: 0.038) loss: 2.907 
+(epoch: 5, iters: 320, time: 0.228, data: 0.027) loss: 2.827 
+(epoch: 5, iters: 400, time: 0.144, data: 0.013) loss: 2.736 
+(epoch: 5, iters: 480, time: 0.109, data: 0.000) loss: 2.885 
+saving the model at the end of epoch 5, iters 2400
+End of epoch 5 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 5, TEST ACC: [13.333 %]
+
+saving the latest model (epoch 6, total_steps 2416)
+(epoch: 6, iters: 80, time: 0.229, data: 6.362) loss: 2.561 
+(epoch: 6, iters: 160, time: 0.231, data: 0.053) loss: 3.022 
+(epoch: 6, iters: 240, time: 0.229, data: 0.028) loss: 2.688 
+(epoch: 6, iters: 320, time: 0.226, data: 0.012) loss: 2.844 
+(epoch: 6, iters: 400, time: 0.148, data: 0.000) loss: 2.667 
+(epoch: 6, iters: 480, time: 0.108, data: 0.000) loss: 2.601 
+saving the model at the end of epoch 6, iters 2880
+End of epoch 6 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 6, TEST ACC: [16.667 %]
+
+saving the latest model (epoch 7, total_steps 2896)
+(epoch: 7, iters: 80, time: 0.226, data: 6.197) loss: 2.411 
+(epoch: 7, iters: 160, time: 0.231, data: 0.000) loss: 2.651 
+(epoch: 7, iters: 240, time: 0.225, data: 0.028) loss: 2.456 
+(epoch: 7, iters: 320, time: 0.238, data: 0.043) loss: 2.434 
+(epoch: 7, iters: 400, time: 0.149, data: 0.012) loss: 2.714 
+(epoch: 7, iters: 480, time: 0.108, data: 0.000) loss: 2.622 
+saving the model at the end of epoch 7, iters 3360
+End of epoch 7 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 7, TEST ACC: [12.5 %]
+
+saving the latest model (epoch 8, total_steps 3376)
+(epoch: 8, iters: 80, time: 0.225, data: 6.180) loss: 2.279 
+(epoch: 8, iters: 160, time: 0.225, data: 0.050) loss: 2.466 
+(epoch: 8, iters: 240, time: 0.222, data: 0.000) loss: 2.472 
+(epoch: 8, iters: 320, time: 0.227, data: 0.000) loss: 2.502 
+(epoch: 8, iters: 400, time: 0.148, data: 0.000) loss: 2.366 
+(epoch: 8, iters: 480, time: 0.109, data: 0.000) loss: 2.577 
+saving the model at the end of epoch 8, iters 3840
+End of epoch 8 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 8, TEST ACC: [23.333 %]
+
+saving the latest model (epoch 9, total_steps 3856)
+(epoch: 9, iters: 80, time: 0.229, data: 5.958) loss: 2.528 
+(epoch: 9, iters: 160, time: 0.229, data: 0.000) loss: 2.371 
+(epoch: 9, iters: 240, time: 0.222, data: 0.027) loss: 2.225 
+(epoch: 9, iters: 320, time: 0.227, data: 0.028) loss: 2.407 
+(epoch: 9, iters: 400, time: 0.142, data: 0.012) loss: 2.130 
+(epoch: 9, iters: 480, time: 0.107, data: 0.000) loss: 2.532 
+saving the model at the end of epoch 9, iters 4320
+End of epoch 9 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 9, TEST ACC: [25.833 %]
+
+saving the latest model (epoch 10, total_steps 4336)
+(epoch: 10, iters: 80, time: 0.225, data: 6.210) loss: 2.704 
+(epoch: 10, iters: 160, time: 0.230, data: 0.000) loss: 2.270 
+(epoch: 10, iters: 240, time: 0.221, data: 0.000) loss: 2.168 
+(epoch: 10, iters: 320, time: 0.212, data: 0.027) loss: 2.128 
+(epoch: 10, iters: 400, time: 0.150, data: 0.038) loss: 2.028 
+(epoch: 10, iters: 480, time: 0.116, data: 0.013) loss: 2.217 
+saving the model at the end of epoch 10, iters 4800
+End of epoch 10 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 10, TEST ACC: [34.167 %]
+
+saving the latest model (epoch 11, total_steps 4816)
+(epoch: 11, iters: 80, time: 0.224, data: 6.361) loss: 2.088 
+(epoch: 11, iters: 160, time: 0.229, data: 0.000) loss: 2.291 
+(epoch: 11, iters: 240, time: 0.226, data: 0.056) loss: 2.075 
+(epoch: 11, iters: 320, time: 0.229, data: 0.055) loss: 2.455 
+(epoch: 11, iters: 400, time: 0.146, data: 0.013) loss: 1.939 
+(epoch: 11, iters: 480, time: 0.107, data: 0.000) loss: 2.833 
+saving the model at the end of epoch 11, iters 5280
+End of epoch 11 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 11, TEST ACC: [29.167 %]
+
+saving the latest model (epoch 12, total_steps 5296)
+(epoch: 12, iters: 80, time: 0.226, data: 6.245) loss: 2.211 
+(epoch: 12, iters: 160, time: 0.229, data: 0.000) loss: 2.467 
+(epoch: 12, iters: 240, time: 0.226, data: 0.028) loss: 1.997 
+(epoch: 12, iters: 320, time: 0.230, data: 0.039) loss: 2.309 
+(epoch: 12, iters: 400, time: 0.148, data: 0.013) loss: 2.346 
+(epoch: 12, iters: 480, time: 0.107, data: 0.000) loss: 1.972 
+saving the model at the end of epoch 12, iters 5760
+End of epoch 12 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 12, TEST ACC: [32.5 %]
+
+saving the latest model (epoch 13, total_steps 5776)
+(epoch: 13, iters: 80, time: 0.227, data: 6.290) loss: 2.098 
+(epoch: 13, iters: 160, time: 0.224, data: 0.000) loss: 2.013 
+(epoch: 13, iters: 240, time: 0.224, data: 0.000) loss: 2.465 
+(epoch: 13, iters: 320, time: 0.224, data: 0.027) loss: 1.872 
+(epoch: 13, iters: 400, time: 0.149, data: 0.028) loss: 2.659 
+(epoch: 13, iters: 480, time: 0.108, data: 0.012) loss: 2.205 
+saving the model at the end of epoch 13, iters 6240
+End of epoch 13 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 13, TEST ACC: [25.833 %]
+
+saving the latest model (epoch 14, total_steps 6256)
+(epoch: 14, iters: 80, time: 0.228, data: 6.358) loss: 1.692 
+(epoch: 14, iters: 160, time: 0.239, data: 0.000) loss: 2.410 
+(epoch: 14, iters: 240, time: 0.225, data: 0.000) loss: 2.147 
+(epoch: 14, iters: 320, time: 0.234, data: 0.029) loss: 1.800 
+(epoch: 14, iters: 400, time: 0.151, data: 0.028) loss: 1.807 
+(epoch: 14, iters: 480, time: 0.109, data: 0.013) loss: 1.909 
+saving the model at the end of epoch 14, iters 6720
+End of epoch 14 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 14, TEST ACC: [33.333 %]
+
+saving the latest model (epoch 15, total_steps 6736)
+(epoch: 15, iters: 80, time: 0.227, data: 6.448) loss: 1.807 
+(epoch: 15, iters: 160, time: 0.225, data: 0.028) loss: 1.961 
+(epoch: 15, iters: 240, time: 0.226, data: 0.045) loss: 1.691 
+(epoch: 15, iters: 320, time: 0.223, data: 0.013) loss: 1.831 
+(epoch: 15, iters: 400, time: 0.148, data: 0.000) loss: 1.747 
+(epoch: 15, iters: 480, time: 0.107, data: 0.000) loss: 1.658 
+saving the model at the end of epoch 15, iters 7200
+End of epoch 15 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 15, TEST ACC: [32.5 %]
+
+saving the latest model (epoch 16, total_steps 7216)
+(epoch: 16, iters: 80, time: 0.224, data: 6.212) loss: 1.896 
+(epoch: 16, iters: 160, time: 0.225, data: 0.000) loss: 2.156 
+(epoch: 16, iters: 240, time: 0.225, data: 0.000) loss: 2.123 
+(epoch: 16, iters: 320, time: 0.237, data: 0.000) loss: 1.609 
+(epoch: 16, iters: 400, time: 0.150, data: 0.000) loss: 2.029 
+(epoch: 16, iters: 480, time: 0.108, data: 0.027) loss: 1.223 
+saving the model at the end of epoch 16, iters 7680
+End of epoch 16 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 16, TEST ACC: [33.333 %]
+
+saving the latest model (epoch 17, total_steps 7696)
+(epoch: 17, iters: 80, time: 0.226, data: 6.248) loss: 1.817 
+(epoch: 17, iters: 160, time: 0.226, data: 0.000) loss: 2.030 
+(epoch: 17, iters: 240, time: 0.224, data: 0.000) loss: 1.686 
+(epoch: 17, iters: 320, time: 0.239, data: 0.000) loss: 1.620 
+(epoch: 17, iters: 400, time: 0.151, data: 0.000) loss: 1.646 
+(epoch: 17, iters: 480, time: 0.108, data: 0.027) loss: 2.193 
+saving the model at the end of epoch 17, iters 8160
+End of epoch 17 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 17, TEST ACC: [39.167 %]
+
+saving the latest model (epoch 18, total_steps 8176)
+(epoch: 18, iters: 80, time: 0.223, data: 6.408) loss: 1.488 
+(epoch: 18, iters: 160, time: 0.228, data: 0.000) loss: 1.651 
+(epoch: 18, iters: 240, time: 0.226, data: 0.000) loss: 1.669 
+(epoch: 18, iters: 320, time: 0.224, data: 0.037) loss: 1.475 
+(epoch: 18, iters: 400, time: 0.148, data: 0.027) loss: 1.793 
+(epoch: 18, iters: 480, time: 0.107, data: 0.012) loss: 1.797 
+saving the model at the end of epoch 18, iters 8640
+End of epoch 18 / 200 	 Time Taken: 110 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 18, TEST ACC: [30.0 %]
+
+saving the latest model (epoch 19, total_steps 8656)
+(epoch: 19, iters: 80, time: 0.226, data: 6.339) loss: 1.623 
+(epoch: 19, iters: 160, time: 0.230, data: 0.000) loss: 1.381 
+(epoch: 19, iters: 240, time: 0.222, data: 0.028) loss: 1.586 
+(epoch: 19, iters: 320, time: 0.222, data: 0.027) loss: 1.670 
+(epoch: 19, iters: 400, time: 0.147, data: 0.012) loss: 2.077 
+(epoch: 19, iters: 480, time: 0.108, data: 0.000) loss: 1.484 
+saving the model at the end of epoch 19, iters 9120
+End of epoch 19 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 19, TEST ACC: [33.333 %]
+
+saving the latest model (epoch 20, total_steps 9136)
+(epoch: 20, iters: 80, time: 0.219, data: 6.224) loss: 1.521 
+(epoch: 20, iters: 160, time: 0.227, data: 0.000) loss: 1.539 
+(epoch: 20, iters: 240, time: 0.227, data: 0.000) loss: 1.573 
+(epoch: 20, iters: 320, time: 0.228, data: 0.028) loss: 1.353 
+(epoch: 20, iters: 400, time: 0.148, data: 0.029) loss: 1.631 
+(epoch: 20, iters: 480, time: 0.118, data: 0.028) loss: 1.559 
+saving the model at the end of epoch 20, iters 9600
+End of epoch 20 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 20, TEST ACC: [39.167 %]
+
+saving the latest model (epoch 21, total_steps 9616)
+(epoch: 21, iters: 80, time: 0.227, data: 6.360) loss: 2.088 
+(epoch: 21, iters: 160, time: 0.227, data: 0.000) loss: 1.345 
+(epoch: 21, iters: 240, time: 0.226, data: 0.000) loss: 1.107 
+(epoch: 21, iters: 320, time: 0.228, data: 0.028) loss: 1.234 
+(epoch: 21, iters: 400, time: 0.149, data: 0.027) loss: 2.104 
+(epoch: 21, iters: 480, time: 0.107, data: 0.012) loss: 1.399 
+saving the model at the end of epoch 21, iters 10080
+End of epoch 21 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 21, TEST ACC: [39.167 %]
+
+saving the latest model (epoch 22, total_steps 10096)
+(epoch: 22, iters: 80, time: 0.223, data: 6.328) loss: 1.533 
+(epoch: 22, iters: 160, time: 0.225, data: 0.000) loss: 1.139 
+(epoch: 22, iters: 240, time: 0.226, data: 0.000) loss: 1.357 
+(epoch: 22, iters: 320, time: 0.227, data: 0.028) loss: 1.096 
+(epoch: 22, iters: 400, time: 0.148, data: 0.028) loss: 1.354 
+(epoch: 22, iters: 480, time: 0.108, data: 0.013) loss: 1.490 
+saving the model at the end of epoch 22, iters 10560
+End of epoch 22 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 22, TEST ACC: [42.5 %]
+
+saving the latest model (epoch 23, total_steps 10576)
+(epoch: 23, iters: 80, time: 0.225, data: 6.513) loss: 0.929 
+(epoch: 23, iters: 160, time: 0.226, data: 0.000) loss: 1.754 
+(epoch: 23, iters: 240, time: 0.225, data: 0.028) loss: 1.186 
+(epoch: 23, iters: 320, time: 0.223, data: 0.028) loss: 1.843 
+(epoch: 23, iters: 400, time: 0.150, data: 0.013) loss: 1.478 
+(epoch: 23, iters: 480, time: 0.108, data: 0.000) loss: 1.113 
+saving the model at the end of epoch 23, iters 11040
+End of epoch 23 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 23, TEST ACC: [41.667 %]
+
+saving the latest model (epoch 24, total_steps 11056)
+(epoch: 24, iters: 80, time: 0.226, data: 6.373) loss: 1.565 
+(epoch: 24, iters: 160, time: 0.243, data: 0.000) loss: 1.049 
+(epoch: 24, iters: 240, time: 0.224, data: 0.000) loss: 1.116 
+(epoch: 24, iters: 320, time: 0.224, data: 0.054) loss: 1.069 
+(epoch: 24, iters: 400, time: 0.143, data: 0.053) loss: 1.617 
+(epoch: 24, iters: 480, time: 0.108, data: 0.013) loss: 1.292 
+saving the model at the end of epoch 24, iters 11520
+End of epoch 24 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 24, TEST ACC: [18.333 %]
+
+saving the latest model (epoch 25, total_steps 11536)
+(epoch: 25, iters: 80, time: 0.222, data: 6.327) loss: 1.214 
+(epoch: 25, iters: 160, time: 0.223, data: 0.042) loss: 1.520 
+(epoch: 25, iters: 240, time: 0.221, data: 0.000) loss: 1.136 
+(epoch: 25, iters: 320, time: 0.226, data: 0.000) loss: 1.116 
+(epoch: 25, iters: 400, time: 0.148, data: 0.000) loss: 1.255 
+(epoch: 25, iters: 480, time: 0.107, data: 0.000) loss: 1.194 
+saving the model at the end of epoch 25, iters 12000
+End of epoch 25 / 200 	 Time Taken: 109 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 25, TEST ACC: [38.333 %]
+
+saving the latest model (epoch 26, total_steps 12016)
+(epoch: 26, iters: 80, time: 0.226, data: 5.971) loss: 1.339 
+(epoch: 26, iters: 160, time: 0.225, data: 0.000) loss: 2.122 
+(epoch: 26, iters: 240, time: 0.223, data: 0.028) loss: 1.048 
+(epoch: 26, iters: 320, time: 0.166, data: 0.027) loss: 0.847 
+
+wandb: Waiting for W&B process to finish, PID 4355
+Traceback (most recent call last):
+  File "train.py", line 33, in <module>
+    for i, data in enumerate(dataset):
+  File "/home/dpere013/MeshCNN/data/__init__.py", line 34, in __iter__
+    for i, data in enumerate(self.dataloader):
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 623, in __next__
+    return self._process_next_batch(batch)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 658, in _process_next_batch
+    raise batch.exc_type(batch.exc_msg)
+FileNotFoundError: Traceback (most recent call last):
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 138, in _worker_loop
+    samples = collate_fn([dataset[i] for i in batch_indices])
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 138, in <listcomp>
+    samples = collate_fn([dataset[i] for i in batch_indices])
+  File "/home/dpere013/MeshCNN/data/classification_data.py", line 31, in __getitem__
+    mesh = Mesh(file=path, opt=self.opt, hold_history=False, export_folder=self.opt.export_folder)
+  File "/home/dpere013/MeshCNN/models/layers/mesh.py", line 18, in __init__
+    fill_mesh(self, file, opt)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_prepare.py", line 17, in fill_mesh
+    faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces)
+  File "/cm/shared/applications/Python/share/3.6/numpy/1.16.2/lib/python3.6/site-packages/numpy/lib/npyio.py", line 691, in savez_compressed
+    _savez(file, args, kwds, True)
+  File "/cm/shared/applications/Python/share/3.6/numpy/1.16.2/lib/python3.6/site-packages/numpy/lib/npyio.py", line 717, in _savez
+    zipf = zipfile_factory(file, mode="w", compression=compression)
+  File "/cm/shared/applications/Python/share/3.6/numpy/1.16.2/lib/python3.6/site-packages/numpy/lib/npyio.py", line 119, in zipfile_factory
+    return zipfile.ZipFile(file, *args, **kwargs)
+  File "/cm/shared/applications/Python/3.6.8/lib/python3.6/zipfile.py", line 1113, in __init__
+    self.fp = io.open(file, filemode)
+FileNotFoundError: [Errno 2] No such file or directory: 'datasets/shrec_16/alien/train/cache/T137_008.npz'
+
+wandb: Program failed with code 1. Press ctrl-c to abort syncing.
+wandb: Run summary:
+wandb:                                        loss 0.8472115993499756
+wandb:                                       _step 203
+wandb:                                  _timestamp 1568398562.5804873
+wandb:                                    _runtime 3360.8692619800568
+wandb:                                       Epoch 25
+wandb:                               Test Accuracy 0.38333333333333336
+wandb: Syncing 8 W&B file(s) and 0 media file(s)
+wandb: - 0.05MB of 0.05MB uploadedwandb: \ 0.05MB of 0.05MB uploadedwandb: | 0.05MB of 0.05MB uploadedwandb: / 0.05MB of 0.05MB uploadedwandb:                                                                                
+wandb: Synced youthful-yogurt-16: https://app.wandb.ai/2cdanielperez/meshcnn/runs/90n0lq4e?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 5080
+wandb: Wandb version 0.8.10 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20190913_182333-u9go70o6
+wandb: Syncing run flowing-gorge-17: https://app.wandb.ai/2cdanielperez/meshcnn/runs/u9go70o6?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+tensorboard X not installed, visualizing wont be available
+
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+feat_from: edge
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: shrec16_rn
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 180]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.232, data: 6.498) loss: 3.394 
+(epoch: 1, iters: 160, time: 0.230, data: 0.028) loss: 3.406 
+(epoch: 1, iters: 240, time: 0.226, data: 0.028) loss: 3.413 
+(epoch: 1, iters: 320, time: 0.232, data: 0.012) loss: 3.352 
+(epoch: 1, iters: 400, time: 0.146, data: 0.000) loss: 3.401 
+(epoch: 1, iters: 480, time: 0.113, data: 0.000) loss: 3.313 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 200 	 Time Taken: 113 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 1, TEST ACC: [6.6667 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.232, data: 6.067) loss: 3.340 
+(epoch: 2, iters: 160, time: 0.232, data: 0.000) loss: 3.339 
+(epoch: 2, iters: 240, time: 0.235, data: 0.028) loss: 3.298 
+(epoch: 2, iters: 320, time: 0.234, data: 0.028) loss: 3.330 
+(epoch: 2, iters: 400, time: 0.145, data: 0.013) loss: 3.274 
+(epoch: 2, iters: 480, time: 0.110, data: 0.000) loss: 3.281 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 2, TEST ACC: [11.667 %]
+
+saving the latest model (epoch 3, total_steps 976)
+(epoch: 3, iters: 80, time: 0.230, data: 6.267) loss: 3.227 
+(epoch: 3, iters: 160, time: 0.238, data: 0.000) loss: 3.288 
+(epoch: 3, iters: 240, time: 0.233, data: 0.044) loss: 3.171 
+(epoch: 3, iters: 320, time: 0.232, data: 0.043) loss: 3.174 
+(epoch: 3, iters: 400, time: 0.147, data: 0.012) loss: 3.136 
+(epoch: 3, iters: 480, time: 0.111, data: 0.000) loss: 3.365 
+saving the model at the end of epoch 3, iters 1440
+End of epoch 3 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 3, TEST ACC: [15.0 %]
+
+saving the latest model (epoch 4, total_steps 1456)
+(epoch: 4, iters: 80, time: 0.233, data: 6.471) loss: 2.928 
+(epoch: 4, iters: 160, time: 0.242, data: 0.028) loss: 3.045 
+(epoch: 4, iters: 240, time: 0.224, data: 0.056) loss: 3.105 
+(epoch: 4, iters: 320, time: 0.228, data: 0.039) loss: 3.152 
+(epoch: 4, iters: 400, time: 0.150, data: 0.000) loss: 2.991 
+(epoch: 4, iters: 480, time: 0.114, data: 0.000) loss: 2.921 
+saving the model at the end of epoch 4, iters 1920
+End of epoch 4 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 4, TEST ACC: [15.0 %]
+
+saving the latest model (epoch 5, total_steps 1936)
+(epoch: 5, iters: 80, time: 0.233, data: 6.136) loss: 2.984 
+(epoch: 5, iters: 160, time: 0.230, data: 0.000) loss: 2.893 
+(epoch: 5, iters: 240, time: 0.226, data: 0.027) loss: 2.972 
+(epoch: 5, iters: 320, time: 0.226, data: 0.027) loss: 2.951 
+(epoch: 5, iters: 400, time: 0.147, data: 0.012) loss: 2.789 
+(epoch: 5, iters: 480, time: 0.111, data: 0.000) loss: 2.776 
+saving the model at the end of epoch 5, iters 2400
+End of epoch 5 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 5, TEST ACC: [15.833 %]
+
+saving the latest model (epoch 6, total_steps 2416)
+(epoch: 6, iters: 80, time: 0.225, data: 6.275) loss: 2.756 
+(epoch: 6, iters: 160, time: 0.236, data: 0.000) loss: 2.621 
+(epoch: 6, iters: 240, time: 0.231, data: 0.000) loss: 2.817 
+(epoch: 6, iters: 320, time: 0.225, data: 0.038) loss: 2.651 
+(epoch: 6, iters: 400, time: 0.150, data: 0.044) loss: 2.738 
+(epoch: 6, iters: 480, time: 0.112, data: 0.012) loss: 2.636 
+saving the model at the end of epoch 6, iters 2880
+End of epoch 6 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 6, TEST ACC: [21.667 %]
+
+saving the latest model (epoch 7, total_steps 2896)
+(epoch: 7, iters: 80, time: 0.235, data: 6.387) loss: 2.672 
+(epoch: 7, iters: 160, time: 0.232, data: 0.000) loss: 2.659 
+(epoch: 7, iters: 240, time: 0.236, data: 0.000) loss: 2.335 
+(epoch: 7, iters: 320, time: 0.246, data: 0.027) loss: 2.653 
+(epoch: 7, iters: 400, time: 0.150, data: 0.028) loss: 2.515 
+(epoch: 7, iters: 480, time: 0.110, data: 0.012) loss: 2.379 
+saving the model at the end of epoch 7, iters 3360
+End of epoch 7 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 7, TEST ACC: [18.333 %]
+
+saving the latest model (epoch 8, total_steps 3376)
+(epoch: 8, iters: 80, time: 0.235, data: 6.114) loss: 2.322 
+(epoch: 8, iters: 160, time: 0.236, data: 0.000) loss: 2.294 
+(epoch: 8, iters: 240, time: 0.229, data: 0.028) loss: 2.578 
+(epoch: 8, iters: 320, time: 0.234, data: 0.027) loss: 2.551 
+(epoch: 8, iters: 400, time: 0.144, data: 0.013) loss: 2.359 
+(epoch: 8, iters: 480, time: 0.111, data: 0.000) loss: 2.331 
+saving the model at the end of epoch 8, iters 3840
+End of epoch 8 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 8, TEST ACC: [19.167 %]
+
+saving the latest model (epoch 9, total_steps 3856)
+(epoch: 9, iters: 80, time: 0.233, data: 6.545) loss: 2.350 
+(epoch: 9, iters: 160, time: 0.222, data: 0.028) loss: 2.201 
+(epoch: 9, iters: 240, time: 0.226, data: 0.048) loss: 2.138 
+(epoch: 9, iters: 320, time: 0.231, data: 0.012) loss: 2.425 
+(epoch: 9, iters: 400, time: 0.144, data: 0.000) loss: 2.196 
+(epoch: 9, iters: 480, time: 0.110, data: 0.000) loss: 2.869 
+saving the model at the end of epoch 9, iters 4320
+End of epoch 9 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 9, TEST ACC: [25.0 %]
+
+saving the latest model (epoch 10, total_steps 4336)
+(epoch: 10, iters: 80, time: 0.231, data: 6.474) loss: 2.050 
+(epoch: 10, iters: 160, time: 0.235, data: 0.000) loss: 2.360 
+(epoch: 10, iters: 240, time: 0.234, data: 0.000) loss: 2.166 
+(epoch: 10, iters: 320, time: 0.234, data: 0.028) loss: 2.204 
+(epoch: 10, iters: 400, time: 0.145, data: 0.027) loss: 2.518 
+(epoch: 10, iters: 480, time: 0.120, data: 0.012) loss: 2.232 
+saving the model at the end of epoch 10, iters 4800
+End of epoch 10 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 10, TEST ACC: [29.167 %]
+
+saving the latest model (epoch 11, total_steps 4816)
+(epoch: 11, iters: 80, time: 0.226, data: 6.187) loss: 2.098 
+(epoch: 11, iters: 160, time: 0.221, data: 0.000) loss: 1.999 
+(epoch: 11, iters: 240, time: 0.233, data: 0.000) loss: 2.585 
+(epoch: 11, iters: 320, time: 0.236, data: 0.000) loss: 2.053 
+(epoch: 11, iters: 400, time: 0.150, data: 0.000) loss: 1.812 
+(epoch: 11, iters: 480, time: 0.111, data: 0.043) loss: 1.898 
+saving the model at the end of epoch 11, iters 5280
+End of epoch 11 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 11, TEST ACC: [20.833 %]
+
+saving the latest model (epoch 12, total_steps 5296)
+(epoch: 12, iters: 80, time: 0.222, data: 6.076) loss: 2.019 
+(epoch: 12, iters: 160, time: 0.234, data: 0.000) loss: 2.130 
+(epoch: 12, iters: 240, time: 0.222, data: 0.000) loss: 1.726 
+(epoch: 12, iters: 320, time: 0.223, data: 0.000) loss: 2.330 
+(epoch: 12, iters: 400, time: 0.150, data: 0.000) loss: 2.045 
+(epoch: 12, iters: 480, time: 0.111, data: 0.043) loss: 1.767 
+saving the model at the end of epoch 12, iters 5760
+End of epoch 12 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 12, TEST ACC: [24.167 %]
+
+saving the latest model (epoch 13, total_steps 5776)
+(epoch: 13, iters: 80, time: 0.226, data: 6.249) loss: 1.808 
+(epoch: 13, iters: 160, time: 0.234, data: 0.037) loss: 1.914 
+(epoch: 13, iters: 240, time: 0.224, data: 0.000) loss: 1.736 
+(epoch: 13, iters: 320, time: 0.232, data: 0.000) loss: 1.985 
+(epoch: 13, iters: 400, time: 0.152, data: 0.000) loss: 1.668 
+(epoch: 13, iters: 480, time: 0.111, data: 0.000) loss: 1.719 
+saving the model at the end of epoch 13, iters 6240
+End of epoch 13 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 13, TEST ACC: [34.167 %]
+
+saving the latest model (epoch 14, total_steps 6256)
+(epoch: 14, iters: 80, time: 0.228, data: 6.377) loss: 1.548 
+(epoch: 14, iters: 160, time: 0.243, data: 0.000) loss: 1.689 
+(epoch: 14, iters: 240, time: 0.227, data: 0.000) loss: 1.932 
+(epoch: 14, iters: 320, time: 0.234, data: 0.045) loss: 2.210 
+(epoch: 14, iters: 400, time: 0.146, data: 0.027) loss: 1.741 
+(epoch: 14, iters: 480, time: 0.110, data: 0.028) loss: 1.920 
+saving the model at the end of epoch 14, iters 6720
+End of epoch 14 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 14, TEST ACC: [24.167 %]
+
+saving the latest model (epoch 15, total_steps 6736)
+(epoch: 15, iters: 80, time: 0.233, data: 6.292) loss: 1.680 
+(epoch: 15, iters: 160, time: 0.222, data: 0.000) loss: 1.874 
+(epoch: 15, iters: 240, time: 0.235, data: 0.000) loss: 1.833 
+(epoch: 15, iters: 320, time: 0.226, data: 0.000) loss: 1.563 
+(epoch: 15, iters: 400, time: 0.150, data: 0.000) loss: 2.192 
+(epoch: 15, iters: 480, time: 0.111, data: 0.027) loss: 1.814 
+saving the model at the end of epoch 15, iters 7200
+End of epoch 15 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 15, TEST ACC: [26.667 %]
+
+saving the latest model (epoch 16, total_steps 7216)
+(epoch: 16, iters: 80, time: 0.235, data: 6.170) loss: 1.781 
+(epoch: 16, iters: 160, time: 0.226, data: 0.022) loss: 1.814 
+(epoch: 16, iters: 240, time: 0.231, data: 0.000) loss: 1.586 
+(epoch: 16, iters: 320, time: 0.235, data: 0.000) loss: 1.574 
+(epoch: 16, iters: 400, time: 0.145, data: 0.000) loss: 1.959 
+(epoch: 16, iters: 480, time: 0.111, data: 0.000) loss: 1.391 
+saving the model at the end of epoch 16, iters 7680
+End of epoch 16 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 16, TEST ACC: [30.0 %]
+
+saving the latest model (epoch 17, total_steps 7696)
+(epoch: 17, iters: 80, time: 0.235, data: 6.018) loss: 2.020 
+(epoch: 17, iters: 160, time: 0.231, data: 0.000) loss: 1.709 
+(epoch: 17, iters: 240, time: 0.224, data: 0.027) loss: 1.780 
+(epoch: 17, iters: 320, time: 0.242, data: 0.028) loss: 1.965 
+(epoch: 17, iters: 400, time: 0.150, data: 0.013) loss: 1.603 
+(epoch: 17, iters: 480, time: 0.109, data: 0.000) loss: 1.793 
+saving the model at the end of epoch 17, iters 8160
+End of epoch 17 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 17, TEST ACC: [23.333 %]
+
+saving the latest model (epoch 18, total_steps 8176)
+(epoch: 18, iters: 80, time: 0.231, data: 6.554) loss: 1.477 
+(epoch: 18, iters: 160, time: 0.233, data: 0.028) loss: 1.482 
+(epoch: 18, iters: 240, time: 0.233, data: 0.028) loss: 1.631 
+(epoch: 18, iters: 320, time: 0.238, data: 0.013) loss: 1.284 
+(epoch: 18, iters: 400, time: 0.148, data: 0.000) loss: 1.584 
+(epoch: 18, iters: 480, time: 0.110, data: 0.000) loss: 1.843 
+saving the model at the end of epoch 18, iters 8640
+End of epoch 18 / 200 	 Time Taken: 112 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 18, TEST ACC: [32.5 %]
+
+saving the latest model (epoch 19, total_steps 8656)
+(epoch: 19, iters: 80, time: 0.231, data: 6.140) loss: 1.778 
+(epoch: 19, iters: 160, time: 0.238, data: 0.000) loss: 1.593 
+(epoch: 19, iters: 240, time: 0.232, data: 0.027) loss: 1.346 
+(epoch: 19, iters: 320, time: 0.235, data: 0.028) loss: 1.349 
+(epoch: 19, iters: 400, time: 0.144, data: 0.012) loss: 1.830 
+
+wandb: Waiting for W&B process to finish, PID 5080
+Traceback (most recent call last):
+  File "train.py", line 40, in <module>
+    model.optimize_parameters()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 66, in optimize_parameters
+    out = self.forward()
+  File "/home/dpere013/MeshCNN/models/mesh_classifier.py", line 57, in forward
+    out = self.net(self.edge_features, self.mesh)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/parallel/data_parallel.py", line 141, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/cm/shared/applications/Python/share/3.6/pytorch/1.0.1-cuda-9.2/lib/python3.6/site-packages/torch/nn/modules/module.py", line 489, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/dpere013/MeshCNN/models/networks.py", line 150, in forward
+    x = getattr(self, 'pool{}'.format(i))(x, mesh)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool.py", line 21, in __call__
+    return self.forward(fe, meshes)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool.py", line 34, in forward
+    self.__pool_main(mesh_index)
+  File "/home/dpere013/MeshCNN/models/layers/mesh_pool.py", line 50, in __pool_main
+    value, edge_id = heappop(queue)
+IndexError: index out of range
+wandb: Program failed with code 1. Press ctrl-c to abort syncing.
+wandb: Run summary:
+wandb:                                       _step 148
+wandb:                                  _timestamp 1568401520.9731536
+wandb:                                        loss 1.8302289247512817
+wandb:                                    _runtime 2508.753231048584
+wandb:                                       Epoch 18
+wandb:                               Test Accuracy 0.325
+wandb: Syncing 8 W&B file(s) and 0 media file(s)
+wandb: - 0.00MB of 0.05MB uploadedwandb: \ 0.05MB of 0.05MB uploadedwandb: | 0.05MB of 0.05MB uploadedwandb: / 0.05MB of 0.05MB uploadedwandb: - 0.05MB of 0.05MB uploadedwandb: \ 0.05MB of 0.05MB uploadedwandb: | 0.05MB of 0.05MB uploadedwandb:                                                                                
+wandb: Synced flowing-gorge-17: https://app.wandb.ai/2cdanielperez/meshcnn/runs/u9go70o6?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 5688
+wandb: Wandb version 0.8.10 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20190913_193333-v1jetidt
+wandb: Syncing run solar-microwave-18: https://app.wandb.ai/2cdanielperez/meshcnn/runs/v1jetidt?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+tensorboard X not installed, visualizing wont be available
+
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+feat_from: edge
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: shrec16_rn
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 100
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 180]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.228, data: 6.242) loss: 3.394 
+(epoch: 1, iters: 160, time: 0.239, data: 0.000) loss: 3.368 
+(epoch: 1, iters: 240, time: 0.236, data: 0.000) loss: 3.377 
+(epoch: 1, iters: 320, time: 0.237, data: 0.027) loss: 3.387 
+(epoch: 1, iters: 400, time: 0.152, data: 0.028) loss: 3.396 
+(epoch: 1, iters: 480, time: 0.110, data: 0.012) loss: 3.315 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 200 	 Time Taken: 114 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 1, TEST ACC: [10.833 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.211, data: 6.017) loss: 3.363 
+(epoch: 2, iters: 160, time: 0.218, data: 0.000) loss: 3.326 
+(epoch: 2, iters: 240, time: 0.224, data: 0.028) loss: 3.359 
+(epoch: 2, iters: 320, time: 0.241, data: 0.028) loss: 3.283 
+(epoch: 2, iters: 400, time: 0.147, data: 0.012) loss: 3.319 
+(epoch: 2, iters: 480, time: 0.111, data: 0.000) loss: 3.258 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 200 	 Time Taken: 111 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 2, TEST ACC: [14.167 %]
+
+saving the latest model (epoch 3, total_steps 976)
+(epoch: 3, iters: 80, time: 0.213, data: 5.685) loss: 3.292 
+(epoch: 3, iters: 160, time: 0.205, data: 0.000) loss: 3.199 
+(epoch: 3, iters: 240, time: 0.206, data: 0.000) loss: 3.229 
+(epoch: 3, iters: 320, time: 0.216, data: 0.028) loss: 3.225 
+(epoch: 3, iters: 400, time: 0.145, data: 0.028) loss: 3.087 
+(epoch: 3, iters: 480, time: 0.110, data: 0.012) loss: 3.015 
+saving the model at the end of epoch 3, iters 1440
+End of epoch 3 / 200 	 Time Taken: 106 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 3, TEST ACC: [12.5 %]
+
+saving the latest model (epoch 4, total_steps 1456)
+(epoch: 4, iters: 80, time: 0.214, data: 6.624) loss: 3.245 
+(epoch: 4, iters: 160, time: 0.226, data: 0.000) loss: 3.009 
+(epoch: 4, iters: 240, time: 0.209, data: 0.049) loss: 3.121 
+(epoch: 4, iters: 320, time: 0.192, data: 0.028) loss: 3.035 
+(epoch: 4, iters: 400, time: 0.144, data: 0.013) loss: 2.971 
+(epoch: 4, iters: 480, time: 0.108, data: 0.000) loss: 2.759 
+saving the model at the end of epoch 4, iters 1920
+End of epoch 4 / 200 	 Time Taken: 104 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 4, TEST ACC: [14.167 %]
+
+saving the latest model (epoch 5, total_steps 1936)
+(epoch: 5, iters: 80, time: 0.236, data: 4.644) loss: 2.818 
+(epoch: 5, iters: 160, time: 0.190, data: 0.000) loss: 2.821 
+(epoch: 5, iters: 240, time: 0.187, data: 0.029) loss: 2.804 
+(epoch: 5, iters: 320, time: 0.204, data: 0.028) loss: 2.807 
+(epoch: 5, iters: 400, time: 0.142, data: 0.013) loss: 2.859 
+(epoch: 5, iters: 480, time: 0.109, data: 0.000) loss: 2.812 
+saving the model at the end of epoch 5, iters 2400
+End of epoch 5 / 200 	 Time Taken: 100 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 5, TEST ACC: [15.0 %]
+
+saving the latest model (epoch 6, total_steps 2416)
+(epoch: 6, iters: 80, time: 0.245, data: 4.576) loss: 2.547 
+(epoch: 6, iters: 160, time: 0.207, data: 0.000) loss: 2.639 
+(epoch: 6, iters: 240, time: 0.200, data: 0.028) loss: 2.726 
+(epoch: 6, iters: 320, time: 0.227, data: 0.028) loss: 2.548 
+(epoch: 6, iters: 400, time: 0.139, data: 0.013) loss: 2.601 
+(epoch: 6, iters: 480, time: 0.109, data: 0.000) loss: 2.830 
+saving the model at the end of epoch 6, iters 2880
+End of epoch 6 / 200 	 Time Taken: 97 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 6, TEST ACC: [19.167 %]
+
+saving the latest model (epoch 7, total_steps 2896)
+(epoch: 7, iters: 80, time: 0.209, data: 4.378) loss: 2.502 
+(epoch: 7, iters: 160, time: 0.207, data: 0.013) loss: 2.750 
+(epoch: 7, iters: 240, time: 0.201, data: 0.000) loss: 2.655 
+(epoch: 7, iters: 320, time: 0.214, data: 0.000) loss: 2.619 
+(epoch: 7, iters: 400, time: 0.136, data: 0.033) loss: 2.765 
+(epoch: 7, iters: 480, time: 0.108, data: 0.000) loss: 2.335 
+saving the model at the end of epoch 7, iters 3360
+End of epoch 7 / 200 	 Time Taken: 97 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 7, TEST ACC: [20.833 %]
+
+saving the latest model (epoch 8, total_steps 3376)
+(epoch: 8, iters: 80, time: 0.200, data: 4.573) loss: 2.303 
+(epoch: 8, iters: 160, time: 0.210, data: 0.050) loss: 2.380 
+(epoch: 8, iters: 240, time: 0.195, data: 0.000) loss: 2.397 
+(epoch: 8, iters: 320, time: 0.176, data: 0.012) loss: 2.291 
+(epoch: 8, iters: 400, time: 0.110, data: 0.000) loss: 2.610 
+(epoch: 8, iters: 480, time: 0.108, data: 0.012) loss: 2.258 
+saving the model at the end of epoch 8, iters 3840
+End of epoch 8 / 200 	 Time Taken: 94 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 8, TEST ACC: [26.667 %]
+
+saving the latest model (epoch 9, total_steps 3856)
+(epoch: 9, iters: 80, time: 0.200, data: 4.774) loss: 2.342 
+(epoch: 9, iters: 160, time: 0.177, data: 0.036) loss: 2.462 
+(epoch: 9, iters: 240, time: 0.207, data: 0.029) loss: 2.360 
+(epoch: 9, iters: 320, time: 0.174, data: 0.012) loss: 2.189 
+(epoch: 9, iters: 400, time: 0.108, data: 0.000) loss: 2.252 
+(epoch: 9, iters: 480, time: 0.107, data: 0.000) loss: 2.325 
+saving the model at the end of epoch 9, iters 4320
+End of epoch 9 / 200 	 Time Taken: 92 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 9, TEST ACC: [22.5 %]
+
+saving the latest model (epoch 10, total_steps 4336)
+(epoch: 10, iters: 80, time: 0.210, data: 3.514) loss: 2.137 
+(epoch: 10, iters: 160, time: 0.212, data: 0.000) loss: 2.383 
+(epoch: 10, iters: 240, time: 0.210, data: 0.000) loss: 2.241 
+(epoch: 10, iters: 320, time: 0.173, data: 0.033) loss: 2.120 
+(epoch: 10, iters: 400, time: 0.107, data: 0.000) loss: 2.282 
+(epoch: 10, iters: 480, time: 0.117, data: 0.012) loss: 2.284 
+saving the model at the end of epoch 10, iters 4800
+End of epoch 10 / 200 	 Time Taken: 90 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 10, TEST ACC: [33.333 %]
+
+saving the latest model (epoch 11, total_steps 4816)
+(epoch: 11, iters: 80, time: 0.191, data: 4.200) loss: 2.100 
+(epoch: 11, iters: 160, time: 0.175, data: 0.000) loss: 2.114 
+(epoch: 11, iters: 240, time: 0.176, data: 0.000) loss: 2.377 
+(epoch: 11, iters: 320, time: 0.209, data: 0.000) loss: 2.682 
+(epoch: 11, iters: 400, time: 0.108, data: 0.000) loss: 2.487 
+(epoch: 11, iters: 480, time: 0.109, data: 0.028) loss: 2.299 
+saving the model at the end of epoch 11, iters 5280
+End of epoch 11 / 200 	 Time Taken: 89 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 11, TEST ACC: [22.5 %]
+
+saving the latest model (epoch 12, total_steps 5296)
+(epoch: 12, iters: 80, time: 0.197, data: 3.528) loss: 1.858 
+(epoch: 12, iters: 160, time: 0.176, data: 0.000) loss: 2.035 
+(epoch: 12, iters: 240, time: 0.179, data: 0.000) loss: 2.228 
+(epoch: 12, iters: 320, time: 0.193, data: 0.053) loss: 1.961 
+(epoch: 12, iters: 400, time: 0.111, data: 0.028) loss: 2.638 
+(epoch: 12, iters: 480, time: 0.108, data: 0.012) loss: 2.071 
+saving the model at the end of epoch 12, iters 5760
+End of epoch 12 / 200 	 Time Taken: 87 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 12, TEST ACC: [29.167 %]
+
+saving the latest model (epoch 13, total_steps 5776)
+(epoch: 13, iters: 80, time: 0.177, data: 2.659) loss: 2.679 
+(epoch: 13, iters: 160, time: 0.173, data: 0.000) loss: 1.994 
+(epoch: 13, iters: 240, time: 0.173, data: 0.028) loss: 1.662 
+(epoch: 13, iters: 320, time: 0.190, data: 0.028) loss: 2.006 
+(epoch: 13, iters: 400, time: 0.125, data: 0.013) loss: 2.285 
+(epoch: 13, iters: 480, time: 0.108, data: 0.000) loss: 2.192 
+saving the model at the end of epoch 13, iters 6240
+End of epoch 13 / 200 	 Time Taken: 85 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 13, TEST ACC: [30.833 %]
+
+saving the latest model (epoch 14, total_steps 6256)
+(epoch: 14, iters: 80, time: 0.165, data: 3.178) loss: 1.704 
+(epoch: 14, iters: 160, time: 0.182, data: 0.033) loss: 1.822 
+(epoch: 14, iters: 240, time: 0.174, data: 0.000) loss: 2.171 
+(epoch: 14, iters: 320, time: 0.172, data: 0.013) loss: 2.361 
+(epoch: 14, iters: 400, time: 0.109, data: 0.000) loss: 1.722 
+(epoch: 14, iters: 480, time: 0.108, data: 0.012) loss: 1.988 
+saving the model at the end of epoch 14, iters 6720
+End of epoch 14 / 200 	 Time Taken: 81 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 14, TEST ACC: [25.833 %]
+
+saving the latest model (epoch 15, total_steps 6736)
+(epoch: 15, iters: 80, time: 0.131, data: 1.893) loss: 1.716 
+(epoch: 15, iters: 160, time: 0.193, data: 0.000) loss: 1.836 
+(epoch: 15, iters: 240, time: 0.151, data: 0.000) loss: 1.821 
+(epoch: 15, iters: 320, time: 0.156, data: 0.027) loss: 1.697 
+(epoch: 15, iters: 400, time: 0.108, data: 0.000) loss: 2.005 
+(epoch: 15, iters: 480, time: 0.109, data: 0.000) loss: 1.890 
+saving the model at the end of epoch 15, iters 7200
+End of epoch 15 / 200 	 Time Taken: 81 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 15, TEST ACC: [30.0 %]
+
+saving the latest model (epoch 16, total_steps 7216)
+(epoch: 16, iters: 80, time: 0.158, data: 4.061) loss: 1.828 
+(epoch: 16, iters: 160, time: 0.158, data: 0.000) loss: 2.224 
+(epoch: 16, iters: 240, time: 0.173, data: 0.033) loss: 1.708 
+(epoch: 16, iters: 320, time: 0.177, data: 0.000) loss: 2.085 
+(epoch: 16, iters: 400, time: 0.108, data: 0.000) loss: 1.819 
+(epoch: 16, iters: 480, time: 0.107, data: 0.032) loss: 2.110 
+saving the model at the end of epoch 16, iters 7680
+End of epoch 16 / 200 	 Time Taken: 81 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 16, TEST ACC: [36.667 %]
+
+saving the latest model (epoch 17, total_steps 7696)
+(epoch: 17, iters: 80, time: 0.151, data: 2.133) loss: 1.738 
+(epoch: 17, iters: 160, time: 0.168, data: 0.013) loss: 1.567 
+(epoch: 17, iters: 240, time: 0.153, data: 0.032) loss: 1.752 
+(epoch: 17, iters: 320, time: 0.206, data: 0.000) loss: 1.645 
+(epoch: 17, iters: 400, time: 0.107, data: 0.000) loss: 1.853 
+(epoch: 17, iters: 480, time: 0.107, data: 0.031) loss: 1.904 
+saving the model at the end of epoch 17, iters 8160
+End of epoch 17 / 200 	 Time Taken: 79 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 17, TEST ACC: [35.833 %]
+
+saving the latest model (epoch 18, total_steps 8176)
+(epoch: 18, iters: 80, time: 0.143, data: 2.356) loss: 1.646 
+(epoch: 18, iters: 160, time: 0.165, data: 0.000) loss: 1.564 
+(epoch: 18, iters: 240, time: 0.202, data: 0.028) loss: 1.576 
+(epoch: 18, iters: 320, time: 0.174, data: 0.000) loss: 1.718 
+(epoch: 18, iters: 400, time: 0.108, data: 0.000) loss: 1.665 
+(epoch: 18, iters: 480, time: 0.108, data: 0.012) loss: 1.876 
+saving the model at the end of epoch 18, iters 8640
+End of epoch 18 / 200 	 Time Taken: 78 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 18, TEST ACC: [35.0 %]
+
+saving the latest model (epoch 19, total_steps 8656)
+(epoch: 19, iters: 80, time: 0.173, data: 3.166) loss: 1.614 
+(epoch: 19, iters: 160, time: 0.164, data: 0.029) loss: 1.446 
+(epoch: 19, iters: 240, time: 0.174, data: 0.000) loss: 1.612 
+(epoch: 19, iters: 320, time: 0.145, data: 0.000) loss: 1.331 
+(epoch: 19, iters: 400, time: 0.109, data: 0.032) loss: 1.373 
+(epoch: 19, iters: 480, time: 0.107, data: 0.000) loss: 2.058 
+saving the model at the end of epoch 19, iters 9120
+End of epoch 19 / 200 	 Time Taken: 81 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 19, TEST ACC: [43.333 %]
+
+saving the latest model (epoch 20, total_steps 9136)
+(epoch: 20, iters: 80, time: 0.160, data: 3.708) loss: 1.435 
+(epoch: 20, iters: 160, time: 0.148, data: 0.000) loss: 1.200 
+(epoch: 20, iters: 240, time: 0.177, data: 0.043) loss: 2.127 
+(epoch: 20, iters: 320, time: 0.137, data: 0.000) loss: 1.373 
+(epoch: 20, iters: 400, time: 0.104, data: 0.013) loss: 2.136 
+(epoch: 20, iters: 480, time: 0.118, data: 0.000) loss: 1.550 
+saving the model at the end of epoch 20, iters 9600
+End of epoch 20 / 200 	 Time Taken: 76 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 20, TEST ACC: [35.833 %]
+
+saving the latest model (epoch 21, total_steps 9616)
+(epoch: 21, iters: 80, time: 0.137, data: 2.912) loss: 1.428 
+(epoch: 21, iters: 160, time: 0.168, data: 0.000) loss: 1.236 
+(epoch: 21, iters: 240, time: 0.174, data: 0.032) loss: 1.537 
+(epoch: 21, iters: 320, time: 0.143, data: 0.000) loss: 1.570 
+(epoch: 21, iters: 400, time: 0.106, data: 0.000) loss: 1.672 
+(epoch: 21, iters: 480, time: 0.107, data: 0.016) loss: 0.928 
+saving the model at the end of epoch 21, iters 10080
+End of epoch 21 / 200 	 Time Taken: 76 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 21, TEST ACC: [37.5 %]
+
+saving the latest model (epoch 22, total_steps 10096)
+(epoch: 22, iters: 80, time: 0.139, data: 2.795) loss: 1.141 
+(epoch: 22, iters: 160, time: 0.159, data: 0.000) loss: 1.045 
+(epoch: 22, iters: 240, time: 0.172, data: 0.044) loss: 1.069 
+(epoch: 22, iters: 320, time: 0.147, data: 0.000) loss: 1.269 
+(epoch: 22, iters: 400, time: 0.106, data: 0.012) loss: 1.333 
+(epoch: 22, iters: 480, time: 0.109, data: 0.000) loss: 2.713 
+saving the model at the end of epoch 22, iters 10560
+End of epoch 22 / 200 	 Time Taken: 75 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 22, TEST ACC: [35.0 %]
+
+saving the latest model (epoch 23, total_steps 10576)
+(epoch: 23, iters: 80, time: 0.135, data: 3.079) loss: 1.246 
+(epoch: 23, iters: 160, time: 0.165, data: 0.000) loss: 1.245 
+(epoch: 23, iters: 240, time: 0.135, data: 0.000) loss: 1.137 
+(epoch: 23, iters: 320, time: 0.160, data: 0.043) loss: 1.041 
+(epoch: 23, iters: 400, time: 0.108, data: 0.000) loss: 1.899 
+(epoch: 23, iters: 480, time: 0.107, data: 0.012) loss: 1.229 
+saving the model at the end of epoch 23, iters 11040
+End of epoch 23 / 200 	 Time Taken: 74 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 23, TEST ACC: [40.833 %]
+
+saving the latest model (epoch 24, total_steps 11056)
+(epoch: 24, iters: 80, time: 0.144, data: 2.765) loss: 1.202 
+(epoch: 24, iters: 160, time: 0.180, data: 0.000) loss: 1.403 
+(epoch: 24, iters: 240, time: 0.167, data: 0.044) loss: 1.125 
+(epoch: 24, iters: 320, time: 0.129, data: 0.000) loss: 0.942 
+(epoch: 24, iters: 400, time: 0.105, data: 0.013) loss: 0.903 
+(epoch: 24, iters: 480, time: 0.108, data: 0.000) loss: 1.423 
+saving the model at the end of epoch 24, iters 11520
+End of epoch 24 / 200 	 Time Taken: 73 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 24, TEST ACC: [38.333 %]
+
+saving the latest model (epoch 25, total_steps 11536)
+(epoch: 25, iters: 80, time: 0.152, data: 2.452) loss: 1.217 
+(epoch: 25, iters: 160, time: 0.136, data: 0.012) loss: 1.123 
+(epoch: 25, iters: 240, time: 0.165, data: 0.000) loss: 1.225 
+(epoch: 25, iters: 320, time: 0.153, data: 0.012) loss: 1.242 
+(epoch: 25, iters: 400, time: 0.109, data: 0.000) loss: 1.018 
+(epoch: 25, iters: 480, time: 0.108, data: 0.000) loss: 1.429 
+saving the model at the end of epoch 25, iters 12000
+End of epoch 25 / 200 	 Time Taken: 70 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 25, TEST ACC: [35.833 %]
+
+saving the latest model (epoch 26, total_steps 12016)
+(epoch: 26, iters: 80, time: 0.129, data: 1.861) loss: 0.950 
+(epoch: 26, iters: 160, time: 0.135, data: 0.034) loss: 1.643 
+(epoch: 26, iters: 240, time: 0.158, data: 0.000) loss: 1.038 
+(epoch: 26, iters: 320, time: 0.127, data: 0.013) loss: 0.772 
+(epoch: 26, iters: 400, time: 0.108, data: 0.000) loss: 0.964 
+(epoch: 26, iters: 480, time: 0.108, data: 0.012) loss: 1.237 
+saving the model at the end of epoch 26, iters 12480
+End of epoch 26 / 200 	 Time Taken: 71 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 26, TEST ACC: [41.667 %]
+
+saving the latest model (epoch 27, total_steps 12496)
+(epoch: 27, iters: 80, time: 0.152, data: 2.434) loss: 0.916 
+(epoch: 27, iters: 160, time: 0.144, data: 0.000) loss: 1.137 
+(epoch: 27, iters: 240, time: 0.150, data: 0.044) loss: 1.308 
+(epoch: 27, iters: 320, time: 0.155, data: 0.000) loss: 1.055 
+(epoch: 27, iters: 400, time: 0.106, data: 0.013) loss: 1.137 
+(epoch: 27, iters: 480, time: 0.109, data: 0.000) loss: 0.673 
+saving the model at the end of epoch 27, iters 12960
+End of epoch 27 / 200 	 Time Taken: 71 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 27, TEST ACC: [39.167 %]
+
+saving the latest model (epoch 28, total_steps 12976)
+(epoch: 28, iters: 80, time: 0.150, data: 2.863) loss: 0.859 
+(epoch: 28, iters: 160, time: 0.129, data: 0.000) loss: 0.953 
+(epoch: 28, iters: 240, time: 0.158, data: 0.000) loss: 0.888 
+(epoch: 28, iters: 320, time: 0.129, data: 0.013) loss: 0.982 
+(epoch: 28, iters: 400, time: 0.106, data: 0.028) loss: 1.034 
+(epoch: 28, iters: 480, time: 0.108, data: 0.000) loss: 0.683 
+saving the model at the end of epoch 28, iters 13440
+End of epoch 28 / 200 	 Time Taken: 70 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 28, TEST ACC: [39.167 %]
+
+saving the latest model (epoch 29, total_steps 13456)
+(epoch: 29, iters: 80, time: 0.153, data: 1.262) loss: 1.306 
+(epoch: 29, iters: 160, time: 0.147, data: 0.000) loss: 1.082 
+(epoch: 29, iters: 240, time: 0.150, data: 0.000) loss: 0.810 
+(epoch: 29, iters: 320, time: 0.128, data: 0.043) loss: 1.067 
+(epoch: 29, iters: 400, time: 0.109, data: 0.000) loss: 0.727 
+(epoch: 29, iters: 480, time: 0.108, data: 0.013) loss: 0.929 
+saving the model at the end of epoch 29, iters 13920
+End of epoch 29 / 200 	 Time Taken: 68 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 29, TEST ACC: [45.833 %]
+
+saving the latest model (epoch 30, total_steps 13936)
+(epoch: 30, iters: 80, time: 0.157, data: 1.564) loss: 0.858 
+(epoch: 30, iters: 160, time: 0.114, data: 0.000) loss: 0.796 
+(epoch: 30, iters: 240, time: 0.150, data: 0.000) loss: 0.911 
+(epoch: 30, iters: 320, time: 0.128, data: 0.042) loss: 1.171 
+(epoch: 30, iters: 400, time: 0.108, data: 0.000) loss: 0.870 
+(epoch: 30, iters: 480, time: 0.117, data: 0.012) loss: 0.630 
+saving the model at the end of epoch 30, iters 14400
+End of epoch 30 / 200 	 Time Taken: 67 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 30, TEST ACC: [28.333 %]
+
+saving the latest model (epoch 31, total_steps 14416)
+(epoch: 31, iters: 80, time: 0.166, data: 1.643) loss: 1.009 
+(epoch: 31, iters: 160, time: 0.135, data: 0.000) loss: 0.717 
+(epoch: 31, iters: 240, time: 0.154, data: 0.044) loss: 1.203 
+(epoch: 31, iters: 320, time: 0.143, data: 0.000) loss: 1.094 
+(epoch: 31, iters: 400, time: 0.103, data: 0.013) loss: 0.695 
+(epoch: 31, iters: 480, time: 0.107, data: 0.000) loss: 0.729 
+saving the model at the end of epoch 31, iters 14880
+End of epoch 31 / 200 	 Time Taken: 69 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 31, TEST ACC: [37.5 %]
+
+saving the latest model (epoch 32, total_steps 14896)
+(epoch: 32, iters: 80, time: 0.144, data: 1.276) loss: 0.836 
+(epoch: 32, iters: 160, time: 0.142, data: 0.000) loss: 1.180 
+(epoch: 32, iters: 240, time: 0.128, data: 0.000) loss: 0.854 
+(epoch: 32, iters: 320, time: 0.136, data: 0.043) loss: 0.648 
+(epoch: 32, iters: 400, time: 0.108, data: 0.000) loss: 0.756 
+(epoch: 32, iters: 480, time: 0.108, data: 0.013) loss: 0.584 
+saving the model at the end of epoch 32, iters 15360
+End of epoch 32 / 200 	 Time Taken: 67 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 32, TEST ACC: [35.0 %]
+
+saving the latest model (epoch 33, total_steps 15376)
+(epoch: 33, iters: 80, time: 0.129, data: 0.978) loss: 1.012 
+(epoch: 33, iters: 160, time: 0.123, data: 0.000) loss: 0.545 
+(epoch: 33, iters: 240, time: 0.124, data: 0.000) loss: 0.768 
+(epoch: 33, iters: 320, time: 0.138, data: 0.044) loss: 0.774 
+(epoch: 33, iters: 400, time: 0.109, data: 0.000) loss: 0.654 
+(epoch: 33, iters: 480, time: 0.109, data: 0.012) loss: 1.319 
+saving the model at the end of epoch 33, iters 15840
+End of epoch 33 / 200 	 Time Taken: 66 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 33, TEST ACC: [34.167 %]
+
+saving the latest model (epoch 34, total_steps 15856)
+(epoch: 34, iters: 80, time: 0.124, data: 1.318) loss: 0.597 
+(epoch: 34, iters: 160, time: 0.131, data: 0.000) loss: 0.995 
+(epoch: 34, iters: 240, time: 0.128, data: 0.043) loss: 0.847 
+(epoch: 34, iters: 320, time: 0.137, data: 0.000) loss: 0.749 
+(epoch: 34, iters: 400, time: 0.105, data: 0.013) loss: 0.713 
+(epoch: 34, iters: 480, time: 0.108, data: 0.000) loss: 0.400 
+saving the model at the end of epoch 34, iters 16320
+End of epoch 34 / 200 	 Time Taken: 65 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 34, TEST ACC: [48.333 %]
+
+saving the latest model (epoch 35, total_steps 16336)
+(epoch: 35, iters: 80, time: 0.171, data: 0.950) loss: 1.159 
+(epoch: 35, iters: 160, time: 0.145, data: 0.000) loss: 0.707 
+(epoch: 35, iters: 240, time: 0.123, data: 0.000) loss: 0.514 
+(epoch: 35, iters: 320, time: 0.130, data: 0.044) loss: 0.781 
+(epoch: 35, iters: 400, time: 0.109, data: 0.000) loss: 0.691 
+(epoch: 35, iters: 480, time: 0.109, data: 0.012) loss: 1.008 
+saving the model at the end of epoch 35, iters 16800
+End of epoch 35 / 200 	 Time Taken: 67 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 35, TEST ACC: [35.0 %]
+
+saving the latest model (epoch 36, total_steps 16816)
+(epoch: 36, iters: 80, time: 0.129, data: 0.915) loss: 0.563 
+(epoch: 36, iters: 160, time: 0.128, data: 0.000) loss: 0.624 
+(epoch: 36, iters: 240, time: 0.121, data: 0.043) loss: 0.609 
+(epoch: 36, iters: 320, time: 0.144, data: 0.000) loss: 0.927 
+(epoch: 36, iters: 400, time: 0.106, data: 0.012) loss: 0.511 
+(epoch: 36, iters: 480, time: 0.108, data: 0.000) loss: 0.677 
+saving the model at the end of epoch 36, iters 17280
+End of epoch 36 / 200 	 Time Taken: 64 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 36, TEST ACC: [30.0 %]
+
+saving the latest model (epoch 37, total_steps 17296)
+(epoch: 37, iters: 80, time: 0.140, data: 2.070) loss: 0.715 
+(epoch: 37, iters: 160, time: 0.121, data: 0.000) loss: 0.875 
+(epoch: 37, iters: 240, time: 0.129, data: 0.059) loss: 0.820 
+(epoch: 37, iters: 320, time: 0.140, data: 0.000) loss: 0.596 
+(epoch: 37, iters: 400, time: 0.106, data: 0.012) loss: 0.832 
+(epoch: 37, iters: 480, time: 0.108, data: 0.000) loss: 0.764 
+saving the model at the end of epoch 37, iters 17760
+End of epoch 37 / 200 	 Time Taken: 64 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 37, TEST ACC: [26.667 %]
+
+saving the latest model (epoch 38, total_steps 17776)
+(epoch: 38, iters: 80, time: 0.129, data: 1.517) loss: 0.877 
+(epoch: 38, iters: 160, time: 0.129, data: 0.034) loss: 0.682 
+(epoch: 38, iters: 240, time: 0.152, data: 0.000) loss: 0.475 
+(epoch: 38, iters: 320, time: 0.121, data: 0.013) loss: 0.902 
+(epoch: 38, iters: 400, time: 0.109, data: 0.000) loss: 0.943 
+(epoch: 38, iters: 480, time: 0.108, data: 0.013) loss: 0.879 
+saving the model at the end of epoch 38, iters 18240
+End of epoch 38 / 200 	 Time Taken: 63 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 38, TEST ACC: [40.833 %]
+
+saving the latest model (epoch 39, total_steps 18256)
+(epoch: 39, iters: 80, time: 0.122, data: 0.886) loss: 0.710 
+(epoch: 39, iters: 160, time: 0.119, data: 0.012) loss: 0.712 
+(epoch: 39, iters: 240, time: 0.143, data: 0.000) loss: 0.317 
+(epoch: 39, iters: 320, time: 0.158, data: 0.012) loss: 0.691 
+(epoch: 39, iters: 400, time: 0.107, data: 0.000) loss: 0.705 
+(epoch: 39, iters: 480, time: 0.108, data: 0.000) loss: 0.297 
+saving the model at the end of epoch 39, iters 18720
+End of epoch 39 / 200 	 Time Taken: 63 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 39, TEST ACC: [40.0 %]
+
+saving the latest model (epoch 40, total_steps 18736)
+(epoch: 40, iters: 80, time: 0.131, data: 0.989) loss: 0.323 
+(epoch: 40, iters: 160, time: 0.123, data: 0.000) loss: 0.740 
+(epoch: 40, iters: 240, time: 0.123, data: 0.044) loss: 0.584 
+(epoch: 40, iters: 320, time: 0.130, data: 0.000) loss: 0.443 
+(epoch: 40, iters: 400, time: 0.107, data: 0.013) loss: 0.514 
+(epoch: 40, iters: 480, time: 0.117, data: 0.000) loss: 0.549 
+saving the model at the end of epoch 40, iters 19200
+End of epoch 40 / 200 	 Time Taken: 65 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 40, TEST ACC: [33.333 %]
+
+saving the latest model (epoch 41, total_steps 19216)
+(epoch: 41, iters: 80, time: 0.121, data: 1.243) loss: 0.362 
+(epoch: 41, iters: 160, time: 0.150, data: 0.000) loss: 0.386 
+(epoch: 41, iters: 240, time: 0.140, data: 0.012) loss: 0.404 
+(epoch: 41, iters: 320, time: 0.128, data: 0.000) loss: 0.627 
+(epoch: 41, iters: 400, time: 0.106, data: 0.000) loss: 0.921 
+(epoch: 41, iters: 480, time: 0.109, data: 0.016) loss: 0.389 
+saving the model at the end of epoch 41, iters 19680
+End of epoch 41 / 200 	 Time Taken: 63 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 41, TEST ACC: [30.0 %]
+
+saving the latest model (epoch 42, total_steps 19696)
+(epoch: 42, iters: 80, time: 0.117, data: 1.371) loss: 0.612 
+(epoch: 42, iters: 160, time: 0.151, data: 0.000) loss: 0.403 
+(epoch: 42, iters: 240, time: 0.135, data: 0.059) loss: 0.608 
+(epoch: 42, iters: 320, time: 0.122, data: 0.000) loss: 0.855 
+(epoch: 42, iters: 400, time: 0.106, data: 0.029) loss: 0.350 
+(epoch: 42, iters: 480, time: 0.109, data: 0.000) loss: 0.202 
+saving the model at the end of epoch 42, iters 20160
+End of epoch 42 / 200 	 Time Taken: 62 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 42, TEST ACC: [45.0 %]
+
+saving the latest model (epoch 43, total_steps 20176)
+(epoch: 43, iters: 80, time: 0.122, data: 1.479) loss: 0.768 
+(epoch: 43, iters: 160, time: 0.146, data: 0.000) loss: 0.307 
+(epoch: 43, iters: 240, time: 0.149, data: 0.013) loss: 0.422 
+(epoch: 43, iters: 320, time: 0.138, data: 0.000) loss: 1.206 
+(epoch: 43, iters: 400, time: 0.107, data: 0.012) loss: 0.800 
+(epoch: 43, iters: 480, time: 0.108, data: 0.000) loss: 0.910 
+saving the model at the end of epoch 43, iters 20640
+End of epoch 43 / 200 	 Time Taken: 63 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 43, TEST ACC: [32.5 %]
+
+saving the latest model (epoch 44, total_steps 20656)
+(epoch: 44, iters: 80, time: 0.122, data: 0.570) loss: 0.301 
+(epoch: 44, iters: 160, time: 0.131, data: 0.000) loss: 0.530 
+(epoch: 44, iters: 240, time: 0.128, data: 0.000) loss: 0.780 
+(epoch: 44, iters: 320, time: 0.136, data: 0.043) loss: 0.331 
+(epoch: 44, iters: 400, time: 0.108, data: 0.000) loss: 0.787 
+(epoch: 44, iters: 480, time: 0.107, data: 0.013) loss: 0.317 
+saving the model at the end of epoch 44, iters 21120
+End of epoch 44 / 200 	 Time Taken: 62 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 44, TEST ACC: [50.833 %]
+
+saving the latest model (epoch 45, total_steps 21136)
+(epoch: 45, iters: 80, time: 0.124, data: 0.857) loss: 0.321 
+(epoch: 45, iters: 160, time: 0.129, data: 0.000) loss: 0.570 
+(epoch: 45, iters: 240, time: 0.130, data: 0.044) loss: 0.274 
+(epoch: 45, iters: 320, time: 0.125, data: 0.000) loss: 0.422 
+(epoch: 45, iters: 400, time: 0.105, data: 0.013) loss: 0.516 
+(epoch: 45, iters: 480, time: 0.108, data: 0.000) loss: 0.320 
+saving the model at the end of epoch 45, iters 21600
+End of epoch 45 / 200 	 Time Taken: 63 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 45, TEST ACC: [40.0 %]
+
+saving the latest model (epoch 46, total_steps 21616)
+(epoch: 46, iters: 80, time: 0.119, data: 0.953) loss: 0.528 
+(epoch: 46, iters: 160, time: 0.130, data: 0.000) loss: 0.296 
+(epoch: 46, iters: 240, time: 0.158, data: 0.012) loss: 0.385 
+(epoch: 46, iters: 320, time: 0.130, data: 0.000) loss: 0.757 
+(epoch: 46, iters: 400, time: 0.108, data: 0.000) loss: 0.324 
+(epoch: 46, iters: 480, time: 0.107, data: 0.016) loss: 0.547 
+saving the model at the end of epoch 46, iters 22080
+End of epoch 46 / 200 	 Time Taken: 61 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 46, TEST ACC: [36.667 %]
+
+saving the latest model (epoch 47, total_steps 22096)
+(epoch: 47, iters: 80, time: 0.137, data: 0.808) loss: 0.555 
+(epoch: 47, iters: 160, time: 0.122, data: 0.000) loss: 0.609 
+(epoch: 47, iters: 240, time: 0.128, data: 0.013) loss: 0.404 
+(epoch: 47, iters: 320, time: 0.154, data: 0.000) loss: 0.834 
+(epoch: 47, iters: 400, time: 0.108, data: 0.000) loss: 0.234 
+(epoch: 47, iters: 480, time: 0.108, data: 0.016) loss: 0.244 
+saving the model at the end of epoch 47, iters 22560
+End of epoch 47 / 200 	 Time Taken: 62 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 47, TEST ACC: [41.667 %]
+
+saving the latest model (epoch 48, total_steps 22576)
+(epoch: 48, iters: 80, time: 0.130, data: 0.616) loss: 0.363 
+(epoch: 48, iters: 160, time: 0.114, data: 0.000) loss: 0.465 
+(epoch: 48, iters: 240, time: 0.122, data: 0.043) loss: 0.420 
+(epoch: 48, iters: 320, time: 0.138, data: 0.000) loss: 0.312 
+(epoch: 48, iters: 400, time: 0.104, data: 0.012) loss: 0.381 
+(epoch: 48, iters: 480, time: 0.110, data: 0.000) loss: 0.344 
+saving the model at the end of epoch 48, iters 23040
+End of epoch 48 / 200 	 Time Taken: 60 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 48, TEST ACC: [50.833 %]
+
+saving the latest model (epoch 49, total_steps 23056)
+(epoch: 49, iters: 80, time: 0.123, data: 0.949) loss: 0.859 
+(epoch: 49, iters: 160, time: 0.119, data: 0.013) loss: 0.326 
+(epoch: 49, iters: 240, time: 0.129, data: 0.000) loss: 0.211 
+(epoch: 49, iters: 320, time: 0.120, data: 0.013) loss: 0.970 
+(epoch: 49, iters: 400, time: 0.107, data: 0.000) loss: 0.511 
+(epoch: 49, iters: 480, time: 0.108, data: 0.000) loss: 0.487 
+saving the model at the end of epoch 49, iters 23520
+End of epoch 49 / 200 	 Time Taken: 60 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 49, TEST ACC: [49.167 %]
+
+saving the latest model (epoch 50, total_steps 23536)
+(epoch: 50, iters: 80, time: 0.114, data: 0.737) loss: 0.351 
+(epoch: 50, iters: 160, time: 0.113, data: 0.000) loss: 0.804 
+(epoch: 50, iters: 240, time: 0.120, data: 0.059) loss: 0.738 
+(epoch: 50, iters: 320, time: 0.121, data: 0.000) loss: 0.683 
+(epoch: 50, iters: 400, time: 0.107, data: 0.029) loss: 0.426 
+(epoch: 50, iters: 480, time: 0.117, data: 0.000) loss: 0.372 
+saving the model at the end of epoch 50, iters 24000
+End of epoch 50 / 200 	 Time Taken: 59 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 50, TEST ACC: [39.167 %]
+
+saving the latest model (epoch 51, total_steps 24016)
+(epoch: 51, iters: 80, time: 0.130, data: 0.984) loss: 0.512 
+(epoch: 51, iters: 160, time: 0.127, data: 0.000) loss: 0.392 
+(epoch: 51, iters: 240, time: 0.139, data: 0.043) loss: 0.411 
+(epoch: 51, iters: 320, time: 0.137, data: 0.000) loss: 0.327 
+(epoch: 51, iters: 400, time: 0.106, data: 0.013) loss: 0.661 
+(epoch: 51, iters: 480, time: 0.108, data: 0.000) loss: 0.286 
+saving the model at the end of epoch 51, iters 24480
+End of epoch 51 / 200 	 Time Taken: 60 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 51, TEST ACC: [45.833 %]
+
+saving the latest model (epoch 52, total_steps 24496)
+(epoch: 52, iters: 80, time: 0.122, data: 0.973) loss: 0.374 
+(epoch: 52, iters: 160, time: 0.127, data: 0.000) loss: 0.162 
+(epoch: 52, iters: 240, time: 0.121, data: 0.059) loss: 1.072 
+(epoch: 52, iters: 320, time: 0.124, data: 0.000) loss: 0.405 
+(epoch: 52, iters: 400, time: 0.106, data: 0.012) loss: 0.429 
+(epoch: 52, iters: 480, time: 0.108, data: 0.000) loss: 0.283 
+saving the model at the end of epoch 52, iters 24960
+End of epoch 52 / 200 	 Time Taken: 60 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 52, TEST ACC: [30.0 %]
+
+saving the latest model (epoch 53, total_steps 24976)
+(epoch: 53, iters: 80, time: 0.127, data: 0.894) loss: 0.510 
+(epoch: 53, iters: 160, time: 0.114, data: 0.000) loss: 0.316 
+(epoch: 53, iters: 240, time: 0.129, data: 0.012) loss: 0.380 
+(epoch: 53, iters: 320, time: 0.122, data: 0.000) loss: 0.786 
+(epoch: 53, iters: 400, time: 0.108, data: 0.000) loss: 1.116 
+(epoch: 53, iters: 480, time: 0.108, data: 0.016) loss: 0.391 
+saving the model at the end of epoch 53, iters 25440
+End of epoch 53 / 200 	 Time Taken: 60 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 53, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 54, total_steps 25456)
+(epoch: 54, iters: 80, time: 0.114, data: 0.913) loss: 0.311 
+(epoch: 54, iters: 160, time: 0.145, data: 0.000) loss: 0.265 
+(epoch: 54, iters: 240, time: 0.121, data: 0.013) loss: 0.228 
+(epoch: 54, iters: 320, time: 0.115, data: 0.000) loss: 0.591 
+(epoch: 54, iters: 400, time: 0.107, data: 0.000) loss: 0.651 
+(epoch: 54, iters: 480, time: 0.108, data: 0.016) loss: 0.740 
+saving the model at the end of epoch 54, iters 25920
+End of epoch 54 / 200 	 Time Taken: 60 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 54, TEST ACC: [42.5 %]
+
+saving the latest model (epoch 55, total_steps 25936)
+(epoch: 55, iters: 80, time: 0.115, data: 1.210) loss: 0.198 
+(epoch: 55, iters: 160, time: 0.123, data: 0.000) loss: 0.500 
+(epoch: 55, iters: 240, time: 0.116, data: 0.044) loss: 0.412 
+(epoch: 55, iters: 320, time: 0.116, data: 0.000) loss: 0.196 
+(epoch: 55, iters: 400, time: 0.104, data: 0.012) loss: 0.298 
+(epoch: 55, iters: 480, time: 0.108, data: 0.000) loss: 0.262 
+saving the model at the end of epoch 55, iters 26400
+End of epoch 55 / 200 	 Time Taken: 59 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 55, TEST ACC: [43.333 %]
+
+saving the latest model (epoch 56, total_steps 26416)
+(epoch: 56, iters: 80, time: 0.114, data: 0.827) loss: 0.392 
+(epoch: 56, iters: 160, time: 0.115, data: 0.000) loss: 0.343 
+(epoch: 56, iters: 240, time: 0.135, data: 0.043) loss: 0.231 
+(epoch: 56, iters: 320, time: 0.129, data: 0.000) loss: 0.206 
+(epoch: 56, iters: 400, time: 0.105, data: 0.013) loss: 0.427 
+(epoch: 56, iters: 480, time: 0.108, data: 0.000) loss: 0.313 
+saving the model at the end of epoch 56, iters 26880
+End of epoch 56 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 56, TEST ACC: [51.667 %]
+
+saving the latest model (epoch 57, total_steps 26896)
+(epoch: 57, iters: 80, time: 0.137, data: 0.605) loss: 0.478 
+(epoch: 57, iters: 160, time: 0.115, data: 0.000) loss: 0.782 
+(epoch: 57, iters: 240, time: 0.120, data: 0.012) loss: 0.324 
+(epoch: 57, iters: 320, time: 0.123, data: 0.000) loss: 0.246 
+(epoch: 57, iters: 400, time: 0.107, data: 0.000) loss: 0.418 
+(epoch: 57, iters: 480, time: 0.108, data: 0.016) loss: 0.325 
+saving the model at the end of epoch 57, iters 27360
+End of epoch 57 / 200 	 Time Taken: 59 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 57, TEST ACC: [36.667 %]
+
+saving the latest model (epoch 58, total_steps 27376)
+(epoch: 58, iters: 80, time: 0.112, data: 0.702) loss: 0.212 
+(epoch: 58, iters: 160, time: 0.115, data: 0.000) loss: 0.185 
+(epoch: 58, iters: 240, time: 0.114, data: 0.012) loss: 0.201 
+(epoch: 58, iters: 320, time: 0.139, data: 0.000) loss: 0.178 
+(epoch: 58, iters: 400, time: 0.106, data: 0.000) loss: 0.395 
+(epoch: 58, iters: 480, time: 0.109, data: 0.016) loss: 0.562 
+saving the model at the end of epoch 58, iters 27840
+End of epoch 58 / 200 	 Time Taken: 59 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 58, TEST ACC: [39.167 %]
+
+saving the latest model (epoch 59, total_steps 27856)
+(epoch: 59, iters: 80, time: 0.115, data: 0.975) loss: 0.195 
+(epoch: 59, iters: 160, time: 0.127, data: 0.000) loss: 0.158 
+(epoch: 59, iters: 240, time: 0.114, data: 0.043) loss: 0.735 
+(epoch: 59, iters: 320, time: 0.122, data: 0.000) loss: 0.150 
+(epoch: 59, iters: 400, time: 0.106, data: 0.013) loss: 0.307 
+(epoch: 59, iters: 480, time: 0.109, data: 0.000) loss: 0.525 
+saving the model at the end of epoch 59, iters 28320
+End of epoch 59 / 200 	 Time Taken: 59 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 59, TEST ACC: [40.0 %]
+
+saving the latest model (epoch 60, total_steps 28336)
+(epoch: 60, iters: 80, time: 0.124, data: 0.982) loss: 0.316 
+(epoch: 60, iters: 160, time: 0.122, data: 0.000) loss: 0.466 
+(epoch: 60, iters: 240, time: 0.121, data: 0.044) loss: 0.315 
+(epoch: 60, iters: 320, time: 0.114, data: 0.000) loss: 0.186 
+(epoch: 60, iters: 400, time: 0.107, data: 0.029) loss: 0.316 
+(epoch: 60, iters: 480, time: 0.118, data: 0.000) loss: 0.420 
+saving the model at the end of epoch 60, iters 28800
+End of epoch 60 / 200 	 Time Taken: 59 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 60, TEST ACC: [44.167 %]
+
+saving the latest model (epoch 61, total_steps 28816)
+(epoch: 61, iters: 80, time: 0.116, data: 0.583) loss: 0.357 
+(epoch: 61, iters: 160, time: 0.120, data: 0.000) loss: 0.445 
+(epoch: 61, iters: 240, time: 0.114, data: 0.043) loss: 0.503 
+(epoch: 61, iters: 320, time: 0.114, data: 0.000) loss: 0.172 
+(epoch: 61, iters: 400, time: 0.106, data: 0.013) loss: 0.547 
+(epoch: 61, iters: 480, time: 0.108, data: 0.000) loss: 0.388 
+saving the model at the end of epoch 61, iters 29280
+End of epoch 61 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 61, TEST ACC: [36.667 %]
+
+saving the latest model (epoch 62, total_steps 29296)
+(epoch: 62, iters: 80, time: 0.112, data: 0.878) loss: 0.259 
+(epoch: 62, iters: 160, time: 0.113, data: 0.000) loss: 0.247 
+(epoch: 62, iters: 240, time: 0.113, data: 0.012) loss: 0.158 
+(epoch: 62, iters: 320, time: 0.115, data: 0.000) loss: 0.286 
+(epoch: 62, iters: 400, time: 0.107, data: 0.000) loss: 0.193 
+(epoch: 62, iters: 480, time: 0.108, data: 0.016) loss: 0.487 
+saving the model at the end of epoch 62, iters 29760
+End of epoch 62 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 62, TEST ACC: [45.0 %]
+
+saving the latest model (epoch 63, total_steps 29776)
+(epoch: 63, iters: 80, time: 0.122, data: 0.819) loss: 0.419 
+(epoch: 63, iters: 160, time: 0.122, data: 0.000) loss: 0.188 
+(epoch: 63, iters: 240, time: 0.114, data: 0.000) loss: 0.404 
+(epoch: 63, iters: 320, time: 0.130, data: 0.044) loss: 0.127 
+(epoch: 63, iters: 400, time: 0.109, data: 0.000) loss: 0.149 
+(epoch: 63, iters: 480, time: 0.108, data: 0.012) loss: 0.203 
+saving the model at the end of epoch 63, iters 30240
+End of epoch 63 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 63, TEST ACC: [50.833 %]
+
+saving the latest model (epoch 64, total_steps 30256)
+(epoch: 64, iters: 80, time: 0.123, data: 0.615) loss: 1.055 
+(epoch: 64, iters: 160, time: 0.129, data: 0.000) loss: 0.303 
+(epoch: 64, iters: 240, time: 0.121, data: 0.045) loss: 0.736 
+(epoch: 64, iters: 320, time: 0.115, data: 0.000) loss: 0.467 
+(epoch: 64, iters: 400, time: 0.105, data: 0.013) loss: 0.122 
+(epoch: 64, iters: 480, time: 0.108, data: 0.000) loss: 0.718 
+saving the model at the end of epoch 64, iters 30720
+End of epoch 64 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 64, TEST ACC: [45.0 %]
+
+saving the latest model (epoch 65, total_steps 30736)
+(epoch: 65, iters: 80, time: 0.130, data: 0.618) loss: 0.722 
+(epoch: 65, iters: 160, time: 0.114, data: 0.000) loss: 0.492 
+(epoch: 65, iters: 240, time: 0.113, data: 0.060) loss: 0.351 
+(epoch: 65, iters: 320, time: 0.115, data: 0.000) loss: 0.329 
+(epoch: 65, iters: 400, time: 0.105, data: 0.013) loss: 0.246 
+(epoch: 65, iters: 480, time: 0.108, data: 0.000) loss: 0.532 
+saving the model at the end of epoch 65, iters 31200
+End of epoch 65 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 65, TEST ACC: [48.333 %]
+
+saving the latest model (epoch 66, total_steps 31216)
+(epoch: 66, iters: 80, time: 0.122, data: 0.912) loss: 0.164 
+(epoch: 66, iters: 160, time: 0.122, data: 0.000) loss: 0.452 
+(epoch: 66, iters: 240, time: 0.114, data: 0.043) loss: 0.538 
+(epoch: 66, iters: 320, time: 0.123, data: 0.000) loss: 0.113 
+(epoch: 66, iters: 400, time: 0.105, data: 0.012) loss: 0.751 
+(epoch: 66, iters: 480, time: 0.110, data: 0.000) loss: 1.249 
+saving the model at the end of epoch 66, iters 31680
+End of epoch 66 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 66, TEST ACC: [58.333 %]
+
+saving the latest model (epoch 67, total_steps 31696)
+(epoch: 67, iters: 80, time: 0.116, data: 1.036) loss: 0.840 
+(epoch: 67, iters: 160, time: 0.115, data: 0.000) loss: 0.406 
+(epoch: 67, iters: 240, time: 0.129, data: 0.044) loss: 1.438 
+(epoch: 67, iters: 320, time: 0.123, data: 0.000) loss: 0.101 
+(epoch: 67, iters: 400, time: 0.105, data: 0.012) loss: 1.080 
+(epoch: 67, iters: 480, time: 0.108, data: 0.000) loss: 0.146 
+saving the model at the end of epoch 67, iters 32160
+End of epoch 67 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 67, TEST ACC: [55.0 %]
+
+saving the latest model (epoch 68, total_steps 32176)
+(epoch: 68, iters: 80, time: 0.112, data: 1.013) loss: 0.294 
+(epoch: 68, iters: 160, time: 0.114, data: 0.000) loss: 0.205 
+(epoch: 68, iters: 240, time: 0.114, data: 0.013) loss: 0.343 
+(epoch: 68, iters: 320, time: 0.114, data: 0.000) loss: 0.536 
+(epoch: 68, iters: 400, time: 0.107, data: 0.000) loss: 0.300 
+(epoch: 68, iters: 480, time: 0.108, data: 0.016) loss: 0.225 
+saving the model at the end of epoch 68, iters 32640
+End of epoch 68 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 68, TEST ACC: [54.167 %]
+
+saving the latest model (epoch 69, total_steps 32656)
+(epoch: 69, iters: 80, time: 0.122, data: 0.656) loss: 0.452 
+(epoch: 69, iters: 160, time: 0.123, data: 0.000) loss: 0.154 
+(epoch: 69, iters: 240, time: 0.130, data: 0.043) loss: 0.207 
+(epoch: 69, iters: 320, time: 0.116, data: 0.000) loss: 0.240 
+(epoch: 69, iters: 400, time: 0.107, data: 0.012) loss: 0.057 
+(epoch: 69, iters: 480, time: 0.108, data: 0.000) loss: 0.347 
+saving the model at the end of epoch 69, iters 33120
+End of epoch 69 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 69, TEST ACC: [61.667 %]
+
+saving the latest model (epoch 70, total_steps 33136)
+(epoch: 70, iters: 80, time: 0.115, data: 0.690) loss: 0.086 
+(epoch: 70, iters: 160, time: 0.115, data: 0.034) loss: 0.371 
+(epoch: 70, iters: 240, time: 0.117, data: 0.000) loss: 0.189 
+(epoch: 70, iters: 320, time: 0.114, data: 0.013) loss: 0.241 
+(epoch: 70, iters: 400, time: 0.108, data: 0.000) loss: 0.353 
+(epoch: 70, iters: 480, time: 0.117, data: 0.012) loss: 0.096 
+saving the model at the end of epoch 70, iters 33600
+End of epoch 70 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 70, TEST ACC: [44.167 %]
+
+saving the latest model (epoch 71, total_steps 33616)
+(epoch: 71, iters: 80, time: 0.131, data: 0.619) loss: 0.182 
+(epoch: 71, iters: 160, time: 0.121, data: 0.034) loss: 0.203 
+(epoch: 71, iters: 240, time: 0.123, data: 0.000) loss: 0.168 
+(epoch: 71, iters: 320, time: 0.119, data: 0.013) loss: 0.376 
+(epoch: 71, iters: 400, time: 0.107, data: 0.000) loss: 0.109 
+(epoch: 71, iters: 480, time: 0.108, data: 0.012) loss: 0.493 
+saving the model at the end of epoch 71, iters 34080
+End of epoch 71 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 71, TEST ACC: [52.5 %]
+
+saving the latest model (epoch 72, total_steps 34096)
+(epoch: 72, iters: 80, time: 0.121, data: 0.558) loss: 0.102 
+(epoch: 72, iters: 160, time: 0.115, data: 0.000) loss: 0.339 
+(epoch: 72, iters: 240, time: 0.115, data: 0.045) loss: 0.321 
+(epoch: 72, iters: 320, time: 0.115, data: 0.000) loss: 0.453 
+(epoch: 72, iters: 400, time: 0.104, data: 0.012) loss: 0.090 
+(epoch: 72, iters: 480, time: 0.108, data: 0.000) loss: 0.192 
+saving the model at the end of epoch 72, iters 34560
+End of epoch 72 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 72, TEST ACC: [55.0 %]
+
+saving the latest model (epoch 73, total_steps 34576)
+(epoch: 73, iters: 80, time: 0.123, data: 0.514) loss: 0.140 
+(epoch: 73, iters: 160, time: 0.121, data: 0.000) loss: 0.390 
+(epoch: 73, iters: 240, time: 0.114, data: 0.043) loss: 0.214 
+(epoch: 73, iters: 320, time: 0.124, data: 0.000) loss: 0.573 
+(epoch: 73, iters: 400, time: 0.105, data: 0.012) loss: 0.571 
+(epoch: 73, iters: 480, time: 0.109, data: 0.000) loss: 0.129 
+saving the model at the end of epoch 73, iters 35040
+End of epoch 73 / 200 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 73, TEST ACC: [50.0 %]
+
+saving the latest model (epoch 74, total_steps 35056)
+(epoch: 74, iters: 80, time: 0.114, data: 0.488) loss: 0.080 
+(epoch: 74, iters: 160, time: 0.124, data: 0.000) loss: 0.231 
+(epoch: 74, iters: 240, time: 0.113, data: 0.000) loss: 0.060 
+(epoch: 74, iters: 320, time: 0.114, data: 0.043) loss: 0.180 
+(epoch: 74, iters: 400, time: 0.109, data: 0.000) loss: 0.130 
+(epoch: 74, iters: 480, time: 0.108, data: 0.012) loss: 0.127 
+saving the model at the end of epoch 74, iters 35520
+End of epoch 74 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 74, TEST ACC: [51.667 %]
+
+saving the latest model (epoch 75, total_steps 35536)
+(epoch: 75, iters: 80, time: 0.112, data: 0.570) loss: 0.109 
+(epoch: 75, iters: 160, time: 0.121, data: 0.000) loss: 0.209 
+(epoch: 75, iters: 240, time: 0.114, data: 0.000) loss: 0.196 
+(epoch: 75, iters: 320, time: 0.115, data: 0.044) loss: 0.097 
+(epoch: 75, iters: 400, time: 0.108, data: 0.000) loss: 0.304 
+(epoch: 75, iters: 480, time: 0.109, data: 0.012) loss: 0.141 
+saving the model at the end of epoch 75, iters 36000
+End of epoch 75 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 75, TEST ACC: [45.0 %]
+
+saving the latest model (epoch 76, total_steps 36016)
+(epoch: 76, iters: 80, time: 0.115, data: 0.594) loss: 0.304 
+(epoch: 76, iters: 160, time: 0.113, data: 0.000) loss: 0.123 
+(epoch: 76, iters: 240, time: 0.122, data: 0.043) loss: 0.523 
+(epoch: 76, iters: 320, time: 0.116, data: 0.000) loss: 0.222 
+(epoch: 76, iters: 400, time: 0.106, data: 0.013) loss: 0.036 
+(epoch: 76, iters: 480, time: 0.107, data: 0.000) loss: 0.070 
+saving the model at the end of epoch 76, iters 36480
+End of epoch 76 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 76, TEST ACC: [58.333 %]
+
+saving the latest model (epoch 77, total_steps 36496)
+(epoch: 77, iters: 80, time: 0.121, data: 0.476) loss: 0.095 
+(epoch: 77, iters: 160, time: 0.115, data: 0.000) loss: 0.077 
+(epoch: 77, iters: 240, time: 0.121, data: 0.000) loss: 0.151 
+(epoch: 77, iters: 320, time: 0.130, data: 0.043) loss: 0.137 
+(epoch: 77, iters: 400, time: 0.107, data: 0.000) loss: 0.055 
+(epoch: 77, iters: 480, time: 0.108, data: 0.012) loss: 0.053 
+saving the model at the end of epoch 77, iters 36960
+End of epoch 77 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 77, TEST ACC: [47.5 %]
+
+saving the latest model (epoch 78, total_steps 36976)
+(epoch: 78, iters: 80, time: 0.113, data: 0.790) loss: 0.142 
+(epoch: 78, iters: 160, time: 0.121, data: 0.000) loss: 0.376 
+(epoch: 78, iters: 240, time: 0.120, data: 0.013) loss: 0.290 
+(epoch: 78, iters: 320, time: 0.122, data: 0.000) loss: 0.122 
+(epoch: 78, iters: 400, time: 0.109, data: 0.000) loss: 0.089 
+(epoch: 78, iters: 480, time: 0.110, data: 0.016) loss: 0.218 
+saving the model at the end of epoch 78, iters 37440
+End of epoch 78 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 78, TEST ACC: [47.5 %]
+
+saving the latest model (epoch 79, total_steps 37456)
+(epoch: 79, iters: 80, time: 0.114, data: 0.526) loss: 0.389 
+(epoch: 79, iters: 160, time: 0.112, data: 0.000) loss: 0.097 
+(epoch: 79, iters: 240, time: 0.113, data: 0.043) loss: 0.254 
+(epoch: 79, iters: 320, time: 0.114, data: 0.000) loss: 0.129 
+(epoch: 79, iters: 400, time: 0.105, data: 0.013) loss: 0.116 
+(epoch: 79, iters: 480, time: 0.108, data: 0.000) loss: 0.388 
+saving the model at the end of epoch 79, iters 37920
+End of epoch 79 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 79, TEST ACC: [45.833 %]
+
+saving the latest model (epoch 80, total_steps 37936)
+(epoch: 80, iters: 80, time: 0.113, data: 0.811) loss: 0.111 
+(epoch: 80, iters: 160, time: 0.113, data: 0.049) loss: 0.170 
+(epoch: 80, iters: 240, time: 0.115, data: 0.000) loss: 0.222 
+(epoch: 80, iters: 320, time: 0.119, data: 0.013) loss: 0.116 
+(epoch: 80, iters: 400, time: 0.108, data: 0.000) loss: 0.059 
+(epoch: 80, iters: 480, time: 0.116, data: 0.012) loss: 0.131 
+saving the model at the end of epoch 80, iters 38400
+End of epoch 80 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 80, TEST ACC: [51.667 %]
+
+saving the latest model (epoch 81, total_steps 38416)
+(epoch: 81, iters: 80, time: 0.112, data: 0.552) loss: 0.190 
+(epoch: 81, iters: 160, time: 0.113, data: 0.028) loss: 0.067 
+(epoch: 81, iters: 240, time: 0.121, data: 0.000) loss: 0.128 
+(epoch: 81, iters: 320, time: 0.117, data: 0.012) loss: 0.358 
+(epoch: 81, iters: 400, time: 0.107, data: 0.000) loss: 0.107 
+(epoch: 81, iters: 480, time: 0.109, data: 0.012) loss: 0.463 
+saving the model at the end of epoch 81, iters 38880
+End of epoch 81 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 81, TEST ACC: [50.0 %]
+
+saving the latest model (epoch 82, total_steps 38896)
+(epoch: 82, iters: 80, time: 0.114, data: 0.753) loss: 0.427 
+(epoch: 82, iters: 160, time: 0.114, data: 0.033) loss: 0.149 
+(epoch: 82, iters: 240, time: 0.113, data: 0.000) loss: 0.066 
+(epoch: 82, iters: 320, time: 0.111, data: 0.012) loss: 0.100 
+(epoch: 82, iters: 400, time: 0.108, data: 0.000) loss: 0.301 
+(epoch: 82, iters: 480, time: 0.107, data: 0.012) loss: 0.263 
+saving the model at the end of epoch 82, iters 39360
+End of epoch 82 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 82, TEST ACC: [51.667 %]
+
+saving the latest model (epoch 83, total_steps 39376)
+(epoch: 83, iters: 80, time: 0.115, data: 0.802) loss: 0.079 
+(epoch: 83, iters: 160, time: 0.121, data: 0.033) loss: 0.210 
+(epoch: 83, iters: 240, time: 0.123, data: 0.000) loss: 0.077 
+(epoch: 83, iters: 320, time: 0.112, data: 0.013) loss: 0.048 
+(epoch: 83, iters: 400, time: 0.107, data: 0.000) loss: 0.227 
+(epoch: 83, iters: 480, time: 0.108, data: 0.012) loss: 0.056 
+saving the model at the end of epoch 83, iters 39840
+End of epoch 83 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 83, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 84, total_steps 39856)
+(epoch: 84, iters: 80, time: 0.114, data: 0.465) loss: 0.315 
+(epoch: 84, iters: 160, time: 0.131, data: 0.000) loss: 0.271 
+(epoch: 84, iters: 240, time: 0.113, data: 0.044) loss: 0.478 
+(epoch: 84, iters: 320, time: 0.113, data: 0.000) loss: 0.255 
+(epoch: 84, iters: 400, time: 0.104, data: 0.012) loss: 0.313 
+(epoch: 84, iters: 480, time: 0.108, data: 0.000) loss: 0.072 
+saving the model at the end of epoch 84, iters 40320
+End of epoch 84 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 84, TEST ACC: [41.667 %]
+
+saving the latest model (epoch 85, total_steps 40336)
+(epoch: 85, iters: 80, time: 0.116, data: 0.586) loss: 0.064 
+(epoch: 85, iters: 160, time: 0.119, data: 0.000) loss: 0.476 
+(epoch: 85, iters: 240, time: 0.127, data: 0.058) loss: 0.152 
+(epoch: 85, iters: 320, time: 0.114, data: 0.000) loss: 0.098 
+(epoch: 85, iters: 400, time: 0.106, data: 0.028) loss: 0.104 
+(epoch: 85, iters: 480, time: 0.109, data: 0.000) loss: 0.133 
+saving the model at the end of epoch 85, iters 40800
+End of epoch 85 / 200 	 Time Taken: 57 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 85, TEST ACC: [48.333 %]
+
+saving the latest model (epoch 86, total_steps 40816)
+(epoch: 86, iters: 80, time: 0.112, data: 0.542) loss: 0.074 
+(epoch: 86, iters: 160, time: 0.114, data: 0.000) loss: 0.067 
+(epoch: 86, iters: 240, time: 0.113, data: 0.012) loss: 0.140 
+(epoch: 86, iters: 320, time: 0.114, data: 0.000) loss: 0.205 
+(epoch: 86, iters: 400, time: 0.107, data: 0.000) loss: 0.065 
+(epoch: 86, iters: 480, time: 0.107, data: 0.016) loss: 0.239 
+saving the model at the end of epoch 86, iters 41280
+End of epoch 86 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 86, TEST ACC: [61.667 %]
+
+saving the latest model (epoch 87, total_steps 41296)
+(epoch: 87, iters: 80, time: 0.112, data: 0.529) loss: 0.196 
+(epoch: 87, iters: 160, time: 0.113, data: 0.000) loss: 0.367 
+(epoch: 87, iters: 240, time: 0.113, data: 0.012) loss: 0.054 
+(epoch: 87, iters: 320, time: 0.123, data: 0.000) loss: 0.041 
+(epoch: 87, iters: 400, time: 0.107, data: 0.000) loss: 0.242 
+(epoch: 87, iters: 480, time: 0.108, data: 0.016) loss: 0.038 
+saving the model at the end of epoch 87, iters 41760
+End of epoch 87 / 200 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 87, TEST ACC: [49.167 %]
+
+saving the latest model (epoch 88, total_steps 41776)
+(epoch: 88, iters: 80, time: 0.111, data: 0.550) loss: 0.094 
+(epoch: 88, iters: 160, time: 0.113, data: 0.000) loss: 0.311 
+(epoch: 88, iters: 240, time: 0.114, data: 0.027) loss: 0.081 
+(epoch: 88, iters: 320, time: 0.115, data: 0.000) loss: 0.188 
+(epoch: 88, iters: 400, time: 0.108, data: 0.000) loss: 0.142 
+(epoch: 88, iters: 480, time: 0.107, data: 0.015) loss: 0.179 
+saving the model at the end of epoch 88, iters 42240
+End of epoch 88 / 200 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 88, TEST ACC: [42.5 %]
+
+saving the latest model (epoch 89, total_steps 42256)
+(epoch: 89, iters: 80, time: 0.113, data: 0.758) loss: 0.355 
+(epoch: 89, iters: 160, time: 0.113, data: 0.000) loss: 0.180 
+(epoch: 89, iters: 240, time: 0.114, data: 0.043) loss: 0.474 
+(epoch: 89, iters: 320, time: 0.132, data: 0.000) loss: 0.477 
+(epoch: 89, iters: 400, time: 0.106, data: 0.013) loss: 0.214 
+(epoch: 89, iters: 480, time: 0.107, data: 0.000) loss: 0.059 
+saving the model at the end of epoch 89, iters 42720
+End of epoch 89 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 89, TEST ACC: [70.833 %]
+
+saving the latest model (epoch 90, total_steps 42736)
+(epoch: 90, iters: 80, time: 0.123, data: 0.479) loss: 0.091 
+(epoch: 90, iters: 160, time: 0.121, data: 0.000) loss: 0.273 
+(epoch: 90, iters: 240, time: 0.114, data: 0.043) loss: 0.198 
+(epoch: 90, iters: 320, time: 0.114, data: 0.000) loss: 0.090 
+(epoch: 90, iters: 400, time: 0.104, data: 0.013) loss: 0.147 
+(epoch: 90, iters: 480, time: 0.117, data: 0.000) loss: 0.120 
+saving the model at the end of epoch 90, iters 43200
+End of epoch 90 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 90, TEST ACC: [55.833 %]
+
+saving the latest model (epoch 91, total_steps 43216)
+(epoch: 91, iters: 80, time: 0.114, data: 0.557) loss: 0.033 
+(epoch: 91, iters: 160, time: 0.113, data: 0.000) loss: 0.252 
+(epoch: 91, iters: 240, time: 0.114, data: 0.000) loss: 0.076 
+(epoch: 91, iters: 320, time: 0.115, data: 0.044) loss: 0.072 
+(epoch: 91, iters: 400, time: 0.108, data: 0.000) loss: 0.132 
+(epoch: 91, iters: 480, time: 0.108, data: 0.014) loss: 0.171 
+saving the model at the end of epoch 91, iters 43680
+End of epoch 91 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 91, TEST ACC: [51.667 %]
+
+saving the latest model (epoch 92, total_steps 43696)
+(epoch: 92, iters: 80, time: 0.112, data: 0.547) loss: 0.336 
+(epoch: 92, iters: 160, time: 0.112, data: 0.000) loss: 0.176 
+(epoch: 92, iters: 240, time: 0.115, data: 0.013) loss: 0.122 
+(epoch: 92, iters: 320, time: 0.114, data: 0.000) loss: 0.098 
+(epoch: 92, iters: 400, time: 0.106, data: 0.000) loss: 0.201 
+(epoch: 92, iters: 480, time: 0.107, data: 0.016) loss: 0.051 
+saving the model at the end of epoch 92, iters 44160
+End of epoch 92 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 92, TEST ACC: [55.0 %]
+
+saving the latest model (epoch 93, total_steps 44176)
+(epoch: 93, iters: 80, time: 0.116, data: 0.552) loss: 0.193 
+(epoch: 93, iters: 160, time: 0.115, data: 0.033) loss: 0.030 
+(epoch: 93, iters: 240, time: 0.123, data: 0.000) loss: 0.322 
+(epoch: 93, iters: 320, time: 0.112, data: 0.012) loss: 0.037 
+(epoch: 93, iters: 400, time: 0.107, data: 0.000) loss: 0.424 
+(epoch: 93, iters: 480, time: 0.108, data: 0.013) loss: 0.327 
+saving the model at the end of epoch 93, iters 44640
+End of epoch 93 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 93, TEST ACC: [55.0 %]
+
+saving the latest model (epoch 94, total_steps 44656)
+(epoch: 94, iters: 80, time: 0.114, data: 0.552) loss: 0.220 
+(epoch: 94, iters: 160, time: 0.122, data: 0.000) loss: 0.069 
+(epoch: 94, iters: 240, time: 0.114, data: 0.044) loss: 0.909 
+(epoch: 94, iters: 320, time: 0.114, data: 0.000) loss: 0.039 
+(epoch: 94, iters: 400, time: 0.104, data: 0.013) loss: 0.409 
+(epoch: 94, iters: 480, time: 0.107, data: 0.000) loss: 0.112 
+saving the model at the end of epoch 94, iters 45120
+End of epoch 94 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 94, TEST ACC: [45.833 %]
+
+saving the latest model (epoch 95, total_steps 45136)
+(epoch: 95, iters: 80, time: 0.115, data: 0.479) loss: 0.191 
+(epoch: 95, iters: 160, time: 0.113, data: 0.000) loss: 0.153 
+(epoch: 95, iters: 240, time: 0.115, data: 0.066) loss: 0.084 
+(epoch: 95, iters: 320, time: 0.115, data: 0.000) loss: 0.025 
+(epoch: 95, iters: 400, time: 0.105, data: 0.012) loss: 0.083 
+(epoch: 95, iters: 480, time: 0.107, data: 0.000) loss: 0.145 
+saving the model at the end of epoch 95, iters 45600
+End of epoch 95 / 200 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 95, TEST ACC: [66.667 %]
+
+saving the latest model (epoch 96, total_steps 45616)
+(epoch: 96, iters: 80, time: 0.113, data: 0.505) loss: 0.222 
+(epoch: 96, iters: 160, time: 0.115, data: 0.000) loss: 0.026 
+(epoch: 96, iters: 240, time: 0.112, data: 0.000) loss: 0.037 
+(epoch: 96, iters: 320, time: 0.113, data: 0.043) loss: 0.164 
+(epoch: 96, iters: 400, time: 0.108, data: 0.000) loss: 0.355 
+(epoch: 96, iters: 480, time: 0.107, data: 0.012) loss: 0.361 
+saving the model at the end of epoch 96, iters 46080
+End of epoch 96 / 200 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 96, TEST ACC: [53.333 %]
+
+saving the latest model (epoch 97, total_steps 46096)
+(epoch: 97, iters: 80, time: 0.113, data: 0.553) loss: 0.189 
+(epoch: 97, iters: 160, time: 0.114, data: 0.033) loss: 0.164 
+(epoch: 97, iters: 240, time: 0.115, data: 0.000) loss: 0.081 
+(epoch: 97, iters: 320, time: 0.120, data: 0.013) loss: 0.112 
+(epoch: 97, iters: 400, time: 0.107, data: 0.000) loss: 0.107 
+(epoch: 97, iters: 480, time: 0.107, data: 0.013) loss: 0.067 
+saving the model at the end of epoch 97, iters 46560
+End of epoch 97 / 200 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 97, TEST ACC: [45.833 %]
+
+saving the latest model (epoch 98, total_steps 46576)
+(epoch: 98, iters: 80, time: 0.113, data: 0.475) loss: 0.235 
+(epoch: 98, iters: 160, time: 0.115, data: 0.000) loss: 0.054 
+(epoch: 98, iters: 240, time: 0.113, data: 0.000) loss: 0.181 
+(epoch: 98, iters: 320, time: 0.122, data: 0.044) loss: 0.349 
+(epoch: 98, iters: 400, time: 0.109, data: 0.000) loss: 0.104 
+(epoch: 98, iters: 480, time: 0.108, data: 0.013) loss: 0.365 
+saving the model at the end of epoch 98, iters 47040
+End of epoch 98 / 200 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 98, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 99, total_steps 47056)
+(epoch: 99, iters: 80, time: 0.114, data: 0.558) loss: 0.060 
+(epoch: 99, iters: 160, time: 0.114, data: 0.000) loss: 0.167 
+(epoch: 99, iters: 240, time: 0.113, data: 0.044) loss: 0.421 
+(epoch: 99, iters: 320, time: 0.113, data: 0.000) loss: 0.158 
+(epoch: 99, iters: 400, time: 0.105, data: 0.012) loss: 0.039 
+(epoch: 99, iters: 480, time: 0.107, data: 0.000) loss: 0.210 
+saving the model at the end of epoch 99, iters 47520
+End of epoch 99 / 200 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 99, TEST ACC: [50.0 %]
+
+saving the latest model (epoch 100, total_steps 47536)
+(epoch: 100, iters: 80, time: 0.115, data: 0.971) loss: 0.081 
+(epoch: 100, iters: 160, time: 0.113, data: 0.048) loss: 0.090 
+(epoch: 100, iters: 240, time: 0.116, data: 0.000) loss: 0.253 
+(epoch: 100, iters: 320, time: 0.112, data: 0.012) loss: 0.031 
+(epoch: 100, iters: 400, time: 0.107, data: 0.000) loss: 0.049 
+(epoch: 100, iters: 480, time: 0.117, data: 0.012) loss: 0.106 
+saving the model at the end of epoch 100, iters 48000
+End of epoch 100 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001980
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 100, TEST ACC: [56.667 %]
+
+saving the latest model (epoch 101, total_steps 48016)
+(epoch: 101, iters: 80, time: 0.113, data: 0.480) loss: 0.080 
+(epoch: 101, iters: 160, time: 0.122, data: 0.000) loss: 0.030 
+(epoch: 101, iters: 240, time: 0.113, data: 0.000) loss: 0.090 
+(epoch: 101, iters: 320, time: 0.113, data: 0.043) loss: 0.203 
+(epoch: 101, iters: 400, time: 0.107, data: 0.000) loss: 0.176 
+(epoch: 101, iters: 480, time: 0.106, data: 0.012) loss: 0.056 
+saving the model at the end of epoch 101, iters 48480
+End of epoch 101 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001960
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 101, TEST ACC: [61.667 %]
+
+saving the latest model (epoch 102, total_steps 48496)
+(epoch: 102, iters: 80, time: 0.113, data: 0.541) loss: 0.122 
+(epoch: 102, iters: 160, time: 0.114, data: 0.000) loss: 0.027 
+(epoch: 102, iters: 240, time: 0.113, data: 0.043) loss: 0.042 
+(epoch: 102, iters: 320, time: 0.114, data: 0.000) loss: 0.135 
+(epoch: 102, iters: 400, time: 0.105, data: 0.012) loss: 0.178 
+(epoch: 102, iters: 480, time: 0.108, data: 0.000) loss: 0.207 
+saving the model at the end of epoch 102, iters 48960
+End of epoch 102 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001941
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 102, TEST ACC: [55.833 %]
+
+saving the latest model (epoch 103, total_steps 48976)
+(epoch: 103, iters: 80, time: 0.115, data: 0.544) loss: 0.097 
+(epoch: 103, iters: 160, time: 0.122, data: 0.000) loss: 0.062 
+(epoch: 103, iters: 240, time: 0.114, data: 0.043) loss: 0.252 
+(epoch: 103, iters: 320, time: 0.115, data: 0.000) loss: 0.066 
+(epoch: 103, iters: 400, time: 0.104, data: 0.013) loss: 0.030 
+(epoch: 103, iters: 480, time: 0.108, data: 0.000) loss: 0.108 
+saving the model at the end of epoch 103, iters 49440
+End of epoch 103 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001921
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 103, TEST ACC: [47.5 %]
+
+saving the latest model (epoch 104, total_steps 49456)
+(epoch: 104, iters: 80, time: 0.112, data: 0.516) loss: 0.033 
+(epoch: 104, iters: 160, time: 0.130, data: 0.000) loss: 0.063 
+(epoch: 104, iters: 240, time: 0.113, data: 0.013) loss: 0.037 
+(epoch: 104, iters: 320, time: 0.114, data: 0.000) loss: 0.028 
+(epoch: 104, iters: 400, time: 0.106, data: 0.000) loss: 0.022 
+(epoch: 104, iters: 480, time: 0.106, data: 0.016) loss: 0.054 
+saving the model at the end of epoch 104, iters 49920
+End of epoch 104 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001901
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 104, TEST ACC: [75.833 %]
+
+saving the latest model (epoch 105, total_steps 49936)
+(epoch: 105, iters: 80, time: 0.114, data: 0.722) loss: 0.191 
+(epoch: 105, iters: 160, time: 0.121, data: 0.049) loss: 0.041 
+(epoch: 105, iters: 240, time: 0.115, data: 0.000) loss: 0.253 
+(epoch: 105, iters: 320, time: 0.112, data: 0.012) loss: 0.204 
+(epoch: 105, iters: 400, time: 0.108, data: 0.000) loss: 0.255 
+(epoch: 105, iters: 480, time: 0.107, data: 0.012) loss: 0.083 
+saving the model at the end of epoch 105, iters 50400
+End of epoch 105 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001881
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 105, TEST ACC: [60.0 %]
+
+saving the latest model (epoch 106, total_steps 50416)
+(epoch: 106, iters: 80, time: 0.122, data: 0.562) loss: 0.328 
+(epoch: 106, iters: 160, time: 0.114, data: 0.000) loss: 0.047 
+(epoch: 106, iters: 240, time: 0.112, data: 0.000) loss: 0.132 
+(epoch: 106, iters: 320, time: 0.113, data: 0.043) loss: 0.146 
+(epoch: 106, iters: 400, time: 0.107, data: 0.000) loss: 0.149 
+(epoch: 106, iters: 480, time: 0.107, data: 0.013) loss: 0.085 
+saving the model at the end of epoch 106, iters 50880
+End of epoch 106 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001861
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 106, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 107, total_steps 50896)
+(epoch: 107, iters: 80, time: 0.111, data: 0.547) loss: 0.123 
+(epoch: 107, iters: 160, time: 0.113, data: 0.000) loss: 0.023 
+(epoch: 107, iters: 240, time: 0.112, data: 0.013) loss: 0.077 
+(epoch: 107, iters: 320, time: 0.123, data: 0.000) loss: 0.193 
+(epoch: 107, iters: 400, time: 0.106, data: 0.000) loss: 0.046 
+(epoch: 107, iters: 480, time: 0.107, data: 0.017) loss: 0.046 
+saving the model at the end of epoch 107, iters 51360
+End of epoch 107 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001842
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 107, TEST ACC: [71.667 %]
+
+saving the latest model (epoch 108, total_steps 51376)
+(epoch: 108, iters: 80, time: 0.114, data: 0.613) loss: 0.030 
+(epoch: 108, iters: 160, time: 0.114, data: 0.000) loss: 0.124 
+(epoch: 108, iters: 240, time: 0.112, data: 0.043) loss: 0.053 
+(epoch: 108, iters: 320, time: 0.113, data: 0.000) loss: 0.107 
+(epoch: 108, iters: 400, time: 0.103, data: 0.012) loss: 0.014 
+(epoch: 108, iters: 480, time: 0.109, data: 0.000) loss: 0.149 
+saving the model at the end of epoch 108, iters 51840
+End of epoch 108 / 200 	 Time Taken: 56 sec
+learning rate = 0.0001822
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 108, TEST ACC: [66.667 %]
+
+saving the latest model (epoch 109, total_steps 51856)
+(epoch: 109, iters: 80, time: 0.114, data: 0.478) loss: 0.048 
+(epoch: 109, iters: 160, time: 0.112, data: 0.000) loss: 0.064 
+(epoch: 109, iters: 240, time: 0.113, data: 0.043) loss: 0.096 
+(epoch: 109, iters: 320, time: 0.113, data: 0.000) loss: 0.021 
+(epoch: 109, iters: 400, time: 0.104, data: 0.013) loss: 0.052 
+(epoch: 109, iters: 480, time: 0.106, data: 0.000) loss: 0.022 
+saving the model at the end of epoch 109, iters 52320
+End of epoch 109 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001802
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 109, TEST ACC: [55.833 %]
+
+saving the latest model (epoch 110, total_steps 52336)
+(epoch: 110, iters: 80, time: 0.117, data: 0.496) loss: 0.027 
+(epoch: 110, iters: 160, time: 0.112, data: 0.000) loss: 0.026 
+(epoch: 110, iters: 240, time: 0.112, data: 0.058) loss: 0.041 
+(epoch: 110, iters: 320, time: 0.114, data: 0.000) loss: 0.105 
+(epoch: 110, iters: 400, time: 0.105, data: 0.012) loss: 0.031 
+(epoch: 110, iters: 480, time: 0.118, data: 0.000) loss: 0.107 
+saving the model at the end of epoch 110, iters 52800
+End of epoch 110 / 200 	 Time Taken: 56 sec
+learning rate = 0.0001782
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 110, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 111, total_steps 52816)
+(epoch: 111, iters: 80, time: 0.114, data: 0.554) loss: 0.104 
+(epoch: 111, iters: 160, time: 0.113, data: 0.000) loss: 0.241 
+(epoch: 111, iters: 240, time: 0.113, data: 0.043) loss: 0.024 
+(epoch: 111, iters: 320, time: 0.113, data: 0.000) loss: 0.084 
+(epoch: 111, iters: 400, time: 0.105, data: 0.012) loss: 0.236 
+(epoch: 111, iters: 480, time: 0.107, data: 0.000) loss: 0.015 
+saving the model at the end of epoch 111, iters 53280
+End of epoch 111 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001762
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 111, TEST ACC: [49.167 %]
+
+saving the latest model (epoch 112, total_steps 53296)
+(epoch: 112, iters: 80, time: 0.117, data: 0.549) loss: 0.099 
+(epoch: 112, iters: 160, time: 0.113, data: 0.000) loss: 0.089 
+(epoch: 112, iters: 240, time: 0.113, data: 0.060) loss: 0.145 
+(epoch: 112, iters: 320, time: 0.121, data: 0.000) loss: 0.602 
+(epoch: 112, iters: 400, time: 0.105, data: 0.013) loss: 0.057 
+(epoch: 112, iters: 480, time: 0.107, data: 0.000) loss: 0.025 
+saving the model at the end of epoch 112, iters 53760
+End of epoch 112 / 200 	 Time Taken: 56 sec
+learning rate = 0.0001743
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 112, TEST ACC: [45.833 %]
+
+saving the latest model (epoch 113, total_steps 53776)
+(epoch: 113, iters: 80, time: 0.112, data: 0.472) loss: 0.111 
+(epoch: 113, iters: 160, time: 0.114, data: 0.000) loss: 0.151 
+(epoch: 113, iters: 240, time: 0.112, data: 0.000) loss: 0.169 
+(epoch: 113, iters: 320, time: 0.113, data: 0.043) loss: 0.079 
+(epoch: 113, iters: 400, time: 0.107, data: 0.000) loss: 0.023 
+(epoch: 113, iters: 480, time: 0.107, data: 0.012) loss: 0.031 
+saving the model at the end of epoch 113, iters 54240
+End of epoch 113 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001723
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 113, TEST ACC: [69.167 %]
+
+saving the latest model (epoch 114, total_steps 54256)
+(epoch: 114, iters: 80, time: 0.116, data: 0.523) loss: 0.017 
+(epoch: 114, iters: 160, time: 0.122, data: 0.000) loss: 0.023 
+(epoch: 114, iters: 240, time: 0.113, data: 0.044) loss: 0.094 
+(epoch: 114, iters: 320, time: 0.114, data: 0.000) loss: 0.045 
+(epoch: 114, iters: 400, time: 0.105, data: 0.012) loss: 0.037 
+(epoch: 114, iters: 480, time: 0.108, data: 0.000) loss: 0.067 
+saving the model at the end of epoch 114, iters 54720
+End of epoch 114 / 200 	 Time Taken: 56 sec
+learning rate = 0.0001703
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 114, TEST ACC: [55.0 %]
+
+saving the latest model (epoch 115, total_steps 54736)
+(epoch: 115, iters: 80, time: 0.112, data: 0.566) loss: 0.069 
+(epoch: 115, iters: 160, time: 0.113, data: 0.000) loss: 0.226 
+(epoch: 115, iters: 240, time: 0.112, data: 0.012) loss: 0.084 
+(epoch: 115, iters: 320, time: 0.114, data: 0.000) loss: 0.085 
+(epoch: 115, iters: 400, time: 0.107, data: 0.000) loss: 0.387 
+(epoch: 115, iters: 480, time: 0.108, data: 0.017) loss: 0.054 
+saving the model at the end of epoch 115, iters 55200
+End of epoch 115 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001683
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 115, TEST ACC: [75.833 %]
+
+saving the latest model (epoch 116, total_steps 55216)
+(epoch: 116, iters: 80, time: 0.115, data: 0.548) loss: 0.072 
+(epoch: 116, iters: 160, time: 0.121, data: 0.033) loss: 0.032 
+(epoch: 116, iters: 240, time: 0.115, data: 0.000) loss: 0.015 
+(epoch: 116, iters: 320, time: 0.110, data: 0.012) loss: 0.236 
+(epoch: 116, iters: 400, time: 0.108, data: 0.000) loss: 0.229 
+(epoch: 116, iters: 480, time: 0.109, data: 0.013) loss: 0.163 
+saving the model at the end of epoch 116, iters 55680
+End of epoch 116 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001663
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 116, TEST ACC: [67.5 %]
+
+saving the latest model (epoch 117, total_steps 55696)
+(epoch: 117, iters: 80, time: 0.114, data: 0.637) loss: 0.311 
+(epoch: 117, iters: 160, time: 0.112, data: 0.000) loss: 0.127 
+(epoch: 117, iters: 240, time: 0.113, data: 0.043) loss: 0.034 
+(epoch: 117, iters: 320, time: 0.123, data: 0.000) loss: 0.096 
+(epoch: 117, iters: 400, time: 0.104, data: 0.013) loss: 0.166 
+(epoch: 117, iters: 480, time: 0.108, data: 0.000) loss: 0.030 
+saving the model at the end of epoch 117, iters 56160
+End of epoch 117 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001644
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 117, TEST ACC: [60.833 %]
+
+saving the latest model (epoch 118, total_steps 56176)
+(epoch: 118, iters: 80, time: 0.115, data: 0.562) loss: 0.227 
+(epoch: 118, iters: 160, time: 0.114, data: 0.033) loss: 0.160 
+(epoch: 118, iters: 240, time: 0.113, data: 0.000) loss: 0.039 
+(epoch: 118, iters: 320, time: 0.111, data: 0.012) loss: 0.127 
+(epoch: 118, iters: 400, time: 0.106, data: 0.000) loss: 0.036 
+(epoch: 118, iters: 480, time: 0.108, data: 0.012) loss: 0.076 
+saving the model at the end of epoch 118, iters 56640
+End of epoch 118 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001624
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 118, TEST ACC: [56.667 %]
+
+saving the latest model (epoch 119, total_steps 56656)
+(epoch: 119, iters: 80, time: 0.114, data: 0.533) loss: 0.076 
+(epoch: 119, iters: 160, time: 0.115, data: 0.000) loss: 0.106 
+(epoch: 119, iters: 240, time: 0.114, data: 0.043) loss: 0.050 
+(epoch: 119, iters: 320, time: 0.114, data: 0.000) loss: 0.181 
+(epoch: 119, iters: 400, time: 0.105, data: 0.012) loss: 0.043 
+(epoch: 119, iters: 480, time: 0.108, data: 0.000) loss: 0.026 
+saving the model at the end of epoch 119, iters 57120
+End of epoch 119 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001604
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 119, TEST ACC: [62.5 %]
+
+saving the latest model (epoch 120, total_steps 57136)
+(epoch: 120, iters: 80, time: 0.114, data: 0.474) loss: 0.153 
+(epoch: 120, iters: 160, time: 0.114, data: 0.000) loss: 0.008 
+(epoch: 120, iters: 240, time: 0.113, data: 0.000) loss: 0.136 
+(epoch: 120, iters: 320, time: 0.113, data: 0.042) loss: 0.015 
+(epoch: 120, iters: 400, time: 0.108, data: 0.000) loss: 0.018 
+(epoch: 120, iters: 480, time: 0.117, data: 0.012) loss: 0.149 
+saving the model at the end of epoch 120, iters 57600
+End of epoch 120 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001584
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 120, TEST ACC: [65.833 %]
+
+saving the latest model (epoch 121, total_steps 57616)
+(epoch: 121, iters: 80, time: 0.113, data: 0.576) loss: 0.042 
+(epoch: 121, iters: 160, time: 0.114, data: 0.000) loss: 0.037 
+(epoch: 121, iters: 240, time: 0.114, data: 0.000) loss: 0.036 
+(epoch: 121, iters: 320, time: 0.113, data: 0.043) loss: 0.022 
+(epoch: 121, iters: 400, time: 0.108, data: 0.000) loss: 0.182 
+(epoch: 121, iters: 480, time: 0.108, data: 0.013) loss: 0.099 
+saving the model at the end of epoch 121, iters 58080
+End of epoch 121 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001564
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 121, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 122, total_steps 58096)
+(epoch: 122, iters: 80, time: 0.115, data: 0.471) loss: 0.063 
+(epoch: 122, iters: 160, time: 0.121, data: 0.000) loss: 0.011 
+(epoch: 122, iters: 240, time: 0.113, data: 0.044) loss: 0.111 
+(epoch: 122, iters: 320, time: 0.114, data: 0.000) loss: 0.161 
+(epoch: 122, iters: 400, time: 0.104, data: 0.012) loss: 0.041 
+(epoch: 122, iters: 480, time: 0.108, data: 0.000) loss: 0.028 
+saving the model at the end of epoch 122, iters 58560
+End of epoch 122 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001545
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 122, TEST ACC: [55.0 %]
+
+saving the latest model (epoch 123, total_steps 58576)
+(epoch: 123, iters: 80, time: 0.116, data: 0.544) loss: 0.053 
+(epoch: 123, iters: 160, time: 0.113, data: 0.000) loss: 0.054 
+(epoch: 123, iters: 240, time: 0.113, data: 0.058) loss: 0.032 
+(epoch: 123, iters: 320, time: 0.128, data: 0.000) loss: 0.045 
+(epoch: 123, iters: 400, time: 0.107, data: 0.028) loss: 0.087 
+(epoch: 123, iters: 480, time: 0.107, data: 0.000) loss: 0.216 
+saving the model at the end of epoch 123, iters 59040
+End of epoch 123 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001525
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 123, TEST ACC: [56.667 %]
+
+saving the latest model (epoch 124, total_steps 59056)
+(epoch: 124, iters: 80, time: 0.113, data: 0.521) loss: 0.052 
+(epoch: 124, iters: 160, time: 0.123, data: 0.000) loss: 0.048 
+(epoch: 124, iters: 240, time: 0.113, data: 0.000) loss: 0.061 
+(epoch: 124, iters: 320, time: 0.113, data: 0.042) loss: 0.144 
+(epoch: 124, iters: 400, time: 0.107, data: 0.000) loss: 0.009 
+(epoch: 124, iters: 480, time: 0.108, data: 0.013) loss: 0.034 
+saving the model at the end of epoch 124, iters 59520
+End of epoch 124 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001505
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 124, TEST ACC: [60.833 %]
+
+saving the latest model (epoch 125, total_steps 59536)
+(epoch: 125, iters: 80, time: 0.113, data: 0.569) loss: 0.128 
+(epoch: 125, iters: 160, time: 0.113, data: 0.000) loss: 0.018 
+(epoch: 125, iters: 240, time: 0.113, data: 0.012) loss: 0.025 
+(epoch: 125, iters: 320, time: 0.113, data: 0.000) loss: 0.112 
+(epoch: 125, iters: 400, time: 0.108, data: 0.000) loss: 0.010 
+(epoch: 125, iters: 480, time: 0.107, data: 0.015) loss: 0.114 
+saving the model at the end of epoch 125, iters 60000
+End of epoch 125 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001485
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 125, TEST ACC: [54.167 %]
+
+saving the latest model (epoch 126, total_steps 60016)
+(epoch: 126, iters: 80, time: 0.114, data: 0.505) loss: 0.046 
+(epoch: 126, iters: 160, time: 0.112, data: 0.000) loss: 0.036 
+(epoch: 126, iters: 240, time: 0.114, data: 0.043) loss: 0.010 
+(epoch: 126, iters: 320, time: 0.114, data: 0.000) loss: 0.009 
+(epoch: 126, iters: 400, time: 0.103, data: 0.012) loss: 0.071 
+(epoch: 126, iters: 480, time: 0.109, data: 0.000) loss: 0.020 
+saving the model at the end of epoch 126, iters 60480
+End of epoch 126 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001465
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 126, TEST ACC: [62.5 %]
+
+saving the latest model (epoch 127, total_steps 60496)
+(epoch: 127, iters: 80, time: 0.114, data: 0.520) loss: 0.018 
+(epoch: 127, iters: 160, time: 0.114, data: 0.033) loss: 0.060 
+(epoch: 127, iters: 240, time: 0.115, data: 0.000) loss: 0.129 
+(epoch: 127, iters: 320, time: 0.123, data: 0.012) loss: 0.067 
+(epoch: 127, iters: 400, time: 0.108, data: 0.000) loss: 0.064 
+(epoch: 127, iters: 480, time: 0.107, data: 0.012) loss: 0.023 
+saving the model at the end of epoch 127, iters 60960
+End of epoch 127 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001446
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 127, TEST ACC: [55.833 %]
+
+saving the latest model (epoch 128, total_steps 60976)
+(epoch: 128, iters: 80, time: 0.113, data: 0.682) loss: 0.031 
+(epoch: 128, iters: 160, time: 0.114, data: 0.000) loss: 0.023 
+(epoch: 128, iters: 240, time: 0.114, data: 0.012) loss: 0.112 
+(epoch: 128, iters: 320, time: 0.114, data: 0.000) loss: 0.023 
+(epoch: 128, iters: 400, time: 0.106, data: 0.000) loss: 0.117 
+(epoch: 128, iters: 480, time: 0.108, data: 0.032) loss: 0.116 
+saving the model at the end of epoch 128, iters 61440
+End of epoch 128 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001426
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 128, TEST ACC: [62.5 %]
+
+saving the latest model (epoch 129, total_steps 61456)
+(epoch: 129, iters: 80, time: 0.113, data: 0.471) loss: 0.036 
+(epoch: 129, iters: 160, time: 0.114, data: 0.000) loss: 0.028 
+(epoch: 129, iters: 240, time: 0.112, data: 0.000) loss: 0.011 
+(epoch: 129, iters: 320, time: 0.112, data: 0.043) loss: 0.026 
+(epoch: 129, iters: 400, time: 0.108, data: 0.000) loss: 0.042 
+(epoch: 129, iters: 480, time: 0.106, data: 0.012) loss: 0.151 
+saving the model at the end of epoch 129, iters 61920
+End of epoch 129 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001406
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 129, TEST ACC: [60.0 %]
+
+saving the latest model (epoch 130, total_steps 61936)
+(epoch: 130, iters: 80, time: 0.116, data: 0.547) loss: 0.342 
+(epoch: 130, iters: 160, time: 0.112, data: 0.000) loss: 0.146 
+(epoch: 130, iters: 240, time: 0.113, data: 0.043) loss: 0.215 
+(epoch: 130, iters: 320, time: 0.114, data: 0.000) loss: 0.109 
+(epoch: 130, iters: 400, time: 0.104, data: 0.013) loss: 0.052 
+(epoch: 130, iters: 480, time: 0.117, data: 0.000) loss: 0.068 
+saving the model at the end of epoch 130, iters 62400
+End of epoch 130 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001386
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 130, TEST ACC: [46.667 %]
+
+saving the latest model (epoch 131, total_steps 62416)
+(epoch: 131, iters: 80, time: 0.113, data: 0.538) loss: 0.022 
+(epoch: 131, iters: 160, time: 0.114, data: 0.000) loss: 0.156 
+(epoch: 131, iters: 240, time: 0.112, data: 0.012) loss: 0.117 
+(epoch: 131, iters: 320, time: 0.114, data: 0.000) loss: 0.083 
+(epoch: 131, iters: 400, time: 0.108, data: 0.000) loss: 0.034 
+(epoch: 131, iters: 480, time: 0.107, data: 0.016) loss: 0.048 
+saving the model at the end of epoch 131, iters 62880
+End of epoch 131 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001366
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 131, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 132, total_steps 62896)
+(epoch: 132, iters: 80, time: 0.113, data: 0.627) loss: 0.045 
+(epoch: 132, iters: 160, time: 0.113, data: 0.000) loss: 0.087 
+(epoch: 132, iters: 240, time: 0.112, data: 0.012) loss: 0.033 
+(epoch: 132, iters: 320, time: 0.113, data: 0.000) loss: 0.126 
+(epoch: 132, iters: 400, time: 0.107, data: 0.000) loss: 0.009 
+(epoch: 132, iters: 480, time: 0.108, data: 0.016) loss: 0.043 
+saving the model at the end of epoch 132, iters 63360
+End of epoch 132 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001347
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 132, TEST ACC: [68.333 %]
+
+saving the latest model (epoch 133, total_steps 63376)
+(epoch: 133, iters: 80, time: 0.115, data: 0.525) loss: 0.174 
+(epoch: 133, iters: 160, time: 0.115, data: 0.000) loss: 0.053 
+(epoch: 133, iters: 240, time: 0.113, data: 0.000) loss: 0.092 
+(epoch: 133, iters: 320, time: 0.114, data: 0.057) loss: 0.061 
+(epoch: 133, iters: 400, time: 0.109, data: 0.000) loss: 0.158 
+(epoch: 133, iters: 480, time: 0.106, data: 0.013) loss: 0.037 
+saving the model at the end of epoch 133, iters 63840
+End of epoch 133 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001327
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 133, TEST ACC: [60.0 %]
+
+saving the latest model (epoch 134, total_steps 63856)
+(epoch: 134, iters: 80, time: 0.114, data: 0.471) loss: 0.055 
+(epoch: 134, iters: 160, time: 0.122, data: 0.000) loss: 0.037 
+(epoch: 134, iters: 240, time: 0.113, data: 0.044) loss: 0.019 
+(epoch: 134, iters: 320, time: 0.114, data: 0.000) loss: 0.010 
+(epoch: 134, iters: 400, time: 0.104, data: 0.013) loss: 0.011 
+(epoch: 134, iters: 480, time: 0.108, data: 0.000) loss: 0.016 
+saving the model at the end of epoch 134, iters 64320
+End of epoch 134 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001307
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 134, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 135, total_steps 64336)
+(epoch: 135, iters: 80, time: 0.114, data: 0.552) loss: 0.029 
+(epoch: 135, iters: 160, time: 0.113, data: 0.000) loss: 0.129 
+(epoch: 135, iters: 240, time: 0.113, data: 0.059) loss: 0.009 
+(epoch: 135, iters: 320, time: 0.114, data: 0.000) loss: 0.026 
+(epoch: 135, iters: 400, time: 0.105, data: 0.012) loss: 0.049 
+(epoch: 135, iters: 480, time: 0.107, data: 0.000) loss: 0.029 
+saving the model at the end of epoch 135, iters 64800
+End of epoch 135 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001287
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 135, TEST ACC: [75.0 %]
+
+saving the latest model (epoch 136, total_steps 64816)
+(epoch: 136, iters: 80, time: 0.114, data: 0.536) loss: 0.033 
+(epoch: 136, iters: 160, time: 0.112, data: 0.000) loss: 0.017 
+(epoch: 136, iters: 240, time: 0.113, data: 0.043) loss: 0.089 
+(epoch: 136, iters: 320, time: 0.114, data: 0.000) loss: 0.309 
+(epoch: 136, iters: 400, time: 0.103, data: 0.012) loss: 0.132 
+(epoch: 136, iters: 480, time: 0.108, data: 0.000) loss: 0.059 
+saving the model at the end of epoch 136, iters 65280
+End of epoch 136 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001267
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 136, TEST ACC: [70.0 %]
+
+saving the latest model (epoch 137, total_steps 65296)
+(epoch: 137, iters: 80, time: 0.113, data: 0.481) loss: 0.147 
+(epoch: 137, iters: 160, time: 0.114, data: 0.000) loss: 0.020 
+(epoch: 137, iters: 240, time: 0.113, data: 0.000) loss: 0.415 
+(epoch: 137, iters: 320, time: 0.122, data: 0.044) loss: 0.106 
+(epoch: 137, iters: 400, time: 0.107, data: 0.000) loss: 0.034 
+(epoch: 137, iters: 480, time: 0.106, data: 0.012) loss: 0.044 
+saving the model at the end of epoch 137, iters 65760
+End of epoch 137 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001248
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 137, TEST ACC: [52.5 %]
+
+saving the latest model (epoch 138, total_steps 65776)
+(epoch: 138, iters: 80, time: 0.113, data: 0.562) loss: 0.016 
+(epoch: 138, iters: 160, time: 0.114, data: 0.000) loss: 0.085 
+(epoch: 138, iters: 240, time: 0.113, data: 0.012) loss: 0.054 
+(epoch: 138, iters: 320, time: 0.122, data: 0.000) loss: 0.067 
+(epoch: 138, iters: 400, time: 0.107, data: 0.000) loss: 0.023 
+(epoch: 138, iters: 480, time: 0.109, data: 0.016) loss: 0.017 
+saving the model at the end of epoch 138, iters 66240
+End of epoch 138 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001228
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 138, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 139, total_steps 66256)
+(epoch: 139, iters: 80, time: 0.112, data: 0.539) loss: 0.063 
+(epoch: 139, iters: 160, time: 0.113, data: 0.000) loss: 0.210 
+(epoch: 139, iters: 240, time: 0.113, data: 0.013) loss: 0.031 
+(epoch: 139, iters: 320, time: 0.114, data: 0.000) loss: 0.014 
+(epoch: 139, iters: 400, time: 0.106, data: 0.000) loss: 0.010 
+(epoch: 139, iters: 480, time: 0.107, data: 0.015) loss: 0.017 
+saving the model at the end of epoch 139, iters 66720
+End of epoch 139 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001208
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 139, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 140, total_steps 66736)
+(epoch: 140, iters: 80, time: 0.114, data: 0.640) loss: 0.016 
+(epoch: 140, iters: 160, time: 0.113, data: 0.000) loss: 0.143 
+(epoch: 140, iters: 240, time: 0.113, data: 0.012) loss: 0.005 
+(epoch: 140, iters: 320, time: 0.114, data: 0.000) loss: 0.006 
+(epoch: 140, iters: 400, time: 0.107, data: 0.000) loss: 0.069 
+(epoch: 140, iters: 480, time: 0.117, data: 0.015) loss: 0.062 
+saving the model at the end of epoch 140, iters 67200
+End of epoch 140 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001188
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 140, TEST ACC: [69.167 %]
+
+saving the latest model (epoch 141, total_steps 67216)
+(epoch: 141, iters: 80, time: 0.113, data: 0.500) loss: 0.071 
+(epoch: 141, iters: 160, time: 0.114, data: 0.000) loss: 0.145 
+(epoch: 141, iters: 240, time: 0.114, data: 0.000) loss: 0.024 
+(epoch: 141, iters: 320, time: 0.113, data: 0.043) loss: 0.029 
+(epoch: 141, iters: 400, time: 0.107, data: 0.000) loss: 0.013 
+(epoch: 141, iters: 480, time: 0.107, data: 0.013) loss: 0.019 
+saving the model at the end of epoch 141, iters 67680
+End of epoch 141 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001168
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 141, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 142, total_steps 67696)
+(epoch: 142, iters: 80, time: 0.113, data: 0.572) loss: 0.032 
+(epoch: 142, iters: 160, time: 0.113, data: 0.000) loss: 0.027 
+(epoch: 142, iters: 240, time: 0.113, data: 0.013) loss: 0.023 
+(epoch: 142, iters: 320, time: 0.114, data: 0.000) loss: 0.040 
+(epoch: 142, iters: 400, time: 0.106, data: 0.000) loss: 0.008 
+(epoch: 142, iters: 480, time: 0.108, data: 0.016) loss: 0.041 
+saving the model at the end of epoch 142, iters 68160
+End of epoch 142 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001149
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 142, TEST ACC: [73.333 %]
+
+saving the latest model (epoch 143, total_steps 68176)
+(epoch: 143, iters: 80, time: 0.113, data: 0.513) loss: 0.052 
+(epoch: 143, iters: 160, time: 0.113, data: 0.000) loss: 0.042 
+(epoch: 143, iters: 240, time: 0.114, data: 0.045) loss: 0.009 
+(epoch: 143, iters: 320, time: 0.114, data: 0.000) loss: 0.013 
+(epoch: 143, iters: 400, time: 0.105, data: 0.014) loss: 0.043 
+(epoch: 143, iters: 480, time: 0.107, data: 0.000) loss: 0.014 
+saving the model at the end of epoch 143, iters 68640
+End of epoch 143 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001129
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 143, TEST ACC: [58.333 %]
+
+saving the latest model (epoch 144, total_steps 68656)
+(epoch: 144, iters: 80, time: 0.115, data: 0.560) loss: 0.077 
+(epoch: 144, iters: 160, time: 0.122, data: 0.000) loss: 0.019 
+(epoch: 144, iters: 240, time: 0.113, data: 0.060) loss: 0.017 
+(epoch: 144, iters: 320, time: 0.114, data: 0.000) loss: 0.010 
+(epoch: 144, iters: 400, time: 0.104, data: 0.012) loss: 0.030 
+(epoch: 144, iters: 480, time: 0.107, data: 0.000) loss: 0.090 
+saving the model at the end of epoch 144, iters 69120
+End of epoch 144 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001109
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 144, TEST ACC: [61.667 %]
+
+saving the latest model (epoch 145, total_steps 69136)
+(epoch: 145, iters: 80, time: 0.112, data: 0.474) loss: 0.031 
+(epoch: 145, iters: 160, time: 0.115, data: 0.000) loss: 0.037 
+(epoch: 145, iters: 240, time: 0.113, data: 0.000) loss: 0.018 
+(epoch: 145, iters: 320, time: 0.113, data: 0.043) loss: 0.109 
+(epoch: 145, iters: 400, time: 0.107, data: 0.000) loss: 0.016 
+(epoch: 145, iters: 480, time: 0.107, data: 0.013) loss: 0.017 
+saving the model at the end of epoch 145, iters 69600
+End of epoch 145 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001089
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 145, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 146, total_steps 69616)
+(epoch: 146, iters: 80, time: 0.113, data: 0.548) loss: 0.049 
+(epoch: 146, iters: 160, time: 0.115, data: 0.033) loss: 0.021 
+(epoch: 146, iters: 240, time: 0.113, data: 0.000) loss: 0.149 
+(epoch: 146, iters: 320, time: 0.111, data: 0.013) loss: 0.014 
+(epoch: 146, iters: 400, time: 0.107, data: 0.000) loss: 0.008 
+(epoch: 146, iters: 480, time: 0.107, data: 0.012) loss: 0.007 
+saving the model at the end of epoch 146, iters 70080
+End of epoch 146 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001069
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 146, TEST ACC: [60.833 %]
+
+saving the latest model (epoch 147, total_steps 70096)
+(epoch: 147, iters: 80, time: 0.112, data: 0.481) loss: 0.006 
+(epoch: 147, iters: 160, time: 0.114, data: 0.000) loss: 0.040 
+(epoch: 147, iters: 240, time: 0.111, data: 0.000) loss: 0.067 
+(epoch: 147, iters: 320, time: 0.123, data: 0.043) loss: 0.015 
+(epoch: 147, iters: 400, time: 0.107, data: 0.000) loss: 0.063 
+(epoch: 147, iters: 480, time: 0.106, data: 0.013) loss: 0.041 
+saving the model at the end of epoch 147, iters 70560
+End of epoch 147 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001050
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+wandb: Network error resolved after 0:00:12.856808, resuming normal operation.
+epoch: 147, TEST ACC: [67.5 %]
+
+saving the latest model (epoch 148, total_steps 70576)
+(epoch: 148, iters: 80, time: 0.115, data: 0.510) loss: 0.007 
+(epoch: 148, iters: 160, time: 0.112, data: 0.000) loss: 0.043 
+(epoch: 148, iters: 240, time: 0.113, data: 0.043) loss: 0.073 
+(epoch: 148, iters: 320, time: 0.113, data: 0.000) loss: 0.012 
+(epoch: 148, iters: 400, time: 0.104, data: 0.012) loss: 0.075 
+(epoch: 148, iters: 480, time: 0.108, data: 0.000) loss: 0.013 
+saving the model at the end of epoch 148, iters 71040
+End of epoch 148 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001030
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 148, TEST ACC: [60.0 %]
+
+saving the latest model (epoch 149, total_steps 71056)
+(epoch: 149, iters: 80, time: 0.113, data: 0.503) loss: 0.063 
+(epoch: 149, iters: 160, time: 0.114, data: 0.000) loss: 0.005 
+(epoch: 149, iters: 240, time: 0.114, data: 0.044) loss: 0.033 
+(epoch: 149, iters: 320, time: 0.114, data: 0.000) loss: 0.028 
+(epoch: 149, iters: 400, time: 0.104, data: 0.013) loss: 0.053 
+(epoch: 149, iters: 480, time: 0.108, data: 0.000) loss: 0.045 
+saving the model at the end of epoch 149, iters 71520
+End of epoch 149 / 200 	 Time Taken: 55 sec
+learning rate = 0.0001010
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 149, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 150, total_steps 71536)
+(epoch: 150, iters: 80, time: 0.115, data: 0.486) loss: 0.030 
+(epoch: 150, iters: 160, time: 0.118, data: 0.000) loss: 0.049 
+(epoch: 150, iters: 240, time: 0.113, data: 0.043) loss: 0.010 
+(epoch: 150, iters: 320, time: 0.113, data: 0.000) loss: 0.012 
+(epoch: 150, iters: 400, time: 0.104, data: 0.012) loss: 0.004 
+(epoch: 150, iters: 480, time: 0.117, data: 0.000) loss: 0.025 
+saving the model at the end of epoch 150, iters 72000
+End of epoch 150 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000990
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 150, TEST ACC: [69.167 %]
+
+saving the latest model (epoch 151, total_steps 72016)
+(epoch: 151, iters: 80, time: 0.115, data: 0.476) loss: 0.003 
+(epoch: 151, iters: 160, time: 0.114, data: 0.000) loss: 0.015 
+(epoch: 151, iters: 240, time: 0.113, data: 0.000) loss: 0.052 
+(epoch: 151, iters: 320, time: 0.113, data: 0.058) loss: 0.010 
+(epoch: 151, iters: 400, time: 0.108, data: 0.000) loss: 0.012 
+(epoch: 151, iters: 480, time: 0.107, data: 0.012) loss: 0.005 
+saving the model at the end of epoch 151, iters 72480
+End of epoch 151 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000970
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 151, TEST ACC: [60.833 %]
+
+saving the latest model (epoch 152, total_steps 72496)
+(epoch: 152, iters: 80, time: 0.114, data: 0.529) loss: 0.015 
+(epoch: 152, iters: 160, time: 0.112, data: 0.000) loss: 0.117 
+(epoch: 152, iters: 240, time: 0.112, data: 0.043) loss: 0.009 
+(epoch: 152, iters: 320, time: 0.114, data: 0.000) loss: 0.034 
+(epoch: 152, iters: 400, time: 0.104, data: 0.013) loss: 0.189 
+(epoch: 152, iters: 480, time: 0.107, data: 0.000) loss: 0.041 
+saving the model at the end of epoch 152, iters 72960
+End of epoch 152 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000950
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 152, TEST ACC: [60.0 %]
+
+saving the latest model (epoch 153, total_steps 72976)
+(epoch: 153, iters: 80, time: 0.114, data: 0.586) loss: 0.011 
+(epoch: 153, iters: 160, time: 0.114, data: 0.000) loss: 0.019 
+(epoch: 153, iters: 240, time: 0.113, data: 0.060) loss: 0.051 
+(epoch: 153, iters: 320, time: 0.115, data: 0.000) loss: 0.026 
+(epoch: 153, iters: 400, time: 0.106, data: 0.012) loss: 0.005 
+(epoch: 153, iters: 480, time: 0.108, data: 0.000) loss: 0.132 
+saving the model at the end of epoch 153, iters 73440
+End of epoch 153 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000931
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 153, TEST ACC: [66.667 %]
+
+saving the latest model (epoch 154, total_steps 73456)
+(epoch: 154, iters: 80, time: 0.114, data: 0.479) loss: 0.006 
+(epoch: 154, iters: 160, time: 0.122, data: 0.000) loss: 0.043 
+(epoch: 154, iters: 240, time: 0.113, data: 0.045) loss: 0.006 
+(epoch: 154, iters: 320, time: 0.113, data: 0.000) loss: 0.016 
+(epoch: 154, iters: 400, time: 0.105, data: 0.013) loss: 0.016 
+(epoch: 154, iters: 480, time: 0.106, data: 0.000) loss: 0.010 
+saving the model at the end of epoch 154, iters 73920
+End of epoch 154 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000911
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 154, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 155, total_steps 73936)
+(epoch: 155, iters: 80, time: 0.114, data: 0.549) loss: 0.018 
+(epoch: 155, iters: 160, time: 0.113, data: 0.000) loss: 0.012 
+(epoch: 155, iters: 240, time: 0.112, data: 0.043) loss: 0.047 
+(epoch: 155, iters: 320, time: 0.113, data: 0.000) loss: 0.033 
+(epoch: 155, iters: 400, time: 0.104, data: 0.012) loss: 0.014 
+(epoch: 155, iters: 480, time: 0.107, data: 0.000) loss: 0.051 
+saving the model at the end of epoch 155, iters 74400
+End of epoch 155 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000891
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 155, TEST ACC: [70.0 %]
+
+saving the latest model (epoch 156, total_steps 74416)
+(epoch: 156, iters: 80, time: 0.114, data: 0.551) loss: 0.072 
+(epoch: 156, iters: 160, time: 0.113, data: 0.033) loss: 0.055 
+(epoch: 156, iters: 240, time: 0.114, data: 0.000) loss: 0.012 
+(epoch: 156, iters: 320, time: 0.110, data: 0.013) loss: 0.029 
+(epoch: 156, iters: 400, time: 0.108, data: 0.000) loss: 0.014 
+(epoch: 156, iters: 480, time: 0.108, data: 0.013) loss: 0.004 
+saving the model at the end of epoch 156, iters 74880
+End of epoch 156 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000871
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 156, TEST ACC: [66.667 %]
+
+saving the latest model (epoch 157, total_steps 74896)
+(epoch: 157, iters: 80, time: 0.113, data: 0.540) loss: 0.100 
+(epoch: 157, iters: 160, time: 0.113, data: 0.000) loss: 0.007 
+(epoch: 157, iters: 240, time: 0.112, data: 0.043) loss: 0.039 
+(epoch: 157, iters: 320, time: 0.124, data: 0.000) loss: 0.010 
+(epoch: 157, iters: 400, time: 0.104, data: 0.013) loss: 0.013 
+(epoch: 157, iters: 480, time: 0.108, data: 0.000) loss: 0.004 
+saving the model at the end of epoch 157, iters 75360
+End of epoch 157 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000851
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 157, TEST ACC: [67.5 %]
+
+saving the latest model (epoch 158, total_steps 75376)
+(epoch: 158, iters: 80, time: 0.115, data: 0.638) loss: 0.035 
+(epoch: 158, iters: 160, time: 0.111, data: 0.000) loss: 0.015 
+(epoch: 158, iters: 240, time: 0.114, data: 0.057) loss: 0.016 
+(epoch: 158, iters: 320, time: 0.116, data: 0.000) loss: 0.014 
+(epoch: 158, iters: 400, time: 0.103, data: 0.012) loss: 0.008 
+(epoch: 158, iters: 480, time: 0.109, data: 0.000) loss: 0.057 
+saving the model at the end of epoch 158, iters 75840
+End of epoch 158 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000832
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 158, TEST ACC: [61.667 %]
+
+saving the latest model (epoch 159, total_steps 75856)
+(epoch: 159, iters: 80, time: 0.113, data: 0.543) loss: 0.005 
+(epoch: 159, iters: 160, time: 0.113, data: 0.000) loss: 0.012 
+(epoch: 159, iters: 240, time: 0.113, data: 0.043) loss: 0.022 
+(epoch: 159, iters: 320, time: 0.113, data: 0.000) loss: 0.008 
+(epoch: 159, iters: 400, time: 0.105, data: 0.013) loss: 0.090 
+(epoch: 159, iters: 480, time: 0.106, data: 0.000) loss: 0.042 
+saving the model at the end of epoch 159, iters 76320
+End of epoch 159 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000812
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 159, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 160, total_steps 76336)
+(epoch: 160, iters: 80, time: 0.115, data: 0.674) loss: 0.089 
+(epoch: 160, iters: 160, time: 0.113, data: 0.000) loss: 0.007 
+(epoch: 160, iters: 240, time: 0.114, data: 0.044) loss: 0.006 
+(epoch: 160, iters: 320, time: 0.115, data: 0.000) loss: 0.018 
+(epoch: 160, iters: 400, time: 0.105, data: 0.012) loss: 0.030 
+(epoch: 160, iters: 480, time: 0.117, data: 0.000) loss: 0.012 
+saving the model at the end of epoch 160, iters 76800
+End of epoch 160 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000792
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 160, TEST ACC: [71.667 %]
+
+saving the latest model (epoch 161, total_steps 76816)
+(epoch: 161, iters: 80, time: 0.114, data: 0.769) loss: 0.014 
+(epoch: 161, iters: 160, time: 0.113, data: 0.033) loss: 0.007 
+(epoch: 161, iters: 240, time: 0.113, data: 0.000) loss: 0.041 
+(epoch: 161, iters: 320, time: 0.111, data: 0.013) loss: 0.008 
+(epoch: 161, iters: 400, time: 0.107, data: 0.000) loss: 0.012 
+(epoch: 161, iters: 480, time: 0.107, data: 0.013) loss: 0.005 
+saving the model at the end of epoch 161, iters 77280
+End of epoch 161 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000772
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 161, TEST ACC: [73.333 %]
+
+saving the latest model (epoch 162, total_steps 77296)
+(epoch: 162, iters: 80, time: 0.113, data: 0.472) loss: 0.008 
+(epoch: 162, iters: 160, time: 0.112, data: 0.000) loss: 0.018 
+(epoch: 162, iters: 240, time: 0.114, data: 0.043) loss: 0.044 
+(epoch: 162, iters: 320, time: 0.114, data: 0.000) loss: 0.003 
+(epoch: 162, iters: 400, time: 0.105, data: 0.012) loss: 0.005 
+(epoch: 162, iters: 480, time: 0.107, data: 0.000) loss: 0.010 
+saving the model at the end of epoch 162, iters 77760
+End of epoch 162 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000752
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 162, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 163, total_steps 77776)
+(epoch: 163, iters: 80, time: 0.113, data: 0.533) loss: 0.009 
+(epoch: 163, iters: 160, time: 0.112, data: 0.000) loss: 0.026 
+(epoch: 163, iters: 240, time: 0.113, data: 0.043) loss: 0.018 
+(epoch: 163, iters: 320, time: 0.114, data: 0.000) loss: 0.007 
+(epoch: 163, iters: 400, time: 0.103, data: 0.013) loss: 0.004 
+(epoch: 163, iters: 480, time: 0.108, data: 0.000) loss: 0.015 
+saving the model at the end of epoch 163, iters 78240
+End of epoch 163 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000733
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 163, TEST ACC: [70.0 %]
+
+saving the latest model (epoch 164, total_steps 78256)
+(epoch: 164, iters: 80, time: 0.113, data: 0.507) loss: 0.007 
+(epoch: 164, iters: 160, time: 0.123, data: 0.000) loss: 0.006 
+(epoch: 164, iters: 240, time: 0.113, data: 0.044) loss: 0.005 
+(epoch: 164, iters: 320, time: 0.114, data: 0.000) loss: 0.046 
+(epoch: 164, iters: 400, time: 0.105, data: 0.012) loss: 0.099 
+(epoch: 164, iters: 480, time: 0.107, data: 0.000) loss: 0.077 
+saving the model at the end of epoch 164, iters 78720
+End of epoch 164 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000713
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 164, TEST ACC: [68.333 %]
+
+saving the latest model (epoch 165, total_steps 78736)
+(epoch: 165, iters: 80, time: 0.116, data: 0.465) loss: 0.004 
+(epoch: 165, iters: 160, time: 0.113, data: 0.000) loss: 0.034 
+(epoch: 165, iters: 240, time: 0.113, data: 0.058) loss: 0.003 
+(epoch: 165, iters: 320, time: 0.114, data: 0.000) loss: 0.030 
+(epoch: 165, iters: 400, time: 0.107, data: 0.012) loss: 0.165 
+(epoch: 165, iters: 480, time: 0.107, data: 0.000) loss: 0.006 
+saving the model at the end of epoch 165, iters 79200
+End of epoch 165 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000693
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 165, TEST ACC: [75.833 %]
+
+saving the latest model (epoch 166, total_steps 79216)
+(epoch: 166, iters: 80, time: 0.114, data: 0.534) loss: 0.008 
+(epoch: 166, iters: 160, time: 0.112, data: 0.000) loss: 0.013 
+(epoch: 166, iters: 240, time: 0.113, data: 0.043) loss: 0.144 
+(epoch: 166, iters: 320, time: 0.113, data: 0.000) loss: 0.016 
+(epoch: 166, iters: 400, time: 0.105, data: 0.012) loss: 0.009 
+(epoch: 166, iters: 480, time: 0.107, data: 0.000) loss: 0.006 
+saving the model at the end of epoch 166, iters 79680
+End of epoch 166 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000673
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 166, TEST ACC: [73.333 %]
+
+saving the latest model (epoch 167, total_steps 79696)
+(epoch: 167, iters: 80, time: 0.117, data: 0.567) loss: 0.007 
+(epoch: 167, iters: 160, time: 0.112, data: 0.000) loss: 0.002 
+(epoch: 167, iters: 240, time: 0.113, data: 0.061) loss: 0.090 
+(epoch: 167, iters: 320, time: 0.123, data: 0.000) loss: 0.003 
+(epoch: 167, iters: 400, time: 0.106, data: 0.012) loss: 0.013 
+(epoch: 167, iters: 480, time: 0.108, data: 0.000) loss: 0.007 
+saving the model at the end of epoch 167, iters 80160
+End of epoch 167 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000653
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 167, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 168, total_steps 80176)
+(epoch: 168, iters: 80, time: 0.112, data: 0.472) loss: 0.038 
+(epoch: 168, iters: 160, time: 0.113, data: 0.000) loss: 0.013 
+(epoch: 168, iters: 240, time: 0.113, data: 0.000) loss: 0.010 
+(epoch: 168, iters: 320, time: 0.113, data: 0.042) loss: 0.005 
+(epoch: 168, iters: 400, time: 0.107, data: 0.000) loss: 0.015 
+(epoch: 168, iters: 480, time: 0.107, data: 0.012) loss: 0.054 
+saving the model at the end of epoch 168, iters 80640
+End of epoch 168 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000634
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 168, TEST ACC: [65.833 %]
+
+saving the latest model (epoch 169, total_steps 80656)
+(epoch: 169, iters: 80, time: 0.114, data: 0.553) loss: 0.006 
+(epoch: 169, iters: 160, time: 0.113, data: 0.032) loss: 0.009 
+(epoch: 169, iters: 240, time: 0.114, data: 0.000) loss: 0.024 
+(epoch: 169, iters: 320, time: 0.110, data: 0.012) loss: 0.018 
+(epoch: 169, iters: 400, time: 0.107, data: 0.000) loss: 0.013 
+(epoch: 169, iters: 480, time: 0.107, data: 0.013) loss: 0.011 
+saving the model at the end of epoch 169, iters 81120
+End of epoch 169 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000614
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 169, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 170, total_steps 81136)
+(epoch: 170, iters: 80, time: 0.114, data: 0.520) loss: 0.006 
+(epoch: 170, iters: 160, time: 0.113, data: 0.000) loss: 0.057 
+(epoch: 170, iters: 240, time: 0.113, data: 0.046) loss: 0.009 
+(epoch: 170, iters: 320, time: 0.114, data: 0.000) loss: 0.100 
+(epoch: 170, iters: 400, time: 0.104, data: 0.012) loss: 0.010 
+(epoch: 170, iters: 480, time: 0.118, data: 0.000) loss: 0.010 
+saving the model at the end of epoch 170, iters 81600
+End of epoch 170 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000594
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 170, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 171, total_steps 81616)
+(epoch: 171, iters: 80, time: 0.112, data: 0.565) loss: 0.054 
+(epoch: 171, iters: 160, time: 0.112, data: 0.029) loss: 0.022 
+(epoch: 171, iters: 240, time: 0.114, data: 0.000) loss: 0.098 
+(epoch: 171, iters: 320, time: 0.112, data: 0.012) loss: 0.006 
+(epoch: 171, iters: 400, time: 0.107, data: 0.000) loss: 0.025 
+(epoch: 171, iters: 480, time: 0.107, data: 0.013) loss: 0.011 
+saving the model at the end of epoch 171, iters 82080
+End of epoch 171 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000574
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 171, TEST ACC: [72.5 %]
+
+saving the latest model (epoch 172, total_steps 82096)
+(epoch: 172, iters: 80, time: 0.111, data: 0.469) loss: 0.046 
+(epoch: 172, iters: 160, time: 0.114, data: 0.000) loss: 0.007 
+(epoch: 172, iters: 240, time: 0.114, data: 0.000) loss: 0.036 
+(epoch: 172, iters: 320, time: 0.113, data: 0.044) loss: 0.032 
+(epoch: 172, iters: 400, time: 0.107, data: 0.000) loss: 0.006 
+(epoch: 172, iters: 480, time: 0.108, data: 0.013) loss: 0.004 
+saving the model at the end of epoch 172, iters 82560
+End of epoch 172 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000554
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 172, TEST ACC: [70.0 %]
+
+saving the latest model (epoch 173, total_steps 82576)
+(epoch: 173, iters: 80, time: 0.114, data: 0.513) loss: 0.009 
+(epoch: 173, iters: 160, time: 0.113, data: 0.033) loss: 0.007 
+(epoch: 173, iters: 240, time: 0.114, data: 0.000) loss: 0.015 
+(epoch: 173, iters: 320, time: 0.111, data: 0.012) loss: 0.008 
+(epoch: 173, iters: 400, time: 0.106, data: 0.000) loss: 0.006 
+(epoch: 173, iters: 480, time: 0.107, data: 0.012) loss: 0.004 
+saving the model at the end of epoch 173, iters 83040
+End of epoch 173 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000535
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 173, TEST ACC: [70.833 %]
+
+saving the latest model (epoch 174, total_steps 83056)
+(epoch: 174, iters: 80, time: 0.114, data: 0.506) loss: 0.008 
+(epoch: 174, iters: 160, time: 0.123, data: 0.000) loss: 0.146 
+(epoch: 174, iters: 240, time: 0.112, data: 0.000) loss: 0.008 
+(epoch: 174, iters: 320, time: 0.114, data: 0.058) loss: 0.012 
+(epoch: 174, iters: 400, time: 0.109, data: 0.000) loss: 0.041 
+(epoch: 174, iters: 480, time: 0.107, data: 0.013) loss: 0.043 
+saving the model at the end of epoch 174, iters 83520
+End of epoch 174 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000515
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 174, TEST ACC: [65.833 %]
+
+saving the latest model (epoch 175, total_steps 83536)
+(epoch: 175, iters: 80, time: 0.112, data: 0.455) loss: 0.009 
+(epoch: 175, iters: 160, time: 0.114, data: 0.000) loss: 0.013 
+(epoch: 175, iters: 240, time: 0.113, data: 0.000) loss: 0.008 
+(epoch: 175, iters: 320, time: 0.113, data: 0.044) loss: 0.008 
+(epoch: 175, iters: 400, time: 0.108, data: 0.000) loss: 0.004 
+(epoch: 175, iters: 480, time: 0.106, data: 0.012) loss: 0.007 
+saving the model at the end of epoch 175, iters 84000
+End of epoch 175 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000495
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 175, TEST ACC: [69.167 %]
+
+saving the latest model (epoch 176, total_steps 84016)
+(epoch: 176, iters: 80, time: 0.116, data: 0.517) loss: 0.012 
+(epoch: 176, iters: 160, time: 0.112, data: 0.000) loss: 0.040 
+(epoch: 176, iters: 240, time: 0.112, data: 0.060) loss: 0.003 
+(epoch: 176, iters: 320, time: 0.113, data: 0.000) loss: 0.010 
+(epoch: 176, iters: 400, time: 0.104, data: 0.012) loss: 0.020 
+(epoch: 176, iters: 480, time: 0.107, data: 0.000) loss: 0.011 
+saving the model at the end of epoch 176, iters 84480
+End of epoch 176 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000475
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 176, TEST ACC: [66.667 %]
+
+saving the latest model (epoch 177, total_steps 84496)
+(epoch: 177, iters: 80, time: 0.113, data: 0.557) loss: 0.021 
+(epoch: 177, iters: 160, time: 0.112, data: 0.000) loss: 0.010 
+(epoch: 177, iters: 240, time: 0.115, data: 0.043) loss: 0.008 
+(epoch: 177, iters: 320, time: 0.123, data: 0.000) loss: 0.014 
+(epoch: 177, iters: 400, time: 0.103, data: 0.013) loss: 0.011 
+(epoch: 177, iters: 480, time: 0.108, data: 0.000) loss: 0.039 
+saving the model at the end of epoch 177, iters 84960
+End of epoch 177 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000455
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 177, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 178, total_steps 84976)
+(epoch: 178, iters: 80, time: 0.112, data: 0.502) loss: 0.016 
+(epoch: 178, iters: 160, time: 0.114, data: 0.000) loss: 0.008 
+(epoch: 178, iters: 240, time: 0.113, data: 0.000) loss: 0.006 
+(epoch: 178, iters: 320, time: 0.115, data: 0.043) loss: 0.013 
+(epoch: 178, iters: 400, time: 0.107, data: 0.000) loss: 0.017 
+(epoch: 178, iters: 480, time: 0.107, data: 0.012) loss: 0.004 
+saving the model at the end of epoch 178, iters 85440
+End of epoch 178 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000436
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 178, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 179, total_steps 85456)
+(epoch: 179, iters: 80, time: 0.114, data: 0.547) loss: 0.068 
+(epoch: 179, iters: 160, time: 0.113, data: 0.000) loss: 0.005 
+(epoch: 179, iters: 240, time: 0.114, data: 0.043) loss: 0.025 
+(epoch: 179, iters: 320, time: 0.114, data: 0.000) loss: 0.007 
+(epoch: 179, iters: 400, time: 0.104, data: 0.013) loss: 0.006 
+(epoch: 179, iters: 480, time: 0.108, data: 0.000) loss: 0.004 
+saving the model at the end of epoch 179, iters 85920
+End of epoch 179 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000416
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 179, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 180, total_steps 85936)
+(epoch: 180, iters: 80, time: 0.112, data: 0.536) loss: 0.006 
+(epoch: 180, iters: 160, time: 0.113, data: 0.000) loss: 0.022 
+(epoch: 180, iters: 240, time: 0.111, data: 0.013) loss: 0.010 
+(epoch: 180, iters: 320, time: 0.114, data: 0.000) loss: 0.032 
+(epoch: 180, iters: 400, time: 0.106, data: 0.000) loss: 0.009 
+(epoch: 180, iters: 480, time: 0.116, data: 0.016) loss: 0.005 
+saving the model at the end of epoch 180, iters 86400
+End of epoch 180 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000396
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 180, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 181, total_steps 86416)
+(epoch: 181, iters: 80, time: 0.116, data: 0.542) loss: 0.012 
+(epoch: 181, iters: 160, time: 0.113, data: 0.000) loss: 0.012 
+(epoch: 181, iters: 240, time: 0.114, data: 0.044) loss: 0.012 
+(epoch: 181, iters: 320, time: 0.115, data: 0.000) loss: 0.010 
+(epoch: 181, iters: 400, time: 0.103, data: 0.012) loss: 0.014 
+(epoch: 181, iters: 480, time: 0.107, data: 0.000) loss: 0.006 
+saving the model at the end of epoch 181, iters 86880
+End of epoch 181 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000376
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 181, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 182, total_steps 86896)
+(epoch: 182, iters: 80, time: 0.114, data: 0.542) loss: 0.016 
+(epoch: 182, iters: 160, time: 0.112, data: 0.000) loss: 0.008 
+(epoch: 182, iters: 240, time: 0.113, data: 0.043) loss: 0.003 
+(epoch: 182, iters: 320, time: 0.114, data: 0.000) loss: 0.022 
+(epoch: 182, iters: 400, time: 0.105, data: 0.013) loss: 0.007 
+(epoch: 182, iters: 480, time: 0.107, data: 0.000) loss: 0.025 
+saving the model at the end of epoch 182, iters 87360
+End of epoch 182 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000356
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 182, TEST ACC: [74.167 %]
+
+saving the latest model (epoch 183, total_steps 87376)
+(epoch: 183, iters: 80, time: 0.112, data: 0.672) loss: 0.038 
+(epoch: 183, iters: 160, time: 0.113, data: 0.000) loss: 0.092 
+(epoch: 183, iters: 240, time: 0.113, data: 0.013) loss: 0.039 
+(epoch: 183, iters: 320, time: 0.114, data: 0.000) loss: 0.078 
+(epoch: 183, iters: 400, time: 0.107, data: 0.000) loss: 0.003 
+(epoch: 183, iters: 480, time: 0.107, data: 0.031) loss: 0.004 
+saving the model at the end of epoch 183, iters 87840
+End of epoch 183 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000337
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 183, TEST ACC: [68.333 %]
+
+saving the latest model (epoch 184, total_steps 87856)
+(epoch: 184, iters: 80, time: 0.111, data: 0.500) loss: 0.005 
+(epoch: 184, iters: 160, time: 0.122, data: 0.000) loss: 0.012 
+(epoch: 184, iters: 240, time: 0.112, data: 0.013) loss: 0.015 
+(epoch: 184, iters: 320, time: 0.113, data: 0.000) loss: 0.004 
+(epoch: 184, iters: 400, time: 0.107, data: 0.000) loss: 0.008 
+(epoch: 184, iters: 480, time: 0.107, data: 0.016) loss: 0.020 
+saving the model at the end of epoch 184, iters 88320
+End of epoch 184 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000317
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 184, TEST ACC: [70.833 %]
+
+saving the latest model (epoch 185, total_steps 88336)
+(epoch: 185, iters: 80, time: 0.113, data: 0.492) loss: 0.007 
+(epoch: 185, iters: 160, time: 0.113, data: 0.000) loss: 0.002 
+(epoch: 185, iters: 240, time: 0.113, data: 0.043) loss: 0.012 
+(epoch: 185, iters: 320, time: 0.114, data: 0.000) loss: 0.002 
+(epoch: 185, iters: 400, time: 0.105, data: 0.012) loss: 0.006 
+(epoch: 185, iters: 480, time: 0.107, data: 0.000) loss: 0.008 
+saving the model at the end of epoch 185, iters 88800
+End of epoch 185 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000297
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 185, TEST ACC: [69.167 %]
+
+saving the latest model (epoch 186, total_steps 88816)
+(epoch: 186, iters: 80, time: 0.112, data: 0.449) loss: 0.003 
+(epoch: 186, iters: 160, time: 0.114, data: 0.000) loss: 0.010 
+(epoch: 186, iters: 240, time: 0.113, data: 0.000) loss: 0.003 
+(epoch: 186, iters: 320, time: 0.113, data: 0.042) loss: 0.004 
+(epoch: 186, iters: 400, time: 0.107, data: 0.000) loss: 0.019 
+(epoch: 186, iters: 480, time: 0.106, data: 0.012) loss: 0.014 
+saving the model at the end of epoch 186, iters 89280
+End of epoch 186 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000277
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 186, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 187, total_steps 89296)
+(epoch: 187, iters: 80, time: 0.114, data: 0.493) loss: 0.010 
+(epoch: 187, iters: 160, time: 0.112, data: 0.000) loss: 0.028 
+(epoch: 187, iters: 240, time: 0.113, data: 0.043) loss: 0.016 
+(epoch: 187, iters: 320, time: 0.124, data: 0.000) loss: 0.006 
+(epoch: 187, iters: 400, time: 0.106, data: 0.012) loss: 0.007 
+(epoch: 187, iters: 480, time: 0.107, data: 0.000) loss: 0.291 
+saving the model at the end of epoch 187, iters 89760
+End of epoch 187 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000257
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 187, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 188, total_steps 89776)
+(epoch: 188, iters: 80, time: 0.116, data: 0.570) loss: 0.031 
+(epoch: 188, iters: 160, time: 0.114, data: 0.033) loss: 0.005 
+(epoch: 188, iters: 240, time: 0.115, data: 0.000) loss: 0.087 
+(epoch: 188, iters: 320, time: 0.110, data: 0.012) loss: 0.014 
+(epoch: 188, iters: 400, time: 0.107, data: 0.000) loss: 0.012 
+(epoch: 188, iters: 480, time: 0.108, data: 0.028) loss: 0.005 
+saving the model at the end of epoch 188, iters 90240
+End of epoch 188 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000238
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 188, TEST ACC: [62.5 %]
+
+saving the latest model (epoch 189, total_steps 90256)
+(epoch: 189, iters: 80, time: 0.114, data: 0.519) loss: 0.005 
+(epoch: 189, iters: 160, time: 0.112, data: 0.000) loss: 0.003 
+(epoch: 189, iters: 240, time: 0.112, data: 0.043) loss: 0.022 
+(epoch: 189, iters: 320, time: 0.114, data: 0.000) loss: 0.006 
+(epoch: 189, iters: 400, time: 0.105, data: 0.012) loss: 0.014 
+(epoch: 189, iters: 480, time: 0.107, data: 0.000) loss: 0.005 
+saving the model at the end of epoch 189, iters 90720
+End of epoch 189 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000218
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 189, TEST ACC: [63.333 %]
+
+saving the latest model (epoch 190, total_steps 90736)
+(epoch: 190, iters: 80, time: 0.116, data: 0.549) loss: 0.015 
+(epoch: 190, iters: 160, time: 0.113, data: 0.050) loss: 0.047 
+(epoch: 190, iters: 240, time: 0.113, data: 0.000) loss: 0.009 
+(epoch: 190, iters: 320, time: 0.111, data: 0.012) loss: 0.007 
+(epoch: 190, iters: 400, time: 0.107, data: 0.000) loss: 0.010 
+(epoch: 190, iters: 480, time: 0.117, data: 0.012) loss: 0.013 
+saving the model at the end of epoch 190, iters 91200
+End of epoch 190 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000198
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 190, TEST ACC: [61.667 %]
+
+saving the latest model (epoch 191, total_steps 91216)
+(epoch: 191, iters: 80, time: 0.114, data: 0.561) loss: 0.007 
+(epoch: 191, iters: 160, time: 0.111, data: 0.000) loss: 0.003 
+(epoch: 191, iters: 240, time: 0.113, data: 0.043) loss: 0.013 
+(epoch: 191, iters: 320, time: 0.113, data: 0.000) loss: 0.003 
+(epoch: 191, iters: 400, time: 0.103, data: 0.012) loss: 0.008 
+(epoch: 191, iters: 480, time: 0.107, data: 0.000) loss: 0.027 
+saving the model at the end of epoch 191, iters 91680
+End of epoch 191 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000178
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 191, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 192, total_steps 91696)
+(epoch: 192, iters: 80, time: 0.114, data: 0.498) loss: 0.003 
+(epoch: 192, iters: 160, time: 0.113, data: 0.000) loss: 0.005 
+(epoch: 192, iters: 240, time: 0.112, data: 0.000) loss: 0.048 
+(epoch: 192, iters: 320, time: 0.112, data: 0.043) loss: 0.005 
+(epoch: 192, iters: 400, time: 0.107, data: 0.000) loss: 0.008 
+(epoch: 192, iters: 480, time: 0.106, data: 0.013) loss: 0.013 
+saving the model at the end of epoch 192, iters 92160
+End of epoch 192 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000158
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 192, TEST ACC: [62.5 %]
+
+saving the latest model (epoch 193, total_steps 92176)
+(epoch: 193, iters: 80, time: 0.113, data: 0.482) loss: 0.015 
+(epoch: 193, iters: 160, time: 0.115, data: 0.000) loss: 0.023 
+(epoch: 193, iters: 240, time: 0.112, data: 0.043) loss: 0.004 
+(epoch: 193, iters: 320, time: 0.114, data: 0.000) loss: 0.020 
+(epoch: 193, iters: 400, time: 0.103, data: 0.012) loss: 0.005 
+(epoch: 193, iters: 480, time: 0.108, data: 0.000) loss: 0.013 
+saving the model at the end of epoch 193, iters 92640
+End of epoch 193 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000139
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 193, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 194, total_steps 92656)
+(epoch: 194, iters: 80, time: 0.112, data: 0.448) loss: 0.011 
+(epoch: 194, iters: 160, time: 0.123, data: 0.000) loss: 0.008 
+(epoch: 194, iters: 240, time: 0.112, data: 0.000) loss: 0.025 
+(epoch: 194, iters: 320, time: 0.113, data: 0.043) loss: 0.015 
+(epoch: 194, iters: 400, time: 0.107, data: 0.000) loss: 0.030 
+(epoch: 194, iters: 480, time: 0.107, data: 0.013) loss: 0.007 
+saving the model at the end of epoch 194, iters 93120
+End of epoch 194 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000119
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 194, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 195, total_steps 93136)
+(epoch: 195, iters: 80, time: 0.115, data: 0.702) loss: 0.005 
+(epoch: 195, iters: 160, time: 0.115, data: 0.033) loss: 0.008 
+(epoch: 195, iters: 240, time: 0.115, data: 0.000) loss: 0.005 
+(epoch: 195, iters: 320, time: 0.112, data: 0.013) loss: 0.008 
+(epoch: 195, iters: 400, time: 0.107, data: 0.000) loss: 0.005 
+(epoch: 195, iters: 480, time: 0.107, data: 0.012) loss: 0.005 
+saving the model at the end of epoch 195, iters 93600
+End of epoch 195 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000099
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 195, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 196, total_steps 93616)
+(epoch: 196, iters: 80, time: 0.112, data: 0.496) loss: 0.006 
+(epoch: 196, iters: 160, time: 0.114, data: 0.000) loss: 0.002 
+(epoch: 196, iters: 240, time: 0.113, data: 0.000) loss: 0.008 
+(epoch: 196, iters: 320, time: 0.113, data: 0.043) loss: 0.022 
+(epoch: 196, iters: 400, time: 0.107, data: 0.000) loss: 0.003 
+(epoch: 196, iters: 480, time: 0.107, data: 0.012) loss: 0.022 
+saving the model at the end of epoch 196, iters 94080
+End of epoch 196 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000079
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 196, TEST ACC: [67.5 %]
+
+saving the latest model (epoch 197, total_steps 94096)
+(epoch: 197, iters: 80, time: 0.116, data: 0.445) loss: 0.011 
+(epoch: 197, iters: 160, time: 0.112, data: 0.000) loss: 0.003 
+(epoch: 197, iters: 240, time: 0.113, data: 0.065) loss: 0.004 
+(epoch: 197, iters: 320, time: 0.122, data: 0.000) loss: 0.003 
+(epoch: 197, iters: 400, time: 0.105, data: 0.012) loss: 0.004 
+(epoch: 197, iters: 480, time: 0.107, data: 0.000) loss: 0.066 
+saving the model at the end of epoch 197, iters 94560
+End of epoch 197 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000059
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 197, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 198, total_steps 94576)
+(epoch: 198, iters: 80, time: 0.113, data: 0.531) loss: 0.001 
+(epoch: 198, iters: 160, time: 0.113, data: 0.000) loss: 0.003 
+(epoch: 198, iters: 240, time: 0.114, data: 0.043) loss: 0.006 
+(epoch: 198, iters: 320, time: 0.113, data: 0.000) loss: 0.158 
+(epoch: 198, iters: 400, time: 0.104, data: 0.012) loss: 0.006 
+(epoch: 198, iters: 480, time: 0.107, data: 0.000) loss: 0.005 
+saving the model at the end of epoch 198, iters 95040
+End of epoch 198 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000040
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 198, TEST ACC: [69.167 %]
+
+saving the latest model (epoch 199, total_steps 95056)
+(epoch: 199, iters: 80, time: 0.112, data: 0.500) loss: 0.014 
+(epoch: 199, iters: 160, time: 0.116, data: 0.000) loss: 0.011 
+(epoch: 199, iters: 240, time: 0.113, data: 0.000) loss: 0.005 
+(epoch: 199, iters: 320, time: 0.113, data: 0.042) loss: 0.004 
+(epoch: 199, iters: 400, time: 0.107, data: 0.000) loss: 0.017 
+(epoch: 199, iters: 480, time: 0.107, data: 0.012) loss: 0.007 
+saving the model at the end of epoch 199, iters 95520
+End of epoch 199 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000020
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+epoch: 199, TEST ACC: [64.167 %]
+
+saving the latest model (epoch 200, total_steps 95536)
+(epoch: 200, iters: 80, time: 0.113, data: 0.564) loss: 0.010 
+(epoch: 200, iters: 160, time: 0.113, data: 0.033) loss: 0.033 
+(epoch: 200, iters: 240, time: 0.115, data: 0.000) loss: 0.005 
+(epoch: 200, iters: 320, time: 0.109, data: 0.013) loss: 0.045 
+(epoch: 200, iters: 400, time: 0.107, data: 0.000) loss: 0.003 
+(epoch: 200, iters: 480, time: 0.116, data: 0.013) loss: 0.028 
+saving the model at the end of epoch 200, iters 96000
+End of epoch 200 / 200 	 Time Taken: 55 sec
+learning rate = 0.0000000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/shrec16_rn/latest_net.pth
+
+wandb: Waiting for W&B process to finish, PID 5688
+epoch: 200, TEST ACC: [67.5 %]
+
+wandb: Program ended successfully.
+wandb: Run summary:
+wandb:                                  _timestamp 1568418075.553757
+wandb:                                    _runtime 14862.658853769302
+wandb:                                       _step 1599
+wandb:                                        loss 0.02842682972550392
+wandb:                                       Epoch 200
+wandb:                               Test Accuracy 0.675
+wandb: Syncing 8 W&B file(s) and 0 media file(s)
+wandb: - 0.00MB of 0.06MB uploadedwandb: \ 0.06MB of 0.06MB uploadedwandb: | 0.06MB of 0.06MB uploadedwandb: / 0.06MB of 0.06MB uploadedwandb: - 0.06MB of 0.06MB uploadedwandb: \ 0.06MB of 0.06MB uploadedwandb:                                                                                
+wandb: Synced solar-microwave-18: https://app.wandb.ai/2cdanielperez/meshcnn/runs/v1jetidt?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd

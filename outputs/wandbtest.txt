@@ -1,0 +1,1394 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+/var/spool/slurmd/job8927074/slurm_script: line 16: wandb: command not found
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+Traceback (most recent call last):
+  File "train.py", line 22, in <module>
+    wandb.init(project="meshcnn")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Appending key for api.wandb.ai to your netrc file: /home/dpere013/.netrc
+Successfully logged in to Weights & Biases!
+wandb: Started W&B process version 0.8.9 with PID 135123
+wandb: Local directory: wandb/run-20190910_231715-lxeuqwcf
+wandb: Syncing run upbeat-lion-5: https://app.wandb.ai/2cdanielperez/meshcnn/runs/lxeuqwcf?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.185, data: 4.436) loss: 3.411 
+(epoch: 1, iters: 160, time: 0.180, data: 0.033) loss: 3.368 
+(epoch: 1, iters: 240, time: 0.188, data: 0.026) loss: 3.369 
+(epoch: 1, iters: 320, time: 0.195, data: 0.011) loss: 3.390 
+(epoch: 1, iters: 400, time: 0.119, data: 0.000) loss: 3.340 
+(epoch: 1, iters: 480, time: 0.106, data: 0.000) loss: 3.369 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 2100 	 Time Taken: 91 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 1, TEST ACC: [6.6667 %]
+
+slurmstepd: error: *** JOB 8927076 ON coreV3-23-k40-008 CANCELLED AT 2019-09-10T19:19:36 ***
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Appending key for api.wandb.ai to your netrc file: /home/dpere013/.netrc
+Successfully logged in to Weights & Biases!
+wandb: Started W&B process version 0.8.9 with PID 135270
+wandb: Local directory: wandb/run-20190910_232047-7z8ve07m
+wandb: Syncing run fresh-resonance-6: https://app.wandb.ai/2cdanielperez/meshcnn/runs/7z8ve07m?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+slurmstepd: error: *** JOB 8927078 ON coreV3-23-k40-008 CANCELLED AT 2019-09-10T19:21:29 ***
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 135393
+wandb: Local directory: wandb/run-20190910_232242-h41g41sd
+wandb: Syncing run northern-hill-7: https://app.wandb.ai/2cdanielperez/meshcnn/runs/h41g41sd?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+slurmstepd: error: *** JOB 8927080 ON coreV3-23-k40-008 CANCELLED AT 2019-09-10T19:24:02 ***
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 135514
+wandb: Local directory: wandb/run-20190910_232458-okgz7ph4
+wandb: Syncing run flowing-eon-8: https://app.wandb.ai/2cdanielperez/meshcnn/runs/okgz7ph4?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.181, data: 3.674) loss: 3.401 
+(epoch: 1, iters: 160, time: 0.194, data: 0.000) loss: 3.416 
+(epoch: 1, iters: 240, time: 0.183, data: 0.025) loss: 3.372 
+(epoch: 1, iters: 320, time: 0.182, data: 0.027) loss: 3.394 
+(epoch: 1, iters: 400, time: 0.109, data: 0.011) loss: 3.352 
+(epoch: 1, iters: 480, time: 0.112, data: 0.000) loss: 3.384 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 2100 	 Time Taken: 91 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 1, TEST ACC: [10.833 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.176, data: 4.301) loss: 3.331 
+(epoch: 2, iters: 160, time: 0.186, data: 0.000) loss: 3.314 
+(epoch: 2, iters: 240, time: 0.162, data: 0.026) loss: 3.348 
+(epoch: 2, iters: 320, time: 0.197, data: 0.027) loss: 3.281 
+(epoch: 2, iters: 400, time: 0.111, data: 0.012) loss: 3.250 
+(epoch: 2, iters: 480, time: 0.112, data: 0.016) loss: 3.279 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 2100 	 Time Taken: 89 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 2, TEST ACC: [11.667 %]
+
+slurmstepd: error: *** JOB 8927081 ON coreV3-23-k40-008 CANCELLED AT 2019-09-10T19:29:30 ***
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 135673
+wandb: Local directory: wandb/run-20190910_232941-yutklgaj
+wandb: Syncing run classic-dew-9: https://app.wandb.ai/2cdanielperez/meshcnn/runs/yutklgaj?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.185, data: 3.264) loss: 3.403 
+(epoch: 1, iters: 160, time: 0.167, data: 0.000) loss: 3.429 
+(epoch: 1, iters: 240, time: 0.196, data: 0.000) loss: 3.395 
+(epoch: 1, iters: 320, time: 0.168, data: 0.030) loss: 3.368 
+(epoch: 1, iters: 400, time: 0.115, data: 0.000) loss: 3.368 
+(epoch: 1, iters: 480, time: 0.108, data: 0.012) loss: 3.380 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 2100 	 Time Taken: 85 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 1, TEST ACC: [7.5 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.167, data: 3.200) loss: 3.336 
+(epoch: 2, iters: 160, time: 0.149, data: 0.000) loss: 3.288 
+(epoch: 2, iters: 240, time: 0.149, data: 0.025) loss: 3.309 
+(epoch: 2, iters: 320, time: 0.171, data: 0.000) loss: 3.312 
+(epoch: 2, iters: 400, time: 0.107, data: 0.000) loss: 3.303 
+(epoch: 2, iters: 480, time: 0.107, data: 0.015) loss: 3.202 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 2100 	 Time Taken: 79 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 2, TEST ACC: [10.0 %]
+
+saving the latest model (epoch 3, total_steps 976)
+(epoch: 3, iters: 80, time: 0.136, data: 2.641) loss: 3.264 
+(epoch: 3, iters: 160, time: 0.168, data: 0.000) loss: 3.186 
+(epoch: 3, iters: 240, time: 0.153, data: 0.000) loss: 3.188 
+(epoch: 3, iters: 320, time: 0.161, data: 0.038) loss: 3.178 
+(epoch: 3, iters: 400, time: 0.106, data: 0.000) loss: 3.132 
+(epoch: 3, iters: 480, time: 0.106, data: 0.027) loss: 3.150 
+saving the model at the end of epoch 3, iters 1440
+End of epoch 3 / 2100 	 Time Taken: 79 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 3, TEST ACC: [15.833 %]
+
+slurmstepd: error: *** JOB 8927082 ON coreV3-23-k40-008 CANCELLED AT 2019-09-10T19:34:37 ***
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 84313
+wandb: Local directory: wandb/run-20190912_154050-ggsr6mno
+wandb: Syncing run lilac-tree-11: https://app.wandb.ai/2cdanielperez/meshcnn/runs/ggsr6mno?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+tensorboard X not installed, visualizing wont be available
+
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.109, data: 0.523) loss: 3.381 
+(epoch: 1, iters: 160, time: 0.112, data: 0.000) loss: 3.408 
+(epoch: 1, iters: 240, time: 0.112, data: 0.000) loss: 3.403 
+(epoch: 1, iters: 320, time: 0.110, data: 0.042) loss: 3.382 
+(epoch: 1, iters: 400, time: 0.105, data: 0.000) loss: 3.374 
+(epoch: 1, iters: 480, time: 0.104, data: 0.012) loss: 3.382 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 2100 	 Time Taken: 54 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 1, TEST ACC: [8.3333 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.111, data: 0.616) loss: 3.344 
+(epoch: 2, iters: 160, time: 0.110, data: 0.000) loss: 3.322 
+(epoch: 2, iters: 240, time: 0.110, data: 0.042) loss: 3.300 
+(epoch: 2, iters: 320, time: 0.110, data: 0.000) loss: 3.296 
+(epoch: 2, iters: 400, time: 0.100, data: 0.012) loss: 3.308 
+(epoch: 2, iters: 480, time: 0.103, data: 0.000) loss: 3.305 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 2100 	 Time Taken: 53 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 2, TEST ACC: [10.833 %]
+
+saving the latest model (epoch 3, total_steps 976)
+(epoch: 3, iters: 80, time: 0.111, data: 0.586) loss: 3.247 
+(epoch: 3, iters: 160, time: 0.109, data: 0.000) loss: 3.239 
+(epoch: 3, iters: 240, time: 0.109, data: 0.041) loss: 3.221 
+(epoch: 3, iters: 320, time: 0.109, data: 0.000) loss: 3.197 
+(epoch: 3, iters: 400, time: 0.100, data: 0.012) loss: 3.240 
+(epoch: 3, iters: 480, time: 0.104, data: 0.000) loss: 3.179 
+saving the model at the end of epoch 3, iters 1440
+End of epoch 3 / 2100 	 Time Taken: 53 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 3, TEST ACC: [10.0 %]
+
+saving the latest model (epoch 4, total_steps 1456)
+(epoch: 4, iters: 80, time: 0.111, data: 0.621) loss: 3.172 
+(epoch: 4, iters: 160, time: 0.118, data: 0.033) loss: 3.064 
+(epoch: 4, iters: 240, time: 0.110, data: 0.000) loss: 3.192 
+(epoch: 4, iters: 320, time: 0.105, data: 0.011) loss: 3.072 
+(epoch: 4, iters: 400, time: 0.102, data: 0.000) loss: 2.964 
+(epoch: 4, iters: 480, time: 0.103, data: 0.011) loss: 3.037 
+saving the model at the end of epoch 4, iters 1920
+End of epoch 4 / 2100 	 Time Taken: 53 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 4, TEST ACC: [11.667 %]
+
+saving the latest model (epoch 5, total_steps 1936)
+(epoch: 5, iters: 80, time: 0.109, data: 0.667) loss: 3.030 
+(epoch: 5, iters: 160, time: 0.109, data: 0.033) loss: 2.786 
+(epoch: 5, iters: 240, time: 0.109, data: 0.000) loss: 2.956 
+(epoch: 5, iters: 320, time: 0.105, data: 0.012) loss: 2.948 
+(epoch: 5, iters: 400, time: 0.102, data: 0.000) loss: 3.071 
+(epoch: 5, iters: 480, time: 0.101, data: 0.011) loss: 2.843 
+saving the model at the end of epoch 5, iters 2400
+End of epoch 5 / 2100 	 Time Taken: 53 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 5, TEST ACC: [17.5 %]
+
+saving the latest model (epoch 6, total_steps 2416)
+(epoch: 6, iters: 80, time: 0.107, data: 0.653) loss: 2.801 
+(epoch: 6, iters: 160, time: 0.108, data: 0.032) loss: 2.741 
+(epoch: 6, iters: 240, time: 0.108, data: 0.000) loss: 2.885 
+(epoch: 6, iters: 320, time: 0.105, data: 0.012) loss: 2.817 
+(epoch: 6, iters: 400, time: 0.103, data: 0.000) loss: 2.820 
+(epoch: 6, iters: 480, time: 0.101, data: 0.012) loss: 2.654 
+saving the model at the end of epoch 6, iters 2880
+End of epoch 6 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 6, TEST ACC: [21.667 %]
+
+saving the latest model (epoch 7, total_steps 2896)
+(epoch: 7, iters: 80, time: 0.109, data: 0.561) loss: 2.777 
+(epoch: 7, iters: 160, time: 0.107, data: 0.000) loss: 2.620 
+(epoch: 7, iters: 240, time: 0.107, data: 0.041) loss: 2.786 
+(epoch: 7, iters: 320, time: 0.116, data: 0.000) loss: 2.522 
+(epoch: 7, iters: 400, time: 0.098, data: 0.012) loss: 2.505 
+(epoch: 7, iters: 480, time: 0.100, data: 0.000) loss: 2.450 
+saving the model at the end of epoch 7, iters 3360
+End of epoch 7 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 7, TEST ACC: [23.333 %]
+
+saving the latest model (epoch 8, total_steps 3376)
+(epoch: 8, iters: 80, time: 0.108, data: 0.616) loss: 2.478 
+(epoch: 8, iters: 160, time: 0.106, data: 0.000) loss: 2.474 
+(epoch: 8, iters: 240, time: 0.107, data: 0.041) loss: 2.712 
+(epoch: 8, iters: 320, time: 0.109, data: 0.000) loss: 2.858 
+(epoch: 8, iters: 400, time: 0.097, data: 0.012) loss: 2.406 
+(epoch: 8, iters: 480, time: 0.101, data: 0.000) loss: 2.248 
+saving the model at the end of epoch 8, iters 3840
+End of epoch 8 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 8, TEST ACC: [20.0 %]
+
+saving the latest model (epoch 9, total_steps 3856)
+(epoch: 9, iters: 80, time: 0.109, data: 0.651) loss: 2.491 
+(epoch: 9, iters: 160, time: 0.108, data: 0.000) loss: 2.400 
+(epoch: 9, iters: 240, time: 0.107, data: 0.042) loss: 2.585 
+(epoch: 9, iters: 320, time: 0.107, data: 0.000) loss: 2.327 
+(epoch: 9, iters: 400, time: 0.099, data: 0.012) loss: 2.351 
+(epoch: 9, iters: 480, time: 0.102, data: 0.000) loss: 2.536 
+saving the model at the end of epoch 9, iters 4320
+End of epoch 9 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 9, TEST ACC: [23.333 %]
+
+saving the latest model (epoch 10, total_steps 4336)
+(epoch: 10, iters: 80, time: 0.105, data: 0.589) loss: 2.342 
+(epoch: 10, iters: 160, time: 0.108, data: 0.000) loss: 2.445 
+(epoch: 10, iters: 240, time: 0.107, data: 0.012) loss: 2.777 
+(epoch: 10, iters: 320, time: 0.108, data: 0.000) loss: 2.221 
+(epoch: 10, iters: 400, time: 0.101, data: 0.000) loss: 2.399 
+(epoch: 10, iters: 480, time: 0.111, data: 0.015) loss: 2.162 
+saving the model at the end of epoch 10, iters 4800
+End of epoch 10 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 10, TEST ACC: [38.333 %]
+
+saving the latest model (epoch 11, total_steps 4816)
+(epoch: 11, iters: 80, time: 0.108, data: 0.522) loss: 2.224 
+(epoch: 11, iters: 160, time: 0.106, data: 0.050) loss: 1.958 
+(epoch: 11, iters: 240, time: 0.108, data: 0.000) loss: 2.053 
+(epoch: 11, iters: 320, time: 0.104, data: 0.012) loss: 2.069 
+(epoch: 11, iters: 400, time: 0.101, data: 0.000) loss: 2.294 
+(epoch: 11, iters: 480, time: 0.101, data: 0.012) loss: 2.533 
+saving the model at the end of epoch 11, iters 5280
+End of epoch 11 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 11, TEST ACC: [33.333 %]
+
+saving the latest model (epoch 12, total_steps 5296)
+(epoch: 12, iters: 80, time: 0.106, data: 0.616) loss: 2.266 
+(epoch: 12, iters: 160, time: 0.105, data: 0.000) loss: 2.496 
+(epoch: 12, iters: 240, time: 0.107, data: 0.041) loss: 2.318 
+(epoch: 12, iters: 320, time: 0.106, data: 0.000) loss: 2.304 
+(epoch: 12, iters: 400, time: 0.099, data: 0.012) loss: 1.908 
+(epoch: 12, iters: 480, time: 0.101, data: 0.000) loss: 2.135 
+saving the model at the end of epoch 12, iters 5760
+End of epoch 12 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 12, TEST ACC: [34.167 %]
+
+saving the latest model (epoch 13, total_steps 5776)
+(epoch: 13, iters: 80, time: 0.104, data: 0.594) loss: 2.359 
+(epoch: 13, iters: 160, time: 0.108, data: 0.000) loss: 1.973 
+(epoch: 13, iters: 240, time: 0.105, data: 0.012) loss: 1.721 
+(epoch: 13, iters: 320, time: 0.108, data: 0.000) loss: 2.258 
+(epoch: 13, iters: 400, time: 0.100, data: 0.000) loss: 2.432 
+(epoch: 13, iters: 480, time: 0.101, data: 0.016) loss: 1.954 
+saving the model at the end of epoch 13, iters 6240
+End of epoch 13 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 13, TEST ACC: [46.667 %]
+
+saving the latest model (epoch 14, total_steps 6256)
+(epoch: 14, iters: 80, time: 0.108, data: 0.647) loss: 2.783 
+(epoch: 14, iters: 160, time: 0.118, data: 0.031) loss: 2.051 
+(epoch: 14, iters: 240, time: 0.106, data: 0.000) loss: 2.093 
+(epoch: 14, iters: 320, time: 0.104, data: 0.012) loss: 2.234 
+(epoch: 14, iters: 400, time: 0.100, data: 0.000) loss: 2.165 
+(epoch: 14, iters: 480, time: 0.101, data: 0.012) loss: 1.826 
+saving the model at the end of epoch 14, iters 6720
+End of epoch 14 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 14, TEST ACC: [39.167 %]
+
+n 0.8.9 with PID 113129
+wandb: Local directory: wandb/run-20190912_155612-acu9crnk
+wandb: Syncing run skilled-field-12: https://app.wandb.ai/2cdanielperez/meshcnn/runs/acu9crnk?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+tensorboard X not installed, visualizing wont be available
+
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 15, total_steps 6736)
+(epoch: 15, iters: 80, time: 0.107, data: 0.588) loss: 1.883 
+(epoch: 15, iters: 160, time: 0.106, data: 0.032) loss: 1.729 
+(epoch: 15, iters: 240, time: 0.107, data: 0.000) loss: 1.970 
+(epoch: 15, iters: 320, time: 0.103, data: 0.012) loss: 1.662 
+(epoch: 15, iters: 400, time: 0.100, data: 0.000) loss: 2.279 
+(epoch: 15, iters: 480, time: 0.100, data: 0.011) loss: 1.617 
+saving the model at the end of epoch 15, iters 7200
+End of epoch 15 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latepoch: 1, TEepoch: 15, TEST ACC: [50.833 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.070, data: 0.485) loss: 3.344 
+(epoch: 2, iters: 160, time: 0.069, data: 0.030) loss: 3.343 
+(epoch: 2, iters: 240, time: 0.069, data: 0.000) loss: 3.326 
+(epoch: 2, iters: 320, time: 0.067, data: 0.011) loss: 3.233 
+(epoch: 2, iters: 400, time: 0.063, data: 0.000) loss: 3.286 
+(epoch: 2, iters: 480, time: 0.063, data: 0.011) loss: 3.231 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 2100 	 Time Taken: 33 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+saving the latest model (epoch 16, total_steps 7216)
+(epoch: 16, iters: 80, time: 0.107, data: 0.578) loss: 1.543 
+(epoch: 16, iters: 160, time: 0.106, data: 0.000) loss: 1.923 
+(epoch: 16, iters: 240, time: 0.107, data: 0.040) loss: 1.594 
+(epoch: 16, iters: 320, time: 0.106, data: 0.000) loss: 2.068 
+(epoch: 16, iters: 400, time: 0.098, data: 0.028) loss: 1.813 
+(epoch: 16, iters: 480, time: 0.101, data: 0.000) loss: 1.698 
+saving the model at the end of epoch 16, iters 7680
+End of epoch 16 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 16, TEST ACC: [50.833 %]
+
+ total_steps 976)
+(epoch: 3, iters: 80, time: 0.070, data: 0.745) loss: 3.207 
+(epoch: 3, iters: 160, time: 0.070, data: 0.050) loss: 3.175 
+(epoch: 3, iters: 240, time: 0.071, data: 0.000) loss: 3.209 
+(epoch: 3, iters: 320, time: 0.068, data: 0.011) loss: 3.142 
+(epoch: 3, iters: 400, time: 0.064, data: 0.000) loss: 3.227 
+(epoch: 3, iters: 480, time: 0.062, data: 0.011) loss: 3.128 
+saving the model at the end of epoch 3, iters 1440
+End of epoch 3 / 2100 	 Time Taken: 33 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 3, TEST ACC: [10.833 %]
+
+saving the latest model (epoch 17, total_steps 7696)
+(epoch: 17, iters: 80, time: 0.105, data: 0.590) loss: 1.712 
+(epoch: 17, iters: 160, time: 0.107, data: 0.000) loss: 1.654 
+(epoch: 17, iters: 240, time: 0.106, data: 0.012) loss: 2.228 
+(epoch: 17, iters: 320, time: 0.116, data: 0.000) loss: 1.377 
+(epoch: 17, iters: 400, time: 0.100, data: 0.000) loss: 1.234 
+(epoch: 17, iters: 480, time: 0.098, data: 0.016) loss: 1.682 
+saving the model at the end of epoch 17, iters 8160
+End of epoch 17 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latestepoch: 4,epoch: 17, TEST ACC: [47.5 %]
+
+saving the latest model (epoch 5, total_steps 1936)
+(epoch: 5, iters: 80, time: 0.068, data: 0.378) loss: 2.951 
+(epoch: 5, iters: 160, time: 0.068, data: 0.000) loss: 3.077 
+(epoch: 5, iters: 240, time: 0.069, data: 0.040) loss: 2.820 
+(epoch: 5, iters: 320, time: 0.070, data: 0.000) loss: 3.024 
+(epoch: 5, iters: 400, time: 0.060, data: 0.011) loss: 3.008 
+(epoch: 5, iters: 480, time: 0.063, data: 0.000) loss: 2.834 
+saving the model at the end of epoch 5, iters 2400
+End of epoch 5 / 2100 	 Time Taken: 33 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+saving the latest model (epoch 18, total_steps 8176)
+(epoch: 18, iters: 80, time: 0.107, data: 0.443) loss: 1.351 
+(epoch: 18, iters: 160, time: 0.108, data: 0.000) loss: 1.468 
+(epoch: 18, iters: 240, time: 0.106, data: 0.000) loss: 1.641 
+(epoch: 18, iters: 320, time: 0.105, data: 0.042) loss: 1.606 
+(epoch: 18, iters: 400, time: 0.100, data: 0.000) loss: 1.683 
+(epoch: 18, iters: 480, time: 0.100, data: 0.012) loss: 1.851 
+saving the model at the end of epoch 18, iters 8640
+End of epoch 18 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 18, TEST ACC: [58.333 %]
+
+ total_steps 2416)
+(epoch: 6, iters: 80, time: 0.069, data: 0.645) loss: 2.857 
+(epoch: 6, iters: 160, time: 0.068, data: 0.030) loss: 2.866 
+(epoch: 6, iters: 240, time: 0.067, data: 0.000) loss: 3.066 
+(epoch: 6, iters: 320, time: 0.065, data: 0.011) loss: 2.747 
+(epoch: 6, iters: 400, time: 0.062, data: 0.000) loss: 2.743 
+(epoch: 6, iters: 480, time: 0.063, data: 0.011) loss: 2.805 
+saving the model at the end of epoch 6, iters 2880
+End of epoch 6 / 2100 	 Time Taken: 33 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 6, TEST ACC: [20.833 %]
+
+saving the latest model (epoch 19, total_steps 8656)
+(epoch: 19, iters: 80, time: 0.106, data: 0.474) loss: 1.142 
+(epoch: 19, iters: 160, time: 0.106, data: 0.000) loss: 1.415 
+(epoch: 19, iters: 240, time: 0.106, data: 0.040) loss: 1.448 
+(epoch: 19, iters: 320, time: 0.107, data: 0.000) loss: 1.364 
+(epoch: 19, iters: 400, time: 0.098, data: 0.012) loss: 1.212 
+(epoch: 19, iters: 480, time: 0.099, data: 0.000) loss: 1.539 
+saving the model at the end of epoch 19, iters 9120
+End of epoch 19 / 2100 	 Time Taken: 51 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latestepoch: 7,epoch: 19, TEST ACC: [49.167 %]
+
+saving the latest model (epoch 8, total_steps 3376)
+(epoch: 8, iters: 80, time: 0.068, data: 0.467) loss: 2.827 
+(epoch: 8, iters: 160, time: 0.067, data: 0.000) loss: 2.757 
+(epoch: 8, iters: 240, time: 0.068, data: 0.039) loss: 2.647 
+(epoch: 8, iters: 320, time: 0.070, data: 0.000) loss: 2.717 
+(epoch: 8, iters: 400, time: 0.059, data: 0.011) loss: 2.674 
+(epoch: 8, iters: 480, time: 0.062, data: 0.000) loss: 2.497 
+saving the model at the end of epoch 8, iters 3840
+End of epoch 8 / 2100 	 Time Taken: 33 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 8, TEST ACC: [25.0 %]
+
+7497 ON coreV4-21-k80-001 CANCELLED AT 2019-09-12T12:02:02 ***
+saving the latest model (epoch 9, total_steps 3856)
+(epoch: 9, iters: 80, time: 0.071, data: 0.514) loss: 2.515 
+(epoch: 9, iters: 160, time: 0.067, data: 0.030) loss: 2.412 
+(epoch: 9, iters: 240, time: 0.068, data: 0.000) loss: 2.404 
+(epoch: 9, iters: 320, time: 0.064, data: 0.011) loss: 2.727 
+(epoch: 9, iters: 400, time: 0.062, data: 0.000) loss: 2.132 
+(epoch: 9, iters: 480, time: 0.062, data: 0.011) loss: 2.496 
+saving the model at the end of epoch 9, iters 4320
+End of epoch 9 / 2100 	 Time Taken: 33 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 9, TEST ACC: [27.5 %]
+
+slurmstepd: error: *** JOB 8927501 ON coreV5-21-v100-001 CANCELLED AT 2019-09-12T12:03:11 ***
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) python/3.6
+
+wandb: Started W&B process version 0.8.9 with PID 134721
+wandb: Wandb version 0.8.10 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Local directory: wandb/run-20190917_175052-oxvijgsc
+wandb: Syncing run electric-firebrand-31: https://app.wandb.ai/2cdanielperez/meshcnn/runs/oxvijgsc?apiKey=98791ac10e4d57a24e8033af7d12c1f75a2b2acd
+wandb: Run `wandb off` to turn off syncing.
+
+tensorboard X not installed, visualizing wont be available
+------------ Options -------------
+arch: mconvnet
+batch_size: 16
+beta1: 0.9
+checkpoints_dir: ./checkpoints
+continue_train: False
+dataroot: datasets/shrec_16
+dataset_mode: classification
+epoch_count: 1
+export_folder: 
+fc_n: 100
+feat_from: edge
+flip_edges: 0.2
+gpu_ids: [0]
+init_gain: 0.02
+init_type: normal
+is_train: True
+lr: 0.0002
+lr_decay_iters: 50
+lr_policy: lambda
+name: test
+ncf: [64, 128, 256, 256]
+ninput_edges: 750
+niter: 100
+niter_decay: 2000
+no_vis: False
+norm: group
+num_aug: 20
+num_groups: 16
+num_threads: 3
+phase: train
+pool_res: [600, 450, 300, 210]
+print_freq: 10
+resblocks: 1
+run_test_freq: 1
+save_epoch_freq: 1
+save_latest_freq: 250
+scale_verts: False
+seed: None
+serial_batches: False
+slide_verts: 0.2
+verbose_plot: False
+which_epoch: latest
+-------------- End ----------------
+loaded mean / std from cache
+#training meshes = 480
+---------- Network initialized -------------
+[Network] Total number of parameters : 1.323 M
+-----------------------------------------------
+saving the latest model (epoch 1, total_steps 16)
+(epoch: 1, iters: 80, time: 0.157, data: 4.638) loss: 3.415 
+(epoch: 1, iters: 160, time: 0.160, data: 0.000) loss: 3.381 
+(epoch: 1, iters: 240, time: 0.172, data: 0.000) loss: 3.380 
+(epoch: 1, iters: 320, time: 0.164, data: 0.014) loss: 3.375 
+(epoch: 1, iters: 400, time: 0.109, data: 0.000) loss: 3.384 
+(epoch: 1, iters: 480, time: 0.066, data: 0.000) loss: 3.337 
+saving the model at the end of epoch 1, iters 480
+End of epoch 1 / 2100 	 Time Taken: 80 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 1, TEST ACC: [13.333 %]
+
+saving the latest model (epoch 2, total_steps 496)
+(epoch: 2, iters: 80, time: 0.156, data: 3.966) loss: 3.297 
+(epoch: 2, iters: 160, time: 0.166, data: 0.000) loss: 3.303 
+(epoch: 2, iters: 240, time: 0.158, data: 0.035) loss: 3.295 
+(epoch: 2, iters: 320, time: 0.149, data: 0.036) loss: 3.308 
+(epoch: 2, iters: 400, time: 0.095, data: 0.013) loss: 3.229 
+(epoch: 2, iters: 480, time: 0.064, data: 0.000) loss: 3.242 
+saving the model at the end of epoch 2, iters 960
+End of epoch 2 / 2100 	 Time Taken: 74 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 2, TEST ACC: [7.5 %]
+
+saving the latest model (epoch 3, total_steps 976)
+(epoch: 3, iters: 80, time: 0.119, data: 3.941) loss: 3.260 
+(epoch: 3, iters: 160, time: 0.151, data: 0.018) loss: 3.251 
+(epoch: 3, iters: 240, time: 0.147, data: 0.000) loss: 3.171 
+(epoch: 3, iters: 320, time: 0.145, data: 0.000) loss: 3.217 
+(epoch: 3, iters: 400, time: 0.104, data: 0.000) loss: 3.234 
+(epoch: 3, iters: 480, time: 0.063, data: 0.000) loss: 3.146 
+saving the model at the end of epoch 3, iters 1440
+End of epoch 3 / 2100 	 Time Taken: 71 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 3, TEST ACC: [10.0 %]
+
+saving the latest model (epoch 4, total_steps 1456)
+(epoch: 4, iters: 80, time: 0.156, data: 3.360) loss: 3.129 
+(epoch: 4, iters: 160, time: 0.154, data: 0.000) loss: 3.106 
+(epoch: 4, iters: 240, time: 0.127, data: 0.029) loss: 2.976 
+(epoch: 4, iters: 320, time: 0.141, data: 0.071) loss: 2.981 
+(epoch: 4, iters: 400, time: 0.084, data: 0.014) loss: 3.232 
+(epoch: 4, iters: 480, time: 0.064, data: 0.000) loss: 3.046 
+saving the model at the end of epoch 4, iters 1920
+End of epoch 4 / 2100 	 Time Taken: 69 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 4, TEST ACC: [16.667 %]
+
+saving the latest model (epoch 5, total_steps 1936)
+(epoch: 5, iters: 80, time: 0.109, data: 3.725) loss: 2.884 
+(epoch: 5, iters: 160, time: 0.133, data: 0.000) loss: 2.717 
+(epoch: 5, iters: 240, time: 0.149, data: 0.000) loss: 2.802 
+(epoch: 5, iters: 320, time: 0.155, data: 0.080) loss: 2.688 
+(epoch: 5, iters: 400, time: 0.083, data: 0.030) loss: 2.717 
+(epoch: 5, iters: 480, time: 0.064, data: 0.013) loss: 2.851 
+saving the model at the end of epoch 5, iters 2400
+End of epoch 5 / 2100 	 Time Taken: 70 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 5, TEST ACC: [17.5 %]
+
+saving the latest model (epoch 6, total_steps 2416)
+(epoch: 6, iters: 80, time: 0.128, data: 4.022) loss: 2.668 
+(epoch: 6, iters: 160, time: 0.127, data: 0.000) loss: 2.701 
+(epoch: 6, iters: 240, time: 0.122, data: 0.030) loss: 2.897 
+(epoch: 6, iters: 320, time: 0.131, data: 0.030) loss: 2.950 
+(epoch: 6, iters: 400, time: 0.090, data: 0.013) loss: 2.688 
+(epoch: 6, iters: 480, time: 0.064, data: 0.000) loss: 2.906 
+saving the model at the end of epoch 6, iters 2880
+End of epoch 6 / 2100 	 Time Taken: 65 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 6, TEST ACC: [13.333 %]
+
+saving the latest model (epoch 7, total_steps 2896)
+(epoch: 7, iters: 80, time: 0.140, data: 3.639) loss: 2.734 
+(epoch: 7, iters: 160, time: 0.119, data: 0.000) loss: 2.749 
+(epoch: 7, iters: 240, time: 0.134, data: 0.000) loss: 2.921 
+(epoch: 7, iters: 320, time: 0.135, data: 0.029) loss: 2.650 
+(epoch: 7, iters: 400, time: 0.078, data: 0.029) loss: 2.387 
+(epoch: 7, iters: 480, time: 0.061, data: 0.013) loss: 2.596 
+saving the model at the end of epoch 7, iters 3360
+End of epoch 7 / 2100 	 Time Taken: 64 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 7, TEST ACC: [25.833 %]
+
+saving the latest model (epoch 8, total_steps 3376)
+(epoch: 8, iters: 80, time: 0.101, data: 3.438) loss: 2.410 
+(epoch: 8, iters: 160, time: 0.128, data: 0.039) loss: 2.634 
+(epoch: 8, iters: 240, time: 0.146, data: 0.000) loss: 2.686 
+(epoch: 8, iters: 320, time: 0.111, data: 0.000) loss: 2.256 
+(epoch: 8, iters: 400, time: 0.083, data: 0.000) loss: 2.718 
+(epoch: 8, iters: 480, time: 0.062, data: 0.000) loss: 2.297 
+saving the model at the end of epoch 8, iters 3840
+End of epoch 8 / 2100 	 Time Taken: 61 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 8, TEST ACC: [22.5 %]
+
+saving the latest model (epoch 9, total_steps 3856)
+(epoch: 9, iters: 80, time: 0.112, data: 3.362) loss: 2.536 
+(epoch: 9, iters: 160, time: 0.105, data: 0.029) loss: 2.455 
+(epoch: 9, iters: 240, time: 0.106, data: 0.029) loss: 2.530 
+(epoch: 9, iters: 320, time: 0.122, data: 0.013) loss: 2.527 
+(epoch: 9, iters: 400, time: 0.065, data: 0.000) loss: 2.490 
+(epoch: 9, iters: 480, time: 0.062, data: 0.000) loss: 2.829 
+saving the model at the end of epoch 9, iters 4320
+End of epoch 9 / 2100 	 Time Taken: 59 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 9, TEST ACC: [23.333 %]
+
+saving the latest model (epoch 10, total_steps 4336)
+(epoch: 10, iters: 80, time: 0.113, data: 2.532) loss: 2.205 
+(epoch: 10, iters: 160, time: 0.105, data: 0.000) loss: 2.552 
+(epoch: 10, iters: 240, time: 0.118, data: 0.028) loss: 2.421 
+(epoch: 10, iters: 320, time: 0.128, data: 0.029) loss: 2.371 
+(epoch: 10, iters: 400, time: 0.079, data: 0.013) loss: 1.944 
+(epoch: 10, iters: 480, time: 0.065, data: 0.000) loss: 2.186 
+saving the model at the end of epoch 10, iters 4800
+End of epoch 10 / 2100 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 10, TEST ACC: [33.333 %]
+
+saving the latest model (epoch 11, total_steps 4816)
+(epoch: 11, iters: 80, time: 0.126, data: 3.156) loss: 2.180 
+(epoch: 11, iters: 160, time: 0.116, data: 0.000) loss: 3.019 
+(epoch: 11, iters: 240, time: 0.122, data: 0.000) loss: 2.117 
+(epoch: 11, iters: 320, time: 0.136, data: 0.034) loss: 1.913 
+(epoch: 11, iters: 400, time: 0.061, data: 0.000) loss: 2.111 
+(epoch: 11, iters: 480, time: 0.063, data: 0.013) loss: 2.220 
+saving the model at the end of epoch 11, iters 5280
+End of epoch 11 / 2100 	 Time Taken: 58 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 11, TEST ACC: [28.333 %]
+
+saving the latest model (epoch 12, total_steps 5296)
+(epoch: 12, iters: 80, time: 0.114, data: 2.723) loss: 1.884 
+(epoch: 12, iters: 160, time: 0.114, data: 0.000) loss: 1.909 
+(epoch: 12, iters: 240, time: 0.120, data: 0.030) loss: 2.066 
+(epoch: 12, iters: 320, time: 0.107, data: 0.029) loss: 1.826 
+(epoch: 12, iters: 400, time: 0.083, data: 0.013) loss: 2.030 
+(epoch: 12, iters: 480, time: 0.062, data: 0.000) loss: 2.336 
+saving the model at the end of epoch 12, iters 5760
+End of epoch 12 / 2100 	 Time Taken: 56 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 12, TEST ACC: [36.667 %]
+
+saving the latest model (epoch 13, total_steps 5776)
+(epoch: 13, iters: 80, time: 0.111, data: 3.299) loss: 1.846 
+(epoch: 13, iters: 160, time: 0.115, data: 0.000) loss: 2.325 
+(epoch: 13, iters: 240, time: 0.116, data: 0.022) loss: 2.291 
+(epoch: 13, iters: 320, time: 0.113, data: 0.000) loss: 2.236 
+(epoch: 13, iters: 400, time: 0.069, data: 0.000) loss: 2.420 
+(epoch: 13, iters: 480, time: 0.063, data: 0.052) loss: 2.295 
+saving the model at the end of epoch 13, iters 6240
+End of epoch 13 / 2100 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 13, TEST ACC: [31.667 %]
+
+saving the latest model (epoch 14, total_steps 6256)
+(epoch: 14, iters: 80, time: 0.103, data: 1.985) loss: 1.797 
+(epoch: 14, iters: 160, time: 0.136, data: 0.000) loss: 2.090 
+(epoch: 14, iters: 240, time: 0.098, data: 0.031) loss: 1.960 
+(epoch: 14, iters: 320, time: 0.124, data: 0.030) loss: 1.902 
+(epoch: 14, iters: 400, time: 0.078, data: 0.014) loss: 2.221 
+(epoch: 14, iters: 480, time: 0.061, data: 0.000) loss: 2.018 
+saving the model at the end of epoch 14, iters 6720
+End of epoch 14 / 2100 	 Time Taken: 55 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 14, TEST ACC: [43.333 %]
+
+saving the latest model (epoch 15, total_steps 6736)
+(epoch: 15, iters: 80, time: 0.112, data: 2.289) loss: 2.110 
+(epoch: 15, iters: 160, time: 0.116, data: 0.000) loss: 1.841 
+(epoch: 15, iters: 240, time: 0.110, data: 0.108) loss: 2.044 
+(epoch: 15, iters: 320, time: 0.116, data: 0.031) loss: 2.206 
+(epoch: 15, iters: 400, time: 0.075, data: 0.014) loss: 1.460 
+(epoch: 15, iters: 480, time: 0.063, data: 0.016) loss: 1.900 
+saving the model at the end of epoch 15, iters 7200
+End of epoch 15 / 2100 	 Time Taken: 54 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 15, TEST ACC: [38.333 %]
+
+saving the latest model (epoch 16, total_steps 7216)
+(epoch: 16, iters: 80, time: 0.101, data: 1.756) loss: 1.753 
+(epoch: 16, iters: 160, time: 0.107, data: 0.013) loss: 1.667 
+(epoch: 16, iters: 240, time: 0.112, data: 0.000) loss: 1.723 
+(epoch: 16, iters: 320, time: 0.121, data: 0.000) loss: 1.662 
+(epoch: 16, iters: 400, time: 0.061, data: 0.000) loss: 1.642 
+(epoch: 16, iters: 480, time: 0.060, data: 0.000) loss: 1.758 
+saving the model at the end of epoch 16, iters 7680
+End of epoch 16 / 2100 	 Time Taken: 51 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 16, TEST ACC: [25.833 %]
+
+saving the latest model (epoch 17, total_steps 7696)
+(epoch: 17, iters: 80, time: 0.101, data: 2.691) loss: 1.614 
+(epoch: 17, iters: 160, time: 0.102, data: 0.000) loss: 1.398 
+(epoch: 17, iters: 240, time: 0.112, data: 0.033) loss: 1.828 
+(epoch: 17, iters: 320, time: 0.110, data: 0.000) loss: 1.646 
+(epoch: 17, iters: 400, time: 0.062, data: 0.000) loss: 1.731 
+(epoch: 17, iters: 480, time: 0.063, data: 0.029) loss: 1.555 
+saving the model at the end of epoch 17, iters 8160
+End of epoch 17 / 2100 	 Time Taken: 52 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 17, TEST ACC: [37.5 %]
+
+saving the latest model (epoch 18, total_steps 8176)
+(epoch: 18, iters: 80, time: 0.087, data: 3.060) loss: 1.398 
+(epoch: 18, iters: 160, time: 0.093, data: 0.055) loss: 1.567 
+(epoch: 18, iters: 240, time: 0.094, data: 0.000) loss: 1.533 
+(epoch: 18, iters: 320, time: 0.110, data: 0.013) loss: 2.122 
+(epoch: 18, iters: 400, time: 0.067, data: 0.000) loss: 1.554 
+(epoch: 18, iters: 480, time: 0.064, data: 0.013) loss: 1.894 
+saving the model at the end of epoch 18, iters 8640
+End of epoch 18 / 2100 	 Time Taken: 51 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 18, TEST ACC: [45.833 %]
+
+saving the latest model (epoch 19, total_steps 8656)
+(epoch: 19, iters: 80, time: 0.106, data: 2.088) loss: 1.431 
+(epoch: 19, iters: 160, time: 0.107, data: 0.000) loss: 2.016 
+(epoch: 19, iters: 240, time: 0.109, data: 0.014) loss: 1.954 
+(epoch: 19, iters: 320, time: 0.081, data: 0.000) loss: 1.834 
+(epoch: 19, iters: 400, time: 0.062, data: 0.000) loss: 1.466 
+(epoch: 19, iters: 480, time: 0.063, data: 0.033) loss: 1.481 
+saving the model at the end of epoch 19, iters 9120
+End of epoch 19 / 2100 	 Time Taken: 50 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 19, TEST ACC: [44.167 %]
+
+saving the latest model (epoch 20, total_steps 9136)
+(epoch: 20, iters: 80, time: 0.117, data: 2.171) loss: 1.450 
+(epoch: 20, iters: 160, time: 0.105, data: 0.031) loss: 1.139 
+(epoch: 20, iters: 240, time: 0.097, data: 0.029) loss: 1.404 
+(epoch: 20, iters: 320, time: 0.096, data: 0.013) loss: 1.989 
+(epoch: 20, iters: 400, time: 0.063, data: 0.000) loss: 1.392 
+(epoch: 20, iters: 480, time: 0.067, data: 0.014) loss: 1.088 
+saving the model at the end of epoch 20, iters 9600
+End of epoch 20 / 2100 	 Time Taken: 50 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 20, TEST ACC: [51.667 %]
+
+saving the latest model (epoch 21, total_steps 9616)
+(epoch: 21, iters: 80, time: 0.102, data: 1.824) loss: 1.527 
+(epoch: 21, iters: 160, time: 0.107, data: 0.000) loss: 1.328 
+(epoch: 21, iters: 240, time: 0.084, data: 0.033) loss: 1.299 
+(epoch: 21, iters: 320, time: 0.094, data: 0.000) loss: 1.713 
+(epoch: 21, iters: 400, time: 0.062, data: 0.000) loss: 1.554 
+(epoch: 21, iters: 480, time: 0.064, data: 0.032) loss: 1.591 
+saving the model at the end of epoch 21, iters 10080
+End of epoch 21 / 2100 	 Time Taken: 48 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 21, TEST ACC: [37.5 %]
+
+saving the latest model (epoch 22, total_steps 10096)
+(epoch: 22, iters: 80, time: 0.103, data: 1.588) loss: 1.215 
+(epoch: 22, iters: 160, time: 0.104, data: 0.000) loss: 1.395 
+(epoch: 22, iters: 240, time: 0.100, data: 0.037) loss: 1.197 
+(epoch: 22, iters: 320, time: 0.092, data: 0.000) loss: 1.261 
+(epoch: 22, iters: 400, time: 0.062, data: 0.000) loss: 1.246 
+(epoch: 22, iters: 480, time: 0.063, data: 0.017) loss: 1.224 
+saving the model at the end of epoch 22, iters 10560
+End of epoch 22 / 2100 	 Time Taken: 46 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 22, TEST ACC: [51.667 %]
+
+saving the latest model (epoch 23, total_steps 10576)
+(epoch: 23, iters: 80, time: 0.097, data: 1.096) loss: 1.341 
+(epoch: 23, iters: 160, time: 0.116, data: 0.000) loss: 1.322 
+(epoch: 23, iters: 240, time: 0.103, data: 0.000) loss: 1.141 
+(epoch: 23, iters: 320, time: 0.108, data: 0.014) loss: 1.505 
+(epoch: 23, iters: 400, time: 0.064, data: 0.000) loss: 1.399 
+(epoch: 23, iters: 480, time: 0.063, data: 0.013) loss: 1.121 
+saving the model at the end of epoch 23, iters 11040
+End of epoch 23 / 2100 	 Time Taken: 49 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 23, TEST ACC: [50.0 %]
+
+saving the latest model (epoch 24, total_steps 11056)
+(epoch: 24, iters: 80, time: 0.091, data: 1.645) loss: 1.011 
+(epoch: 24, iters: 160, time: 0.084, data: 0.000) loss: 1.291 
+(epoch: 24, iters: 240, time: 0.083, data: 0.014) loss: 0.953 
+(epoch: 24, iters: 320, time: 0.111, data: 0.013) loss: 1.085 
+(epoch: 24, iters: 400, time: 0.061, data: 0.013) loss: 1.270 
+(epoch: 24, iters: 480, time: 0.064, data: 0.000) loss: 0.818 
+saving the model at the end of epoch 24, iters 11520
+End of epoch 24 / 2100 	 Time Taken: 46 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 24, TEST ACC: [65.0 %]
+
+saving the latest model (epoch 25, total_steps 11536)
+(epoch: 25, iters: 80, time: 0.111, data: 1.610) loss: 0.913 
+(epoch: 25, iters: 160, time: 0.106, data: 0.000) loss: 1.068 
+(epoch: 25, iters: 240, time: 0.096, data: 0.045) loss: 1.246 
+(epoch: 25, iters: 320, time: 0.105, data: 0.000) loss: 1.166 
+(epoch: 25, iters: 400, time: 0.061, data: 0.014) loss: 1.100 
+(epoch: 25, iters: 480, time: 0.064, data: 0.000) loss: 0.971 
+saving the model at the end of epoch 25, iters 12000
+End of epoch 25 / 2100 	 Time Taken: 47 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 25, TEST ACC: [68.333 %]
+
+saving the latest model (epoch 26, total_steps 12016)
+(epoch: 26, iters: 80, time: 0.099, data: 1.897) loss: 1.045 
+(epoch: 26, iters: 160, time: 0.098, data: 0.000) loss: 0.970 
+(epoch: 26, iters: 240, time: 0.087, data: 0.045) loss: 0.994 
+(epoch: 26, iters: 320, time: 0.107, data: 0.000) loss: 0.838 
+(epoch: 26, iters: 400, time: 0.061, data: 0.014) loss: 0.886 
+(epoch: 26, iters: 480, time: 0.063, data: 0.017) loss: 1.109 
+saving the model at the end of epoch 26, iters 12480
+End of epoch 26 / 2100 	 Time Taken: 45 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+epoch: 26, TEST ACC: [52.5 %]
+
+saving the latest model (epoch 27, total_steps 12496)
+(epoch: 27, iters: 80, time: 0.110, data: 1.572) loss: 1.351 
+(epoch: 27, iters: 160, time: 0.078, data: 0.000) loss: 0.917 
+(epoch: 27, iters: 240, time: 0.093, data: 0.045) loss: 1.013 
+(epoch: 27, iters: 320, time: 0.097, data: 0.000) loss: 1.317 
+(epoch: 27, iters: 400, time: 0.061, data: 0.013) loss: 0.635 
+(epoch: 27, iters: 480, time: 0.063, data: 0.000) loss: 1.076 
+saving the model at the end of epoch 27, iters 12960
+End of epoch 27 / 2100 	 Time Taken: 45 sec
+learning rate = 0.0002000
+Running Test
+loaded mean / std from cache
+loading the model from ./checkpoints/test/latest_net.pth
+slurmstepd: error: *** JOB 8928571 ON coreV5-21-v100-001 CANCELLED AT 2019-09-17T14:21:23 ***
