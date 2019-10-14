@@ -26,6 +26,7 @@ class BaseOptions:
         self.parser.add_argument('--init_type', type=str, default='normal', help='network initialization [normal|xavier|kaiming|orthogonal]')
         self.parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
         self.parser.add_argument('--face_pool', type=str, default='v2', help='Version of face pool. For tracking purposes only.')
+        self.parser.add_argument('--symm_oper', nargs='+', default=[], type=int, help='pooling res')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='face', help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')

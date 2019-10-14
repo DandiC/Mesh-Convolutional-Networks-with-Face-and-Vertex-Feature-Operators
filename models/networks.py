@@ -104,7 +104,7 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
             net = MeshConvNet(norm_layer, input_nc, ncf, nclasses, ninput_features, opt.pool_res, opt.fc_n, opt.resblocks)
         elif feat_from == 'face':
             net = MeshConvNetFace(norm_layer, input_nc, ncf, nclasses, ninput_features, opt.pool_res, opt.fc_n,
-                              opt.resblocks)
+                              opt.resblocks, symm_oper=opt.symm_oper)
     elif arch == 'meshunet':
         down_convs = [input_nc] + ncf
         up_convs = ncf[::-1] + [nclasses]
@@ -130,14 +130,14 @@ class MeshConvNetFace(nn.Module):
     """Network for learning a global shape descriptor (classification)
     """
     def __init__(self, norm_layer, nf0, conv_res, nclasses, input_res, pool_res, fc_n,
-                 nresblocks=3):
+                 nresblocks=3, symm_oper=None):
         super(MeshConvNetFace, self).__init__()
         self.k = [nf0] + conv_res
         self.res = [input_res] + pool_res
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
-            setattr(self, 'conv{}'.format(i), MResConvFace(ki, self.k[i + 1], nresblocks))
+            setattr(self, 'conv{}'.format(i), MResConvFace(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'pool{}'.format(i), MeshPoolFace2(self.res[i + 1]))
 
@@ -162,16 +162,16 @@ class MeshConvNetFace(nn.Module):
         return x
 
 class MResConvFace(nn.Module):
-    def __init__(self, in_channels, out_channels, skips=1):
+    def __init__(self, in_channels, out_channels, skips=1, symm_oper=None):
         super(MResConvFace, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
-        self.conv0 = MeshConvFace(self.in_channels, self.out_channels, bias=False)
+        self.conv0 = MeshConvFace(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper)
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))
             setattr(self, 'conv{}'.format(i + 1),
-                    MeshConvFace(self.out_channels, self.out_channels, bias=False))
+                    MeshConvFace(self.out_channels, self.out_channels, bias=False, symm_oper=symm_oper))
 
     def forward(self, x, mesh):
         x = self.conv0(x, mesh)
