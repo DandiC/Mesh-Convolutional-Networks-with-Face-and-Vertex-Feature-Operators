@@ -11,7 +11,7 @@ enable_lmod
 
 module load python/3.6
 module load cuda/9.2
-module load pytorch/1.0
+module load pytorch/1.3
 module load wandb
 
 ## run the training
