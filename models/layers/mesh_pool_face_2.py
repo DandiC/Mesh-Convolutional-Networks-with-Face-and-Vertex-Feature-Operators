@@ -43,8 +43,8 @@ class MeshPoolFace2(nn.Module):
         mesh = self.__meshes[mesh_index]
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.face_count], mesh.face_count)
 
-        edge_mask = np.ones(mesh.edges_count, dtype=np.uint8)
-        face_mask = np.ones(mesh.face_count, dtype=np.uint8)
+        edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
+        face_mask = np.ones(mesh.face_count, dtype=np.bool)
         edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
         while mesh.face_count > self.__out_target:
             value, face_id = heappop(queue)
