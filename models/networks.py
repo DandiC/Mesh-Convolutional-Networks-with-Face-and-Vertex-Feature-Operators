@@ -7,7 +7,7 @@ from models.layers.mesh_conv import MeshConv
 from models.layers.mesh_conv_face import MeshConvFace
 import torch.nn.functional as F
 from models.layers.mesh_pool import MeshPool
-from models.layers.mesh_pool_face_2 import MeshPoolFace2
+from models.layers.mesh_pool_face import MeshPoolFace
 from models.layers.mesh_unpool import MeshUnpool
 
 
@@ -139,7 +139,7 @@ class MeshConvNetFace(nn.Module):
         for i, ki in enumerate(self.k[:-1]):
             setattr(self, 'conv{}'.format(i), MResConvFace(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
-            setattr(self, 'pool{}'.format(i), MeshPoolFace2(self.res[i + 1]))
+            setattr(self, 'pool{}'.format(i), MeshPoolFace(self.res[i + 1]))
 
 
         self.gp = torch.nn.AvgPool1d(self.res[-1])
