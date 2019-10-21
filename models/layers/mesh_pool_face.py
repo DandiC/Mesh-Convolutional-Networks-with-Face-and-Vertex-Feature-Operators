@@ -65,8 +65,7 @@ class MeshPoolFace(nn.Module):
                         self.__pool_edge(mesh, edge_id, edge_mask, face_mask, edge_groups, face_id, min_n)
         mesh.cleanWithFace(edge_mask, face_mask, edge_groups)
         fe = self.__fe[mesh_index]
-        fe = fe[:, np.where(face_mask == 1)]
-        self.__updated_fe[mesh_index] = torch.reshape(fe, [fe.shape[0], fe.shape[2], fe.shape[3]])
+        self.__updated_fe[mesh_index] = fe[:, face_mask]
 
     def __pool_edge(self, mesh, edge_id, edge_mask, face_mask, edge_groups, f1, f2):
         # Not pool if the edge or one of its neighbors is in a boundary
@@ -215,7 +214,7 @@ class MeshPoolFace(nn.Module):
 
         # Get faces adjacent to vertex. Remove 2 and keep 1
         faces = np.where(mesh.faces == list(vertex)[0])[0]
-        faces = faces[np.where(face_mask[faces] == 1)[0]]
+        faces = faces[face_mask[faces]]
         assert len(faces) == 3
         face_mask[faces[1:]] = 0
 
