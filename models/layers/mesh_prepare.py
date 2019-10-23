@@ -5,17 +5,17 @@ import random
 
 def fill_mesh(mesh2fill, file: str, opt):
     load_path = get_mesh_path(file, opt.num_aug)
-    # if os.path.exists(load_path):
-    #     mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
-    # else:
-    mesh_data = from_scratch(file, opt)
-    np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-                        edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                        filename=mesh_data.filename, sides=mesh_data.sides,
-                        edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                        edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                        faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
-                        face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef)
+    if os.path.exists(load_path):
+        mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+    else:
+        mesh_data = from_scratch(file, opt)
+        np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+                            edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+                            filename=mesh_data.filename, sides=mesh_data.sides,
+                            edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+                            edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
+                            faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
+                            face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
