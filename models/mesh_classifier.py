@@ -86,7 +86,7 @@ class ClassifierModel:
         net.load_state_dict(state_dict)
 
 
-    def save_network(self, which_epoch, wandb=False):
+    def save_network(self, which_epoch, wandb_save=False):
         """save model to disk"""
         save_filename = '%s_net.pth' % (which_epoch)
         save_path = join(self.save_dir, save_filename)
@@ -96,7 +96,7 @@ class ClassifierModel:
         else:
             torch.save(self.net.cpu().state_dict(), save_path)
 
-        if wandb:
+        if wandb_save:
             wandb.save(save_path)
 
     def update_learning_rate(self):
