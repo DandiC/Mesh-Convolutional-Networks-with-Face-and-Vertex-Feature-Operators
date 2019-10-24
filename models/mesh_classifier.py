@@ -2,7 +2,7 @@ import torch
 from . import networks
 from os.path import join
 from util.util import seg_accuracy, print_network
-
+import wandb
 
 class ClassifierModel:
     """ Class for training Model weights
@@ -86,7 +86,7 @@ class ClassifierModel:
         net.load_state_dict(state_dict)
 
 
-    def save_network(self, which_epoch):
+    def save_network(self, which_epoch, wandb=False):
         """save model to disk"""
         save_filename = '%s_net.pth' % (which_epoch)
         save_path = join(self.save_dir, save_filename)
@@ -95,6 +95,9 @@ class ClassifierModel:
             self.net.cuda(self.gpu_ids[0])
         else:
             torch.save(self.net.cpu().state_dict(), save_path)
+
+        if wandb:
+            wandb.save(save_path)
 
     def update_learning_rate(self):
         """update learning rate (called once every epoch)"""

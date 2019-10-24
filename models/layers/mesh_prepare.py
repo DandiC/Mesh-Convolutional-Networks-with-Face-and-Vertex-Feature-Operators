@@ -105,8 +105,8 @@ def fill_from_file(mesh, file):
     # faces = faces[ridx,:]
 
     #Shift faces (experiment to see if the ordering matters)
-    rint = 0 #random.randint(0, faces.shape[0]-1)
-    faces = np.roll(faces, rint, axis=0)
+    # rint = 0 #random.randint(0, faces.shape[0]-1)
+    # faces = np.roll(faces, rint, axis=0)
 
     assert np.logical_and(faces >= 0, faces < len(vs)).all()
     return vs, faces
@@ -196,7 +196,7 @@ def build_gemm(mesh):
 
             #Face neighbors
             a=1
-
+        # TODO: Implement face_sides to optimize face pooling (explanation of sides in ranahanocka's repo)
         for idx, edge in enumerate(face_edges):
             edge_key = edge2key[edge]
             sides[edge_key][nb_count[edge_key] - 2] = nb_count[edge2key[face_edges[(idx + 1) % 3]]] - 1
