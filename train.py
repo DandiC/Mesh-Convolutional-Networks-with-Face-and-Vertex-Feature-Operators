@@ -25,7 +25,7 @@ if __name__ == '__main__':
     total_steps = 0
 
     wandb.watch(model.net, log="all")
-
+    startT = time.time()
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
         iter_data_time = time.time()
@@ -72,4 +72,5 @@ if __name__ == '__main__':
             writer.plot_acc(acc, epoch)
             wandb.log({"Test Accuracy": acc})
 
+    wandb.log({"Training Time": time.time()-startT})
     writer.close()
