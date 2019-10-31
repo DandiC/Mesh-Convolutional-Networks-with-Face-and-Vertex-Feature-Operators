@@ -2,6 +2,7 @@ from __future__ import print_function
 import torch
 import numpy as np
 import os
+import wandb
 
 
 def mkdir(path):
@@ -42,6 +43,7 @@ def print_network(net):
         num_params += param.numel()
     print('[Network] Total number of parameters : %.3f M' % (num_params / 1e6))
     print('-----------------------------------------------')
+    wandb.log({"Params": num_params})
 
 def get_heatmap_color(value, minimum=0, maximum=1):
     minimum, maximum = float(minimum), float(maximum)
