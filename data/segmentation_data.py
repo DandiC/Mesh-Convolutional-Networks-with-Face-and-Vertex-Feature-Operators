@@ -30,14 +30,14 @@ class SegmentationData(BaseDataset):
         meta = {}
         meta['mesh'] = mesh
         label = read_seg(self.seg_paths[index]) - self.offset
-        label = pad(label, self.opt.ninput_edges, val=-1, dim=0)
+        label = pad(label, self.opt.ninput_features, val=-1, dim=0)
         meta['label'] = label
         soft_label = read_sseg(self.sseg_paths[index])
-        meta['soft_label'] = pad(soft_label, self.opt.ninput_edges, val=-1, dim=0)
+        meta['soft_label'] = pad(soft_label, self.opt.ninput_features, val=-1, dim=0)
         # get edge features
         edge_features = mesh.extract_features()
-        edge_features = pad(edge_features, self.opt.ninput_edges)
-        meta['edge_features'] = (edge_features - self.mean) / self.std
+        edge_features = pad(edge_features, self.opt.ninput_features)
+        meta['features'] = (edge_features - self.mean) / self.std
         return meta
 
     def __len__(self):
