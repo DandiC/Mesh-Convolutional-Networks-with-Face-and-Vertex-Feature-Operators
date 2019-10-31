@@ -169,11 +169,12 @@ def build_gemm(mesh):
                 mesh.ve[edge[1]].append(edges_count)
                 mesh.edge_areas.append(0)
                 nb_count.append(0)
-                ef.append(list([face_id]))
+                ef.append(list([-1, -1]))
+                ef[edges_count][0]=face_id
                 edges_count += 1
             else:
                 index = edge2key[edge]
-                ef[index].append(face_id)
+                ef[index][1]=face_id
             mesh.edge_areas[edge2key[edge]] += mesh.face_areas[face_id] / 3
 
             #Find face neighbors
