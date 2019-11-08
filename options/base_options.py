@@ -90,7 +90,7 @@ class BaseOptions:
                                  help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"},
                                  default='generative')
-        self.parser.add_argument('--ninput_features', type=int, default=750,
+        self.parser.add_argument('--ninput_features', type=int, default=500,
                                  help='# of input features (will include dummy features)')
         # network params
         self.parser.add_argument('--batch_size', type=int, default=12, help='input batch size')
@@ -98,7 +98,7 @@ class BaseOptions:
                                  help='selects network to use')
         self.parser.add_argument('--resblocks', type=int, default=3, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
-        self.parser.add_argument('--ncf', nargs='+', default=[128, 256, 256, 512], type=int, help='conv filters')
+        self.parser.add_argument('--ncf', nargs='+', default=[32, 64, 128, 256], type=int, help='conv filters')
         self.parser.add_argument('--pool_res', nargs='+', default=[400,300,200,120], type=int, help='pooling res')
         self.parser.add_argument('--norm', type=str, default='batch',
                                  help='instance normalization or batch normalization or group normalization')
@@ -113,7 +113,7 @@ class BaseOptions:
         self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # general params
-        self.parser.add_argument('--feat_from', type=str, default='edge',
+        self.parser.add_argument('--feat_from', type=str, default='face',
                                  help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='-1',
