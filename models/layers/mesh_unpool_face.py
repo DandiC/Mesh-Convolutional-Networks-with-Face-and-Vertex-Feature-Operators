@@ -36,17 +36,18 @@ class MeshUnpoolFace(nn.Module):
         if self.__multi_thread:
             for mesh_index in range(len(meshes)):
                 unpool_threads[mesh_index].join()
-        out_features = torch.cat(self.__updated_fe).view(len(meshes), -1, self.__out_target)
+        fe = self.__updated_fe
+        out_features = torch.cat(fe).view(len(meshes), -1, self.__out_target)
         return out_features
 
 
     def __unpool_main(self, mesh_index):
         mesh = self.__meshes[mesh_index]
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.face_count], mesh.face_count)
-
+        fe = self.__fe[mesh_index]
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         face_mask = np.ones(mesh.face_count, dtype=np.bool)
-        edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
+        # edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
         init_face_count = mesh.face_count
         while mesh.face_count < self.__out_target:
             value, face_id = heappop(queue)
@@ -66,15 +67,16 @@ class MeshUnpoolFace(nn.Module):
                 if max_n != -1:
                     edge_id = int(np.intersect1d(mesh.edges_in_face[face_id], mesh.edges_in_face[max_n])[0])
                     if edge_mask[edge_id]:
-                        self.__unpool_edge(mesh, edge_id, edge_mask, face_mask, edge_groups, face_id, max_n, mesh_index)
-        self.__updated_fe[mesh_index] = self.__fe[mesh_index]
+                        fe = self.__unpool_edge(mesh, edge_id, edge_mask, face_mask, fe, face_id, max_n, mesh_index)
+
+        self.__updated_fe[mesh_index] = fe
 
 
-    def __unpool_edge(self, mesh, edge_id, edge_mask, face_mask, edge_groups, f1, f2, mesh_index):
+    def __unpool_edge(self, mesh, edge_id, edge_mask, face_mask, fe, f1, f2, mesh_index):
         # Not pool if the edge or one of its neighbors is in a boundary
         if self.has_boundaries(mesh, edge_id):
             # TODO: We can include cases with boundaries, we just have to make sure not to create an edge in the neighbor
-            return False
+            return fe
         else:
             # Find face vertices opposite to edge_id
             vt_f1 = mesh.faces[f1,mesh.faces[f1] != mesh.edges[edge_id,0]]
@@ -110,29 +112,66 @@ class MeshUnpoolFace(nn.Module):
             # Update neighbors
             n_f1 = mesh.gemm_faces[f1]
             n_f1 = n_f1[n_f1!=f2]
-            n_f1 = n_f1[n_f1[np.where(mesh.edges[edge_id, 0] in mesh.faces[n_f1])[0]][0] != n_f1][0]
+            if mesh.edges[edge_id,0] in mesh.faces[n_f1][0]:
+                n_f1 = n_f1[1]
+            elif mesh.edges[edge_id, 0] in mesh.faces[n_f1][1]:
+                n_f1 = n_f1[0]
+            else:
+                assert(False)
+
             mesh.gemm_faces[f1, mesh.gemm_faces[f1] == n_f1] = new_f1
             mesh.gemm_faces = np.append(mesh.gemm_faces,[[n_f1,f1,new_f2]], axis=0)
 
             n_f2 = mesh.gemm_faces[f2]
             n_f2 = n_f2[n_f2 != f1]
-            n_f2 = n_f2[n_f2[np.where(mesh.edges[edge_id, 0] in mesh.faces[n_f2])[0]][0] != n_f2][0]
+            # n_f2 = n_f2[n_f2[np.where(mesh.edges[edge_id, 0] in mesh.faces[n_f2])[0]][0] != n_f2][0]
+            if mesh.edges[edge_id,0] in mesh.faces[n_f2][0]:
+                n_f2 = n_f2[1]
+            elif mesh.edges[edge_id, 0] in mesh.faces[n_f2][1]:
+                n_f2 = n_f2[0]
+            else:
+                assert(False)
             mesh.gemm_faces[f2, mesh.gemm_faces[f2] == n_f2] = new_f2
             mesh.gemm_faces = np.append(mesh.gemm_faces, [[n_f2, f2, new_f1]], axis=0)
 
             mesh.gemm_faces[n_f1, mesh.gemm_faces[n_f1] == f1] = new_f1
             mesh.gemm_faces[n_f2, mesh.gemm_faces[n_f2] == f2] = new_f2
 
-            fe = self.__fe[mesh_index]
-            torch.cat((fe, fe[:, f1].unsqueeze(1)), dim=1)
-            torch.cat((fe, fe[:, f2].unsqueeze(1)), dim=1)
-            self.__fe[mesh_index] = fe
+            #Update edges_in_face
+            vt_old = mesh.edges[edge_id, mesh.edges[edge_id]!=new_vt][0]
+
+            edge_f1 = mesh.edges_in_face[f1, mesh.edges_in_face[f1]!=edge_id]
+            assert(vt_old in mesh.edges[edge_f1])
+            if vt_old in  mesh.edges[edge_f1[0]]:
+                edge_new_f1 = edge_f1[1]
+                edge_f1 = edge_f1[0]
+            else:
+                edge_new_f1 = edge_f1[0]
+                edge_f1 = edge_f1[1]
+            mesh.edges_in_face[f1] = np.array([edge_id,new_edge_f1,edge_f1])
+            mesh.edges_in_face = np.append(mesh.edges_in_face, np.array([[new_edge_id,new_edge_f1,edge_new_f1]]),axis=0)
+
+            edge_f2 = mesh.edges_in_face[f2, mesh.edges_in_face[f2] != edge_id]
+            assert (vt_old in mesh.edges[edge_f2])
+            if vt_old in mesh.edges[edge_f2[0]]:
+                edge_new_f2 = edge_f2[1]
+                edge_f2 = edge_f2[0]
+            else:
+                edge_new_f2 = edge_f2[0]
+                edge_f2 = edge_f2[1]
+            mesh.edges_in_face[f2] = np.array([edge_id, new_edge_f2, edge_f2])
+            mesh.edges_in_face = np.append(mesh.edges_in_face, np.array([[new_edge_id, new_edge_f2, edge_new_f2]]),
+                                           axis=0)
+            
+            #Features of new faces are the same as their "parent" face
+            fe = torch.cat((fe, fe[:, f1].unsqueeze(1)), dim=1)
+            fe = torch.cat((fe, fe[:, f2].unsqueeze(1)), dim=1)
 
             face_mask[f1] = False
             face_mask[f2] = False
             edge_mask[edge_id] = False
 
-            return True
+            return fe
 
 
     def __pool_face(self, mesh, face_mask, face_id, edge_id):
@@ -163,9 +202,10 @@ class MeshUnpoolFace(nn.Module):
 
     @staticmethod
     def has_boundaries(mesh, edge_id):
-        for edge in mesh.gemm_edges[edge_id]:
-            if edge == -1:
-                return True
+        # TODO: There is no boundaries in our initial mesh, but we may consider in the future the case where there is boundaries
+        # for edge in mesh.gemm_edges[edge_id]:
+        #     if edge == -1:
+        #         return True
         return False
 
 

@@ -41,11 +41,17 @@ if __name__ == '__main__':
             model.optimize_parameters()
 
             if total_steps % opt.print_freq == 0:
-                loss = model.loss
                 t = (time.time() - iter_start_time) / opt.batch_size
-                writer.print_current_losses(epoch, epoch_iter, loss, t, t_data)
-                writer.plot_loss(loss, epoch, epoch_iter, dataset_size)
-                wandb.log({"loss": loss, "Iters": total_steps, "lr": model.optimizer.param_groups[-1]['lr']})
+                if opt.arch == 'meshGAN':
+                    gen_loss = model.g_loss
+                    disc_loss = model.d_loss
+                    wandb.log({"Gen_loss": gen_loss, "Disc_loss": disc_loss, "generated_model": wandb.Object3D(open('generated/unknown_0.obj')), "Iters": total_steps})
+                    writer.print_current_lossesGAN(epoch, epoch_iter, gen_loss, disc_loss, t, t_data)
+                else:
+                    loss = model.loss
+                    writer.print_current_losses(epoch, epoch_iter, loss, t, t_data)
+                    writer.plot_loss(loss, epoch, epoch_iter, dataset_size)
+                    wandb.log({"loss": loss, "Iters": total_steps, "lr": model.optimizer.param_groups[-1]['lr']})
 
             if i % opt.save_latest_freq == 0:
                 print('saving the latest model (epoch %d, total_steps %d)' %
@@ -63,14 +69,15 @@ if __name__ == '__main__':
         print('End of epoch %d / %d \t Time Taken: %d sec' %
               (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
         wandb.log({"Epoch": epoch})
-        model.update_learning_rate()
-        if opt.verbose_plot:
-            writer.plot_model_wts(model, epoch)
+        if opt.arch != 'meshGAN':
+            model.update_learning_rate()
+            if opt.verbose_plot:
+                writer.plot_model_wts(model, epoch)
 
-        if epoch % opt.run_test_freq == 0:
-            acc = run_test(epoch)
-            writer.plot_acc(acc, epoch)
-            wandb.log({"Test Accuracy": acc})
+            if epoch % opt.run_test_freq == 0:
+                acc = run_test(epoch)
+                writer.plot_acc(acc, epoch)
+                wandb.log({"Test Accuracy": acc})
 
     wandb.log({"Training Time": time.time()-startT})
     writer.close()

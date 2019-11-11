@@ -41,6 +41,11 @@ class MeshPoolFace(nn.Module):
     def __pool_main(self, mesh_index):
         mesh = self.__meshes[mesh_index]
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.face_count], mesh.face_count)
+        fe = self.__fe[mesh_index]
+
+        if mesh.face_count<=self.__out_target:
+            self.__updated_fe[mesh_index] = fe[:, :self.__out_target]
+            return
 
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         face_mask = np.ones(mesh.face_count, dtype=np.bool)
@@ -64,7 +69,7 @@ class MeshPoolFace(nn.Module):
                     if edge_mask[edge_id]:
                         self.__pool_edge(mesh, edge_id, edge_mask, face_mask, edge_groups, face_id, min_n)
         mesh.cleanWithFace(edge_mask, face_mask, edge_groups)
-        fe = self.__fe[mesh_index]
+
         self.__updated_fe[mesh_index] = fe[:, face_mask]
 
     def __pool_edge(self, mesh, edge_id, edge_mask, face_mask, edge_groups, f1, f2):

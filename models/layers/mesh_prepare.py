@@ -3,19 +3,22 @@ import os
 import ntpath
 import random
 
-def fill_mesh(mesh2fill, file: str, opt):
-    load_path = get_mesh_path(file, opt.num_aug)
-    if os.path.exists(load_path):
-        mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='face'):
+    if file==None:
+        mesh_data = from_faces_and_vertices(faces,vertices)
     else:
-        mesh_data = from_scratch(file, opt)
-        np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-                            edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                            filename=mesh_data.filename, sides=mesh_data.sides,
-                            edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                            edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                            faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
-                            face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef)
+        load_path = get_mesh_path(file, opt.num_aug)
+        if os.path.exists(load_path):
+            mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+        else:
+            mesh_data = from_scratch(file, opt)
+            np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+                                edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+                                filename=mesh_data.filename, sides=mesh_data.sides,
+                                edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+                                edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
+                                faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
+                                face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -33,9 +36,9 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.edges_in_face = mesh_data['edges_in_face']
     mesh2fill.ef = mesh_data['ef']
 
-    if opt.feat_from == 'edge':
+    if feat_from == 'edge':
         mesh2fill.features = mesh_data['edge_features']
-    elif opt.feat_from == 'face':
+    elif feat_from == 'face':
         mesh2fill.features = mesh_data['face_features']
     else:
         raise ValueError(opt.feat_from, 'Wrong parameter value in --feat_from')
@@ -74,9 +77,34 @@ def from_scratch(file, opt):
     build_gemm(mesh_data)
     if opt.num_aug > 1:
         post_augmentation(mesh_data, opt)
-    mesh_data.edge_features, mesh_data.face_features = extract_features(mesh_data, opt)
+    mesh_data.edge_features, mesh_data.face_features = extract_features(mesh_data)
     return mesh_data
 
+def from_faces_and_vertices(faces,vertices):
+
+    class MeshPrep:
+        def __getitem__(self, item):
+            return eval('self.' + item)
+
+    mesh_data = MeshPrep()
+    mesh_data.vs = vertices
+    mesh_data.faces=faces
+    mesh_data.edges = None
+    mesh_data.gemm_edges = mesh_data.sides = None
+    mesh_data.edges_count = None
+    mesh_data.ve = None
+    mesh_data.v_mask = None
+    mesh_data.filename = 'unknown'
+    mesh_data.edge_lengths = None
+    mesh_data.edge_areas = []
+    mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
+    mesh_data.face_normals, mesh_data.face_areas = compute_face_normals_and_areas(mesh_data, faces)
+    mesh_data.face_count = mesh_data.faces.shape[0]
+
+    build_gemm(mesh_data)
+
+    mesh_data.edge_features, mesh_data.face_features = extract_features(mesh_data)
+    return mesh_data
 # Fills vertices and faces by reading the OBJ file line by line
 def fill_from_file(mesh, file):
     mesh.filename = ntpath.split(file)[1]
@@ -370,7 +398,7 @@ def set_edge_lengths(mesh, edge_points=None):
     mesh.edge_lengths = edge_lengths
 
 
-def extract_features(mesh, opt):
+def extract_features(mesh):
    #Extraction of Edge Features
     edge_features = []
     edge_points = get_edge_points(mesh)

@@ -9,13 +9,15 @@ from models.layers.mesh_prepare import fill_mesh
 
 class Mesh:
 
-    def __init__(self, file=None, opt=None, hold_history=False, export_folder=''):
+    def __init__(self, file=None, opt=None, hold_history=False, export_folder='',faces=None,vertices=None, feat_from='face'):
+        if opt!=None:
+            feat_from = opt.feat_from
         self.vs = self.v_mask = self.filename = self.features = self.edge_areas = None
         self.edges = self.gemm_edges = self.sides = None
         self.pool_count = self.face_count = 0
         self.faces = self.face_areas = self.gemm_faces = None
         # Extracts information from OBJ meshes (vertices, edges, features etc.)
-        fill_mesh(self, file, opt)
+        fill_mesh(self, file, opt,faces=faces,vertices=vertices, feat_from=feat_from)
         self.export_folder = export_folder
         self.history_data = None
         if hold_history:
@@ -113,10 +115,12 @@ class Mesh:
         self.pool_count += 1
         self.export()
 
-    def export(self, file=None, vcolor=None):
+    def export(self, file=None, vcolor=None, extension='.obj'):
         if file is None:
             if self.export_folder:
                 filename, file_extension = os.path.splitext(self.filename)
+                if(file_extension==''):
+                    file_extension=extension
                 file = '%s/%s_%d%s' % (self.export_folder, filename, self.pool_count, file_extension)
             else:
                 return

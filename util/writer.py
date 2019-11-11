@@ -42,6 +42,14 @@ class Writer:
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
 
+    def print_current_lossesGAN(self, epoch, i, gen_loss, disc_loss, t, t_data):
+        """ prints train loss to terminal / file """
+        message = '(epoch: %d, iters: %d, time: %.3f, data: %.3f) generator loss: %.3f, discriminator loss: %.3f' \
+                  % (epoch, i, t, t_data, gen_loss.item(), disc_loss.item())
+        print(message)
+        with open(self.log_name, "a") as log_file:
+            log_file.write('%s\n' % message)
+
     def plot_loss(self, loss, epoch, i, n):
         iters = i + (epoch - 1) * n
         if self.display:

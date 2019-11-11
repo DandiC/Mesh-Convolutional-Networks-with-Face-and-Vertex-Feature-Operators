@@ -10,7 +10,9 @@ from models.layers.mesh_pool import MeshPool
 from models.layers.mesh_pool_face import MeshPoolFace
 from models.layers.mesh_unpool import MeshUnpool
 from models.layers.mesh_unpool_face import MeshUnpoolFace
-from models.layers.mesh_prepare import build_gemm, extract_features
+from models.layers.mesh import Mesh
+import numpy as np
+from util.util import pad
 
 
 ###############################################################################
@@ -126,7 +128,7 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
         up_convs = [1] + ncf[::-1] + [9]
         pool_res = [ninput_features] + opt.pool_res
         net = MeshGAN(pool_res, down_convs, up_convs, blocks=opt.resblocks,
-                      transfer_data=True,  symm_oper=opt.symm_oper)
+                      transfer_data=False,  symm_oper=opt.symm_oper)
     else:
         raise NotImplementedError('Encoder model name [%s] is not recognized' % arch)
     return init_net(net, init_type, init_gain, gpu_ids)
@@ -557,7 +559,8 @@ class UpConvFace(nn.Module):
         x1 = self.conv1(x1, meshes)
         if self.bn:
             x1 = self.bn[0](x1)
-        x1 = F.relu(x1)
+        #     TODO: relu eliminated to avoid not having negative vertices. Consider another activation function
+        # x1 = F.relu(x1)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
@@ -565,7 +568,7 @@ class UpConvFace(nn.Module):
                 x2 = self.bn[idx + 1](x2)
             if self.residual:
                 x2 = x2 + x1
-            x2 = F.relu(x2)
+            # x2 = F.relu(x2)
             x1 = x2
         x2 = x2.squeeze(3)
         return x2
@@ -577,7 +580,7 @@ class MeshGAN(nn.Module):
     """Network for fully-convolutional tasks (segmentation)
     """
 
-    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=None):
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=None):
         super(MeshGAN, self).__init__()
         self.transfer_data = transfer_data
         self.discriminator = MeshDiscriminator(pools, down_convs, fcs=[1], blocks=blocks, global_pool='avg', symm_oper=symm_oper)
@@ -625,9 +628,9 @@ class MeshDiscriminator(nn.Module):
                 self.fcs.append(nn.Linear(last_length, length))
                 self.fcs_bn.append(nn.InstanceNorm1d(length))
                 last_length = length
-            self.fcs.append(nn.Sigmoid())
             self.fcs = nn.ModuleList(self.fcs)
             self.fcs_bn = nn.ModuleList(self.fcs_bn)
+        self.last_layer = nn.Sigmoid()
         self.convs = nn.ModuleList(self.convs)
         reset_params(self)
 
@@ -645,7 +648,8 @@ class MeshDiscriminator(nn.Module):
                     x = fe.unsqueeze(1)
                     fe = self.fcs_bn[i](x).squeeze(1)
                 if i < len(self.fcs) - 1:
-                    fe = F.relu(fe)
+                    fe = F.leaky_relu(fe, negative_slope=0.2)
+        fe = self.last_layer(fe)
         return fe
 
     def __call__(self, x):
@@ -653,17 +657,17 @@ class MeshDiscriminator(nn.Module):
 
 
 class MeshGenerator(nn.Module):
-    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=True, symm_oper=None):
+    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=False, symm_oper=None):
         super(MeshGenerator, self).__init__()
         self.up_convs = []
-        for i in range(len(convs) - 2):
+        for i in range(len(convs) - 1):
             if i < len(unrolls):
                 unroll = unrolls[i]
             else:
                 unroll = 0
             self.up_convs.append(UpConvFace(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
                                         batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
-        self.final_conv = UpConvFace(convs[-2], convs[-1], blocks=blocks, unroll=False,
+        self.final_conv = UpConvFace(convs[-1], convs[-1], blocks=blocks, unroll=False,
                                  batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
         reset_params(self)
@@ -676,7 +680,20 @@ class MeshGenerator(nn.Module):
                 before_pool = encoder_outs[-(i + 2)]
             fe = up_conv((fe, meshes), before_pool)
         fe = self.final_conv((fe, meshes))
+        features = fe.data.numpy()
+        out_features = []
         # TODO: make meshes.faces=fe, call build_mesh(meshes), extract_features(meshes) and return extracted features and generated meshes
+        for i in range(len(meshes)):
+            mesh = meshes[i]
+            vt_values = np.swapaxes(features[i],0,1)
+            vt_values = np.reshape(vt_values, [vt_values.shape[0], 3,3])
+            for v in range(mesh.vs.shape[0]):
+                mesh.vs[v,:] = np.mean(vt_values[np.where(v==mesh.faces)],axis=0)
+            meshes[i] = Mesh(faces=mesh.faces,vertices=mesh.vs, export_folder='generated' )
+            out_features.append(meshes[i].extract_features())
+            out_features[i] = pad(out_features[i], mesh.faces.shape[0])
+
+        fe = torch.from_numpy(np.asarray(out_features)).float()
         return fe, meshes
 
     def __call__(self, x, encoder_outs=None):
