@@ -492,7 +492,7 @@ class DownConvFace(nn.Module):
             self.conv2.append(MeshConvFace(out_channels, out_channels, symm_oper=symm_oper))
             self.conv2 = nn.ModuleList(self.conv2)
         for _ in range(blocks + 1):
-            self.bn.append(nn.InstanceNorm2d(out_channels))
+            self.bn.append(nn.BatchNorm2d(out_channels))
             self.bn = nn.ModuleList(self.bn)
         if pool:
             self.pool = MeshPoolFace(pool)
@@ -505,14 +505,14 @@ class DownConvFace(nn.Module):
         x1 = self.conv1(fe, meshes)
         if self.bn:
             x1 = self.bn[0](x1)
-        x1 = F.relu(x1)
+        x1 = F.leaky_relu(x1, negative_slope=0.2)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
             if self.bn:
                 x2 = self.bn[idx + 1](x2)
             x2 = x2 + x1
-            x2 = F.relu(x2)
+            x2 = F.leaky_relu(x2, negative_slope=0.2)
             x1 = x2
         x2 = x2.squeeze(3)
         before_pool = None
@@ -524,13 +524,14 @@ class DownConvFace(nn.Module):
 
 class UpConvFace(nn.Module):
     def __init__(self, in_channels, out_channels, blocks=0, unroll=0, residual=True,
-                 batch_norm=True, transfer_data=True, symm_oper=None):
+                 batch_norm=True, transfer_data=True, symm_oper=None, relu=True):
         super(UpConvFace, self).__init__()
         self.residual = residual
         self.bn = []
         self.unroll = None
         self.transfer_data = transfer_data
         self.up_conv = MeshConvFace(in_channels, out_channels, symm_oper=symm_oper)
+        self.relu = relu
         if transfer_data:
             self.conv1 = MeshConvFace(2 * out_channels, out_channels, symm_oper=symm_oper)
         else:
@@ -541,7 +542,7 @@ class UpConvFace(nn.Module):
             self.conv2 = nn.ModuleList(self.conv2)
         if batch_norm:
             for _ in range(blocks + 1):
-                self.bn.append(nn.InstanceNorm2d(out_channels))
+                self.bn.append(nn.BatchNorm2d(out_channels))
             self.bn = nn.ModuleList(self.bn)
         if unroll:
             self.unroll = MeshUnpoolFace(unroll)
@@ -560,7 +561,8 @@ class UpConvFace(nn.Module):
         if self.bn:
             x1 = self.bn[0](x1)
         #     TODO: relu eliminated to avoid not having negative vertices. Consider another activation function
-        # x1 = F.relu(x1)
+        if self.relu:
+            x1 = F.relu(x1)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
@@ -568,7 +570,8 @@ class UpConvFace(nn.Module):
                 x2 = self.bn[idx + 1](x2)
             if self.residual:
                 x2 = x2 + x1
-            # x2 = F.relu(x2)
+            if self.relu:
+                x2 = F.relu(x2)
             x1 = x2
         x2 = x2.squeeze(3)
         return x2
@@ -600,6 +603,7 @@ class MeshGAN(nn.Module):
 class MeshDiscriminator(nn.Module):
     def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None):
         super(MeshDiscriminator, self).__init__()
+
         self.fcs = None
         self.convs = []
         for i in range(len(convs) - 1):
@@ -668,8 +672,9 @@ class MeshGenerator(nn.Module):
             self.up_convs.append(UpConvFace(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
                                         batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
         self.final_conv = UpConvFace(convs[-1], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
+                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper, relu=False)
         self.up_convs = nn.ModuleList(self.up_convs)
+        self.final_activation = nn.Tanh()
         reset_params(self)
 
     def forward(self, x, encoder_outs=None):
@@ -680,6 +685,7 @@ class MeshGenerator(nn.Module):
                 before_pool = encoder_outs[-(i + 2)]
             fe = up_conv((fe, meshes), before_pool)
         fe = self.final_conv((fe, meshes))
+        fe = self.final_activation(fe)
         features = fe.data.numpy()
         out_features = []
         # TODO: make meshes.faces=fe, call build_mesh(meshes), extract_features(meshes) and return extracted features and generated meshes

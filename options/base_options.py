@@ -93,7 +93,7 @@ class BaseOptions:
         self.parser.add_argument('--ninput_features', type=int, default=500,
                                  help='# of input features (will include dummy features)')
         # network params
-        self.parser.add_argument('--batch_size', type=int, default=12, help='input batch size')
+        self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
         self.parser.add_argument('--arch', type=str, default='meshGAN', choices={"mconvnet", "meshunet", "meshGAN"},
                                  help='selects network to use')
         self.parser.add_argument('--resblocks', type=int, default=3, help='# of res blocks')

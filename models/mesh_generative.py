@@ -11,7 +11,6 @@ import copy
 
 def weights_init_normal(m):
     classname = m.__class__.__name__
-    print(classname)
     if classname.find("Conv2d") != -1:
         torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
     elif classname.find("BatchNorm2d") != -1:
@@ -38,8 +37,7 @@ class GenerativeModel:
         self.mesh = None
         self.soft_label = None
         self.loss = None
-        self.valid = Variable(torch.FloatTensor(self.opt.batch_size, 1).fill_(1.0), requires_grad=False)
-        self.fake = Variable(torch.FloatTensor(self.opt.batch_size, 1).fill_(0.0), requires_grad=False)
+
         #
         self.nclasses = opt.nclasses
 
@@ -75,8 +73,11 @@ class GenerativeModel:
 
     #     Fake initial data
         latent_mesh = Mesh('datasets/latent/sphere.obj', opt=self.opt)
-        self.fake_features = torch.rand(self.opt.batch_size, 1, latent_mesh.face_count).to(self.device).requires_grad_(self.is_train)
-        self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.opt.batch_size)])
+        self.fake_features = torch.rand(self.features.shape[0], 1, latent_mesh.face_count).to(self.device).requires_grad_(self.is_train)
+        self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.features.shape[0])])
+
+        self.valid = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(1.0), requires_grad=False)
+        self.fake = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(0.0), requires_grad=False)
 
     def forward(self):
         out = self.net(self.features, self.mesh)
