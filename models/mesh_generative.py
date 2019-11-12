@@ -8,6 +8,16 @@ import numpy as np
 from torch.autograd import Variable
 import copy
 
+
+def weights_init_normal(m):
+    classname = m.__class__.__name__
+    print(classname)
+    if classname.find("Conv2d") != -1:
+        torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find("BatchNorm2d") != -1:
+        torch.nn.init.normal_(m.weight.data, 1.0, 0.02)
+        torch.nn.init.constant_(m.bias.data, 0.0)
+
 class GenerativeModel:
     """ Class for training Model weights
 
@@ -36,7 +46,11 @@ class GenerativeModel:
         # load/define networks
         self.net = networks.define_classifier(opt.input_nc, opt.ncf, opt.ninput_features, opt.nclasses, opt,
                                               self.gpu_ids, opt.arch, opt.init_type, opt.init_gain, opt.feat_from)
-        self.net.train(self.is_train)
+        self.net.discriminator.train(self.is_train)
+        self.net.generator.train(self.is_train)
+        self.net.discriminator.apply(weights_init_normal)
+        self.net.generator.apply(weights_init_normal)
+
         self.criterion_disc = networks.define_loss(opt)[0].to(self.device)
         self.criterion_gen = networks.define_loss(opt)[1].to(self.device)
 
@@ -63,9 +77,6 @@ class GenerativeModel:
         latent_mesh = Mesh('datasets/latent/sphere.obj', opt=self.opt)
         self.fake_features = torch.rand(self.opt.batch_size, 1, latent_mesh.face_count).to(self.device).requires_grad_(self.is_train)
         self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.opt.batch_size)])
-
-
-
 
     def forward(self):
         out = self.net(self.features, self.mesh)
