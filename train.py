@@ -24,8 +24,7 @@ if __name__ == '__main__':
     writer = Writer(opt)
     total_steps = 0
     if (opt.arch=='meshGAN'):
-        wandb.watch(model.net.generator, log="all")
-        wandb.watch(model.net.discriminator, log="all")
+        wandb.watch((model.net.generator, model.net.discriminator), log="all")
     else:
         wandb.watch(model.net, log="all")
     startT = time.time()
