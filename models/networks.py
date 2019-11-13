@@ -630,7 +630,7 @@ class MeshDiscriminator(nn.Module):
                 fcs = fcs[1:]
             for length in fcs:
                 self.fcs.append(nn.Linear(last_length, length))
-                self.fcs_bn.append(nn.InstanceNorm1d(length))
+                self.fcs_bn.append(nn.BatchNorm1d(length))
                 last_length = length
             self.fcs = nn.ModuleList(self.fcs)
             self.fcs_bn = nn.ModuleList(self.fcs_bn)
@@ -654,6 +654,7 @@ class MeshDiscriminator(nn.Module):
                 if i < len(self.fcs) - 1:
                     fe = F.leaky_relu(fe, negative_slope=0.2)
         fe = self.last_layer(fe)
+        # assert((fe.data.numpy()==0.5).all())
         return fe
 
     def __call__(self, x):
