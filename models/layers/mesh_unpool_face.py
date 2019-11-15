@@ -78,6 +78,7 @@ class MeshUnpoolFace(nn.Module):
             # TODO: We can include cases with boundaries, we just have to make sure not to create an edge in the neighbor
             return fe
         else:
+            # TODO: Some of the generated faces are the wrong direction. Look into that
             # Find face vertices opposite to edge_id
             vt_f1 = mesh.faces[f1,mesh.faces[f1] != mesh.edges[edge_id,0]]
             vt_f1 = vt_f1[vt_f1 != mesh.edges[edge_id, 1]][0]
@@ -85,9 +86,11 @@ class MeshUnpoolFace(nn.Module):
             vt_f2 = vt_f2[vt_f2 != mesh.edges[edge_id, 1]][0]
 
             # Divide edge_id in 2 edges
-            mesh.vs = np.append(mesh.vs, [(mesh.vs[mesh.edges[edge_id][0]]+mesh.vs[mesh.edges[edge_id][1]])/2], axis=0)
+            vt_old = mesh.edges[edge_id][0]     # This is the vertex that remains in f1 and f2
+            vt_new = mesh.edges[edge_id][1]     # This is the vertex that will be in new_f1 and new_f2
+            mesh.vs = np.append(mesh.vs, [(mesh.vs[vt_old]+mesh.vs[mesh.edges[edge_id][1]])/2], axis=0)
             new_vt = mesh.vs.shape[0]-1
-            mesh.edges = np.append(mesh.edges, [[new_vt, mesh.edges[edge_id, 1]]], axis=0)
+            mesh.edges = np.append(mesh.edges, [[new_vt, vt_new]], axis=0)
             mesh.edges_count += 1
             new_edge_id = mesh.edges.shape[0]-1
             mesh.edges[edge_id,1] = new_vt
@@ -100,14 +103,16 @@ class MeshUnpoolFace(nn.Module):
             mesh.edges_count += 1
             new_edge_f2 = mesh.edges.shape[0] - 1
 
-            mesh.faces[f1] = np.append(mesh.edges[edge_id], vt_f1)
-            mesh.faces[f2] = np.append(mesh.edges[edge_id], vt_f2)
-
-            mesh.faces = np.append(mesh.faces, [np.append(mesh.edges[new_edge_id], vt_f1)], axis=0)
+            mesh.faces = np.append(mesh.faces, [mesh.faces[f1]], axis=0)
             new_f1 = mesh.faces.shape[0]-1
-            mesh.faces = np.append(mesh.faces, [np.append(mesh.edges[new_edge_id], vt_f2)], axis=0)
+            mesh.faces = np.append(mesh.faces, [mesh.faces[f2]], axis=0)
             new_f2 = mesh.faces.shape[0] - 1
             mesh.face_count+=2
+
+            mesh.faces[f1, np.where(mesh.faces[f1]==vt_new)[0][0]] = new_vt
+            mesh.faces[f2, np.where(mesh.faces[f2]==vt_new)[0][0]] = new_vt
+            mesh.faces[new_f1, np.where(mesh.faces[new_f1] == vt_old)[0][0]] = new_vt
+            mesh.faces[new_f2, np.where(mesh.faces[new_f2] == vt_old)[0][0]] = new_vt
 
             # Update neighbors
             n_f1 = mesh.gemm_faces[f1]
