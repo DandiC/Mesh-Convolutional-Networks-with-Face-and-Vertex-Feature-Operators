@@ -8,18 +8,22 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
         mesh_data = from_faces_and_vertices(faces,vertices)
     else:
         load_path = get_mesh_path(file, opt.num_aug)
-        if os.path.exists(load_path):
-            mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
-        else:
-            mesh_data = from_scratch(file, opt)
-            np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
-                                edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                                filename=mesh_data.filename, sides=mesh_data.sides,
-                                edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                                edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                                faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
-                                face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef)
+        # if os.path.exists(load_path):
+        #     mesh_data = np.load(load_path, encoding='latin1', allow_pickle=True)
+        # else:
+        mesh_data = from_scratch(file, opt)
+        np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
+                            edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
+                            filename=mesh_data.filename, sides=mesh_data.sides,
+                            edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
+                            edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
+                            faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
+                            face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef,
+                            gemm_vs=mesh_data.gemm_vs, vs_count=mesh_data.vs_count)
+
     mesh2fill.vs = mesh_data['vs']
+    mesh2fill.vs_count = int(mesh_data['vs_count'])
+    mesh2fill.gemm_vs = mesh_data['gemm_vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
     mesh2fill.edges_count = int(mesh_data['edges_count'])
@@ -72,6 +76,7 @@ def from_scratch(file, opt):
     mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
     mesh_data.faces, mesh_data.face_areas, mesh_data.face_normals = remove_non_manifolds(mesh_data, faces)
     mesh_data.face_count = mesh_data.faces.shape[0]
+    mesh_data.vs_count = mesh_data.vs.shape[0]
     if opt.num_aug > 1:
         mesh_data.faces = augmentation(mesh_data, opt, mesh_data.faces)
     build_gemm(mesh_data)
@@ -100,6 +105,7 @@ def from_faces_and_vertices(faces,vertices):
     mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
     mesh_data.face_normals, mesh_data.face_areas = compute_face_normals_and_areas(mesh_data, faces)
     mesh_data.face_count = mesh_data.faces.shape[0]
+    mesh_data.vs_count = mesh_data.vs.shape[0]
 
     build_gemm(mesh_data)
 
@@ -179,12 +185,15 @@ def build_gemm(mesh):
     face_nb_count = []
     ef = []
     edges_in_faces = -np.ones(mesh.faces.shape)
+    point_nb = [set() for _ in range(mesh.vs.shape[0])]
     for face_id, face in enumerate(mesh.faces):
         face_edges = []
         face_nb_count.append(0)
         for i in range(3):
             cur_edge = (face[i], face[(i + 1) % 3])
             face_edges.append(cur_edge)
+            point_nb[face[i]].add(face[(i + 1) % 3])
+            point_nb[face[i]].add(face[(i + 2) % 3])
         for idx, edge in enumerate(face_edges):
             edge = tuple(sorted(list(edge)))
             face_edges[idx] = edge
@@ -233,6 +242,7 @@ def build_gemm(mesh):
         faces_edges.append(face_edges)
 
     mesh.edges = np.array(edges, dtype=np.int32)
+    mesh.gemm_vs = np.array(point_nb)
     mesh.gemm_edges = np.array(edge_nb, dtype=np.int64)
     mesh.gemm_faces = face_nb.astype(np.int64)
     mesh.sides = np.array(sides, dtype=np.int64)

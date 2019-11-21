@@ -43,7 +43,7 @@ class GenerativeModel:
 
         # load/define networks
         self.net = networks.define_classifier(opt.input_nc, opt.ncf, opt.ninput_features, opt.nclasses, opt,
-                                              self.gpu_ids, opt.arch, opt.init_type, opt.init_gain, opt.feat_from)
+                                              self.gpu_ids, opt.arch, opt.init_type, opt.init_gain, opt.feat_from, device=self.device)
         self.net.discriminator.train(self.is_train)
         self.net.generator.train(self.is_train)
         self.net.discriminator.apply(weights_init_normal)
@@ -73,7 +73,6 @@ class GenerativeModel:
 
     #     Fake initial data
         latent_mesh = Mesh('datasets/latent/sphere.obj', opt=self.opt)
-        self.fake_features = torch.rand(self.features.shape[0], 1, latent_mesh.face_count).to(self.device).requires_grad_(self.is_train)
         self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.features.shape[0])])
 
         self.valid = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(1.0), requires_grad=False)
@@ -95,8 +94,12 @@ class GenerativeModel:
 
     def trainGenerator(self):
         self.optimizer_G.zero_grad()
-        self.fake_features = torch.rand(self.opt.batch_size, 1, self.fake_mesh[0].face_count).to(self.device).requires_grad_(
-            self.is_train)
+        if 'Point' in self.opt.arch:
+            self.fake_features = torch.rand(self.opt.batch_size, 1, self.fake_mesh[0].vs_count).to(
+                self.device).requires_grad_(self.is_train)
+        else:
+            self.fake_features = torch.rand(self.opt.batch_size, 1, self.fake_mesh[0].face_count).to(
+                self.device).requires_grad_(self.is_train)
         self.gen_features, self.gen_models = self.net.generator((self.fake_features, self.fake_mesh))
         self.gen_features = self.gen_features.to(self.device).requires_grad_(self.is_train)
         self.g_loss = self.criterion_gen(self.net.discriminator((self.gen_features,self.gen_models)), self.valid)
