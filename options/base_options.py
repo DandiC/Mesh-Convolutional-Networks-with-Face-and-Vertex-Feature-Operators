@@ -96,7 +96,7 @@ class BaseOptions:
         self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
         self.parser.add_argument('--arch', type=str, default='meshPointGAN', choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
                                  help='selects network to use')
-        self.parser.add_argument('--resblocks', type=int, default=3, help='# of res blocks')
+        self.parser.add_argument('--resblocks', type=int, default=0, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
         self.parser.add_argument('--ncf', nargs='+', default=[32, 64, 128, 256], type=int, help='conv filters')
         self.parser.add_argument('--pool_res', nargs='+', default=[400,300,200,120], type=int, help='pooling res')

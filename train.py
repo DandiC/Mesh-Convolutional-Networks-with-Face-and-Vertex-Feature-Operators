@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
             if total_steps % opt.print_freq == 0:
                 t = (time.time() - iter_start_time) / opt.batch_size
-                if opt.arch == 'meshGAN':
+                if opt.dataset_mode == 'generative':
                     gen_loss = model.g_loss
                     disc_loss = model.d_loss
                     wandb.log({"Gen_loss": gen_loss, "Disc_loss": disc_loss, "D(x)": model.output_disc_real,
