@@ -47,8 +47,8 @@ if __name__ == '__main__':
                 if opt.dataset_mode == 'generative':
                     gen_loss = model.g_loss
                     disc_loss = model.d_loss
-                    wandb.log({"Gen_loss": gen_loss, "Disc_loss": disc_loss, "D(x)": model.output_disc_real,
-                               "D(G(z))": model.output_disc_fake, "Iters": total_steps})
+                    wandb.log({"Gen_loss": gen_loss, "Disc_loss": disc_loss, "D(x)": model.mean_output_disc_real,
+                               "D(G(z))": model.mean_output_disc_fake, "Iters": total_steps})
                     writer.print_current_lossesGAN(epoch, epoch_iter, gen_loss, disc_loss, t, t_data)
                 else:
                     loss = model.loss
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         print('End of epoch %d / %d \t Time Taken: %d sec' %
               (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
         wandb.log({"Epoch": epoch, "generated_model": wandb.Object3D(open('generated/unknown_0.obj'))})
-        if opt.arch != 'meshGAN':
+        if opt.dataset_mode != 'generative':
             model.update_learning_rate()
             if opt.verbose_plot:
                 writer.plot_model_wts(model, epoch)
