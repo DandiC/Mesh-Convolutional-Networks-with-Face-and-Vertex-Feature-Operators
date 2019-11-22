@@ -37,7 +37,8 @@ class ClassifierModel:
         if self.is_train:
             self.optimizer = torch.optim.Adam(self.net.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.scheduler = networks.get_scheduler(self.optimizer, opt)
-            print_network(self.net)
+            num_params = print_network(self.net)
+            wandb.log({"Params": num_params})
 
         if not self.is_train or opt.continue_train:
             self.load_network(opt.which_epoch)

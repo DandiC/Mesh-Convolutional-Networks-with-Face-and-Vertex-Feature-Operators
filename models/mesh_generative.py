@@ -58,7 +58,12 @@ class GenerativeModel:
             self.optimizer_G = torch.optim.Adam(self.net.generator.parameters(), lr=opt.lr,
                                                 betas=(opt.beta1, 0.999))
             # self.scheduler = networks.get_scheduler(self.optimizer, opt)
-            print_network(self.net)
+            print("DISCRIMINATOR:")
+            disc_params = print_network(self.net.discriminator)
+            print("GENERATOR:")
+            gen_params = print_network(self.net.generator)
+            wandb.log({"Gen Params": gen_params, "Disc Params": disc_params, "Params": disc_params+gen_params})
+
 
         if not self.is_train or opt.continue_train:
             self.load_network(opt.which_epoch)
@@ -108,9 +113,10 @@ class GenerativeModel:
 
     def trainDiscriminator(self):
         self.optimizer_D.zero_grad()
-
-        real_loss = self.criterion_disc(self.net.discriminator((self.features, self.mesh)), self.valid)
-        fake_loss = self.criterion_disc(self.net.discriminator((self.gen_features,self.gen_models)), self.fake)
+        self.output_disc_real = self.net.discriminator((self.features, self.mesh))
+        self.output_disc_fake = self.net.discriminator((self.gen_features,self.gen_models))
+        real_loss = self.criterion_disc(self.output_disc_real, self.valid)
+        fake_loss = self.criterion_disc(self.output_disc_fake, self.fake)
         self.d_loss = (real_loss+fake_loss)/2
         self.d_loss.backward()
         self.optimizer_D.step()

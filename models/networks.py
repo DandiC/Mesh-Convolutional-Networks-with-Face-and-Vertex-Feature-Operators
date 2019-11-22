@@ -133,7 +133,7 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
                       transfer_data=False,  symm_oper=opt.symm_oper)
     elif arch == 'meshPointGAN':
         net = MeshPointGAN(opt.pool_res, opt.unpool_res, ncf, opt.fc_n, norm_layer, input_nc, ninput_features,
-                           nresblocks=opt.resblocks, symm_oper=1, device=device)
+                           nresblocks=opt.resblocks, symm_oper=[1], device=device)
     else:
         raise NotImplementedError('Encoder model name [%s] is not recognized' % arch)
     return init_net(net, init_type, init_gain, gpu_ids)
@@ -711,12 +711,13 @@ class MeshGenerator(nn.Module):
         return self.forward(x, encoder_outs)
 
 class MResConvPoint(nn.Module):
-    def __init__(self, in_channels, out_channels, skips=1, symm_oper=None):
+    def __init__(self, in_channels, out_channels, skips=1, symm_oper=None, relu=True):
         super(MResConvPoint, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
         self.conv0 = MeshConvPoint(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper)
+        self.relu = relu
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))
             setattr(self, 'conv{}'.format(i + 1),
@@ -729,7 +730,8 @@ class MResConvPoint(nn.Module):
             x = getattr(self, 'bn{}'.format(i + 1))(F.relu(x))
             x = getattr(self, 'conv{}'.format(i + 1))(x, mesh)
         x += x1
-        x = F.relu(x)
+        if self.relu:
+            x = F.relu(x)
         return x
 
 class MeshPointGAN(nn.Module):
@@ -742,7 +744,7 @@ class MeshPointGAN(nn.Module):
 
         up_convs = conv_res[::].copy()
         up_convs.reverse()
-        self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, nf0, input_res, nresblocks=nresblocks, symm_oper=symm_oper, device=device)
+        self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 1, input_res, nresblocks=nresblocks, symm_oper=symm_oper, device=device)
 
     # def forward(self, x, meshes):
     #     fe, before_pool = self.encoder((x, meshes))
@@ -770,8 +772,8 @@ class MeshPointDiscriminator(nn.Module):
         self.fc1 = nn.Linear(self.k[-1], fc_n)
         self.fc2 = nn.Sequential(nn.Linear(fc_n, 1), nn.Sigmoid())
 
-    def forward(self, x, mesh):
-
+    def forward(self, input):
+        x, mesh = input
         for i in range(len(self.k) - 1):
             x = getattr(self, 'conv{}'.format(i))(x, mesh)
             x = F.relu(getattr(self, 'norm{}'.format(i))(x))
@@ -789,33 +791,35 @@ class MeshPointGenerator(nn.Module):
     def __init__(self, pool_res, conv_res, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1, device=None):
         super(MeshPointGenerator, self).__init__()
         self.k = [nf0] + conv_res
-        self.res = [input_res] + pool_res
+        self.res = pool_res
         self.device = device
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
-            setattr(self, 'conv{}'.format(i), MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper))
+            setattr(self, 'conv{}'.format(i), MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, relu=False))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
-            setattr(self, 'unpool{}'.format(i), MeshUnpoolPoint(self.res[i + 1]))
+            setattr(self, 'unpool{}'.format(i), MeshUnpoolPoint(self.res[i]))
 
-        self.final_conv = MResConvPoint(self.k[-1], 3, nresblocks, symm_oper=symm_oper)
+        self.final_conv = MResConvPoint(self.k[-1], 3, nresblocks, symm_oper=symm_oper, relu=False)
+        self.final_activation = nn.Tanh()
 
-    def forward(self, x, mesh):
-
+    def forward(self, input):
+        x, mesh = input
         for i in range(len(self.k) - 1):
             x = getattr(self, 'conv{}'.format(i))(x, mesh)
             x = F.leaky_relu(getattr(self, 'norm{}'.format(i))(x), negative_slope=0.2)
             x = getattr(self, 'unpool{}'.format(i))(x, mesh)
 
-        x = self.final_conv(x)
-        x = nn.Tanh(x)
+        x = self.final_conv(x,mesh)
+        x = self.final_activation(x)
 
         out_features = []
         for i in range(len(mesh)):
-            mesh[i] = Mesh(faces=mesh[i].faces,vertices=x.data.numpy(), export_folder='generated')
+            gen_vertices = np.transpose(x.data.numpy()[i,:,:,0])
+            mesh[i] = Mesh(faces=mesh[i].faces,vertices=gen_vertices, export_folder='generated')
             out_features.append(mesh[i].extract_features())
-            out_features[i] = pad(out_features[i], mesh.faces.shape[0])
+            out_features[i] = pad(out_features[i], mesh[i].faces.shape[0])
 
-        fe = torch.from_numpy(np.asarray(out_features)).float().to(self.device)
+        fe = torch.from_numpy(np.asarray(out_features)).float().to(x.device)
 
         return fe, mesh

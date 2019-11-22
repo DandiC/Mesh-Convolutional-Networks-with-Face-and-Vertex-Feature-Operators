@@ -43,7 +43,7 @@ def print_network(net):
         num_params += param.numel()
     print('[Network] Total number of parameters : %.3f M' % (num_params / 1e6))
     print('-----------------------------------------------')
-    wandb.log({"Params": num_params})
+    return num_params
 
 def get_heatmap_color(value, minimum=0, maximum=1):
     minimum, maximum = float(minimum), float(maximum)
