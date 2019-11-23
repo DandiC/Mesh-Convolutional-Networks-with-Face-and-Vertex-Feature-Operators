@@ -76,10 +76,6 @@ class GenerativeModel:
         self.labels = labels.to(self.device)
         self.mesh = data['mesh']
 
-    #     Fake initial data
-        latent_mesh = Mesh('datasets/latent/sphere.obj', opt=self.opt)
-        self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.features.shape[0])])
-
         self.valid = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(1.0), requires_grad=False)
         self.fake = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(0.0), requires_grad=False)
 
@@ -99,6 +95,10 @@ class GenerativeModel:
 
     def trainGenerator(self):
         self.optimizer_G.zero_grad()
+        #     Fake initial data
+        latent_mesh = Mesh('datasets/latent/sphere.obj', opt=self.opt)
+        self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.features.shape[0])])
+
         if 'Point' in self.opt.arch:
             self.fake_features = torch.rand(self.opt.batch_size, 1, self.fake_mesh[0].vs_count).to(
                 self.device).requires_grad_(self.is_train)
