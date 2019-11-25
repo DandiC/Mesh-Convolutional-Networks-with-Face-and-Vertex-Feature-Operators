@@ -37,7 +37,7 @@ class MeshConvPoint(nn.Module):
         for i in range(mesh.shape[0]):
             for j in range(mesh[i].vs.shape[0]):
                 # Do mean to account for different number of neighbors
-                f[i, :, j, 1] = torch.mean(x[i, :, np.array(list(mesh[i].gemm_vs[j]))], dim=1)
+                f[i, :, j, 1] = torch.sum(x[i, :, np.array(list(mesh[i].gemm_vs[j]))], dim=1)
 
 
 
