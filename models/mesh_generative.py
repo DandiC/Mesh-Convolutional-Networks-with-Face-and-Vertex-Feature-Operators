@@ -53,9 +53,9 @@ class GenerativeModel:
         self.criterion_gen = networks.define_loss(opt)[1].to(self.device)
 
         if self.is_train:
-            self.optimizer_D = torch.optim.Adam(self.net.discriminator.parameters(), lr=opt.lr,
+            self.optimizer_D = torch.optim.Adam(self.net.discriminator.parameters(), lr=opt.lr_disc,
                                                 betas=(opt.beta1, 0.999))
-            self.optimizer_G = torch.optim.Adam(self.net.generator.parameters(), lr=opt.lr,
+            self.optimizer_G = torch.optim.Adam(self.net.generator.parameters(), lr=opt.lr_gen,
                                                 betas=(opt.beta1, 0.999))
             # self.scheduler = networks.get_scheduler(self.optimizer, opt)
             print("DISCRIMINATOR:")

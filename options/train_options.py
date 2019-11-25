@@ -15,6 +15,8 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--niter_decay', type=int, default=100, help='# of iter to linearly decay learning rate to zero')
         self.parser.add_argument('--beta1', type=float, default=0.5, help='momentum term of adam')
         self.parser.add_argument('--lr', type=float, default=0.2, help='initial learning rate for adam')
+        self.parser.add_argument('--lr_gen', type=float, default=0.2, help='initial learning rate for adam')
+        self.parser.add_argument('--lr_disc', type=float, default=0.2, help='initial learning rate for adam')
         self.parser.add_argument('--lr_policy', type=str, default='lambda', help='learning rate policy: lambda|step|plateau')
         self.parser.add_argument('--lr_decay_iters', type=int, default=50, help='multiply by a gamma every lr_decay_iters iterations')
         # data augmentation stuff
