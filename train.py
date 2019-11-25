@@ -59,15 +59,15 @@ if __name__ == '__main__':
             if i % opt.save_latest_freq == 0:
                 print('saving the latest model (epoch %d, total_steps %d)' %
                       (epoch, total_steps))
-                model.save_network('latest')
+                model.save_network('latest', dataset_mode=opt.dataset_mode)
 
 
             iter_data_time = time.time()
         if epoch % opt.save_epoch_freq == 0:
             print('saving the model at the end of epoch %d, iters %d' %
                   (epoch, total_steps))
-            model.save_network('latest', wandb_save=False)
-            model.save_network(epoch)
+            model.save_network('latest', wandb_save=False, dataset_mode=opt.dataset_mode)
+            model.save_network(epoch, dataset_mode=opt.dataset_mode)
 
         print('End of epoch %d / %d \t Time Taken: %d sec' %
               (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))

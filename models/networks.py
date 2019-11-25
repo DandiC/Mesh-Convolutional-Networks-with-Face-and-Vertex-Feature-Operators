@@ -97,12 +97,22 @@ def init_weights(net, init_type, init_gain):
     net.apply(init_func)
 
 
-def init_net(net, init_type, init_gain, gpu_ids):
+def init_net(net, init_type, init_gain, gpu_ids, generative=False):
     if len(gpu_ids) > 0:
         assert (torch.cuda.is_available())
-        net.cuda(gpu_ids[0])
-        net = net.cuda()
-        net = torch.nn.DataParallel(net, gpu_ids)
+        if not generative:
+            net.cuda(gpu_ids[0])
+            net = net.cuda()
+            net = torch.nn.DataParallel(net, gpu_ids)
+        else:
+            net.generator.cuda(gpu_ids[0])
+            net.generator = net.generator.cuda()
+            net.generator = torch.nn.DataParallel(net.generator, gpu_ids)
+
+            net.discriminator.cuda(gpu_ids[0])
+            net.discriminator = net.discriminator.cuda()
+            net.discriminator = torch.nn.DataParallel(net.discriminator, gpu_ids)
+
     if init_type != 'none':
         init_weights(net, init_type, init_gain)
     return net
@@ -111,7 +121,7 @@ def init_net(net, init_type, init_gain, gpu_ids):
 def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, arch, init_type, init_gain, feat_from, device=None):
     net = None
     norm_layer = get_norm_layer(norm_type=opt.norm, num_groups=opt.num_groups)
-
+    generative = False
     if arch == 'mconvnet':
         if feat_from == 'edge':
             net = MeshConvNet(norm_layer, input_nc, ncf, nclasses, ninput_features, opt.pool_res, opt.fc_n,
@@ -131,12 +141,14 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
         pool_res = [ninput_features] + opt.pool_res
         net = MeshGAN(pool_res, down_convs, up_convs, blocks=opt.resblocks,
                       transfer_data=False,  symm_oper=opt.symm_oper)
+        generative = True
     elif arch == 'meshPointGAN':
         net = MeshPointGAN(opt.pool_res, opt.unpool_res, ncf, opt.fc_n, norm_layer, input_nc, ninput_features,
                            nresblocks=opt.resblocks, symm_oper=[1], device=device)
+        generative = True
     else:
         raise NotImplementedError('Encoder model name [%s] is not recognized' % arch)
-    return init_net(net, init_type, init_gain, gpu_ids)
+    return init_net(net, init_type, init_gain, gpu_ids, generative=generative)
 
 
 def define_loss(opt):
@@ -815,7 +827,7 @@ class MeshPointGenerator(nn.Module):
 
         out_features = []
         for i in range(len(mesh)):
-            gen_vertices = np.transpose(x.data.numpy()[i,:,:,0])
+            gen_vertices = np.transpose(x.cpu().data.numpy()[i,:,:,0])
             mesh[i] = Mesh(faces=mesh[i].faces,vertices=gen_vertices, export_folder='generated')
             out_features.append(mesh[i].extract_features())
             out_features[i] = pad(out_features[i], mesh[i].faces.shape[0])

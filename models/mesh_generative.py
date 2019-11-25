@@ -44,8 +44,8 @@ class GenerativeModel:
         # load/define networks
         self.net = networks.define_classifier(opt.input_nc, opt.ncf, opt.ninput_features, opt.nclasses, opt,
                                               self.gpu_ids, opt.arch, opt.init_type, opt.init_gain, opt.feat_from, device=self.device)
-        self.net.discriminator.train(self.is_train)
         self.net.generator.train(self.is_train)
+        self.net.discriminator.train(self.is_train)
         self.net.discriminator.apply(weights_init_normal)
         self.net.generator.apply(weights_init_normal)
 
@@ -76,8 +76,9 @@ class GenerativeModel:
         self.labels = labels.to(self.device)
         self.mesh = data['mesh']
 
-        self.valid = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(1.0), requires_grad=False)
-        self.fake = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(0.0), requires_grad=False)
+        self.valid = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(1.0), requires_grad=False).to(self.device)
+        self.fake = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(0.0), requires_grad=False).to(self.device)
+
 
     def forward(self):
         out = self.net(self.features, self.mesh)
@@ -141,18 +142,28 @@ class GenerativeModel:
         net.load_state_dict(state_dict)
 
 
-    def save_network(self, which_epoch, wandb_save=False):
+    def save_network(self, which_epoch, wandb_save=False, dataset_mode=None):
         """save model to disk"""
         save_filename = '%s_net.pth' % (which_epoch)
         save_path = join(self.save_dir, save_filename)
         if len(self.gpu_ids) > 0 and torch.cuda.is_available():
-            torch.save(self.net.module.cpu().state_dict(), save_path)
-            self.net.cuda(self.gpu_ids[0])
+            if dataset_mode != 'generative':
+                torch.save(self.net.module.cpu().state_dict(), save_path)
+                self.net.cuda(self.gpu_ids[0])
+            else:
+                torch.save(self.net.generator.module.cpu().state_dict(), save_path.replace('.pth', '_gen.pth'))
+                self.net.generator.cuda(self.gpu_ids[0])
+                torch.save(self.net.discriminator.module.cpu().state_dict(), save_path.replace('.pth', '_disc.pth'))
+                self.net.discriminator.cuda(self.gpu_ids[0])
         else:
             torch.save(self.net.cpu().state_dict(), save_path)
 
         if wandb_save:
-            wandb.save(save_path)
+            if dataset_mode != 'generative':
+                wandb.save(save_path)
+            else:
+                wandb.save(save_path.replace('.pth', '_disc.pth'))
+                wandb.save(save_path.replace('.pth', '_gen.pth'))
 
     def update_learning_rate(self):
         """update learning rate (called once every epoch)"""
