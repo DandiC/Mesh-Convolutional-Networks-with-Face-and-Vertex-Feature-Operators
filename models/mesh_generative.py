@@ -37,7 +37,7 @@ class GenerativeModel:
         self.mesh = None
         self.soft_label = None
         self.loss = None
-
+        self.disc_accuracy = 0
         #
         self.nclasses = opt.nclasses
 
@@ -78,7 +78,7 @@ class GenerativeModel:
 
         self.valid = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(1.0), requires_grad=False).to(self.device)
         self.fake = Variable(torch.FloatTensor(self.features.shape[0], 1).fill_(0.0), requires_grad=False).to(self.device)
-
+        self.label = np.concatenate([self.valid.data.cpu().numpy(), self.fake.data.cpu().numpy()], axis=0)
 
     def forward(self):
         out = self.net(self.features, self.mesh)
@@ -91,8 +91,9 @@ class GenerativeModel:
     def optimize_parameters(self):
         for i in range(self.opt.gen_steps):
             self.trainGenerator()
-        for i in range(self.opt.disc_steps):
-            self.trainDiscriminator()
+        if self.disc_accuracy < 0.8:
+            for i in range(self.opt.disc_steps):
+                self.trainDiscriminator()
 
     def trainGenerator(self):
         self.optimizer_G.zero_grad()
@@ -116,6 +117,8 @@ class GenerativeModel:
         self.optimizer_D.zero_grad()
         output_disc_real = self.net.discriminator((self.features, self.mesh))
         output_disc_fake = self.net.discriminator((self.gen_features, self.gen_models))
+        pred = np.concatenate([output_disc_real.data.cpu().numpy(), output_disc_fake.data.cpu().numpy()], axis=0)
+        self.disc_accuracy = np.mean(np.argmax(pred, axis=1) == self.label)
         self.mean_output_disc_real = torch.mean(output_disc_real).tolist()
         self.mean_output_disc_fake = torch.mean(output_disc_fake).tolist()
         real_loss = self.criterion_disc(output_disc_real, self.valid)
