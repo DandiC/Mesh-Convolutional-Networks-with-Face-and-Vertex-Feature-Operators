@@ -86,12 +86,13 @@ class BaseOptions:
 
         # PARAMETERS FOR GENERATIVE LEARNING
         # data params
-        self.parser.add_argument('--dataroot', default='datasets/shrec',
+        self.parser.add_argument('--dataroot', default='datasets/shrec_bird',
                                  help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"},
                                  default='generative')
         self.parser.add_argument('--ninput_features', type=int, default=500,
                                  help='# of input features (will include dummy features)')
+        self.parser.add_argument('--latent_path', default='datasets/latent/sphere.obj', help='Path to the OBJ containing the latent for connectivity')
         # network params
         self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
         self.parser.add_argument('--arch', type=str, default='meshPointGAN', choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
