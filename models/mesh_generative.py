@@ -118,7 +118,7 @@ class GenerativeModel:
         output_disc_real = self.net.discriminator((self.features, self.mesh))
         output_disc_fake = self.net.discriminator((self.gen_features, self.gen_models))
         pred = np.concatenate([output_disc_real.data.cpu().numpy(), output_disc_fake.data.cpu().numpy()], axis=0)
-        self.disc_accuracy = np.mean(np.argmax(pred, axis=1) == self.label)
+        self.disc_accuracy = np.mean(np.round(pred) == self.label)
         self.mean_output_disc_real = torch.mean(output_disc_real).tolist()
         self.mean_output_disc_fake = torch.mean(output_disc_fake).tolist()
         real_loss = self.criterion_disc(output_disc_real, self.valid)
