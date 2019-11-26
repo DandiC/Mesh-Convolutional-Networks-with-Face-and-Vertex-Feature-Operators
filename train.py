@@ -48,7 +48,7 @@ if __name__ == '__main__':
                     gen_loss = model.g_loss
                     disc_loss = model.d_loss
                     wandb.log({"Gen_loss": gen_loss, "Disc_loss": disc_loss, "D(x)": model.mean_output_disc_real,
-                               "D(G(z))": model.mean_output_disc_fake, "Iters": total_steps, "Disc Accuracy": model.dic_accuracy})
+                               "D(G(z))": model.mean_output_disc_fake, "Iters": total_steps, "Disc Accuracy": model.disc_accuracy})
                     writer.print_current_lossesGAN(epoch, epoch_iter, gen_loss, disc_loss, t, t_data)
                 else:
                     loss = model.loss
