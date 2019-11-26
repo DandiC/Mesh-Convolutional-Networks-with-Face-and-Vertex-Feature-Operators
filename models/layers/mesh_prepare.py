@@ -103,8 +103,8 @@ def from_faces_and_vertices(faces,vertices):
     mesh_data.edge_lengths = None
     mesh_data.edge_areas = []
     mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
-    # mesh_data.faces, mesh_data.face_areas, mesh_data.face_normals = remove_non_manifolds(mesh_data, faces)
-    mesh_data.face_normals, mesh_data.face_areas = compute_face_normals_and_areas(mesh_data, faces)
+    mesh_data.faces, mesh_data.face_areas, mesh_data.face_normals = remove_non_manifolds(mesh_data, faces)
+    # mesh_data.face_normals, mesh_data.face_areas = compute_face_normals_and_areas(mesh_data, faces)
     mesh_data.face_count = mesh_data.faces.shape[0]
     mesh_data.vs_count = mesh_data.vs.shape[0]
 
