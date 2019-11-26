@@ -38,6 +38,7 @@ class GenerativeModel:
         self.soft_label = None
         self.loss = None
         self.disc_accuracy = 0
+        self.latent_path = opt.latent_path
         #
         self.nclasses = opt.nclasses
 
@@ -94,11 +95,14 @@ class GenerativeModel:
         if self.disc_accuracy < 0.8:
             for i in range(self.opt.disc_steps):
                 self.trainDiscriminator()
+        del self.valid
+        del self.fake
+        del self.label
 
     def trainGenerator(self):
         self.optimizer_G.zero_grad()
         #     Fake initial data
-        latent_mesh = Mesh('datasets/latent/sphere.obj', opt=self.opt)
+        latent_mesh = Mesh(self.latent_path, opt=self.opt)
         self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.features.shape[0])])
 
         if 'Point' in self.opt.arch:
