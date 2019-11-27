@@ -92,9 +92,9 @@ class GenerativeModel:
     def optimize_parameters(self):
         for i in range(self.opt.gen_steps):
             self.trainGenerator()
-        if self.disc_accuracy < 0.8:
-            for i in range(self.opt.disc_steps):
-                self.trainDiscriminator()
+
+        for i in range(self.opt.disc_steps):
+            self.trainDiscriminator()
         del self.valid
         del self.fake
         del self.label
@@ -129,8 +129,9 @@ class GenerativeModel:
         real_loss = self.criterion_disc(output_disc_real, self.valid)
         fake_loss = self.criterion_disc(output_disc_fake, self.fake)
         self.d_loss = (real_loss+fake_loss)/2
-        self.d_loss.backward()
-        self.optimizer_D.step()
+        if self.disc_accuracy < 0.8:
+            self.d_loss.backward()
+            self.optimizer_D.step()
 
 ##################
 
