@@ -116,6 +116,7 @@ class GenerativeModel:
         self.g_loss = self.criterion_gen(self.net.discriminator((self.gen_features,self.gen_models)), self.valid)
         self.g_loss.backward()
         self.optimizer_G.step()
+        del self.fake_mesh
 
     def trainDiscriminator(self):
         self.optimizer_D.zero_grad()
