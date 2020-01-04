@@ -111,11 +111,12 @@ class GenerativeModel:
         else:
             self.fake_features = torch.rand(self.opt.batch_size, 1, self.fake_mesh[0].face_count).to(
                 self.device).requires_grad_(self.is_train)
-        self.gen_features, self.gen_models = self.net.generator((self.fake_features, self.fake_mesh))
+        # self.gen_features, self.gen_models = self.net.generator((self.fake_features, self.fake_mesh))
+        self.gen_features, self.gen_models = self.features, self.mesh
         self.gen_features = self.gen_features.to(self.device).requires_grad_(self.is_train)
         self.g_loss = self.criterion_gen(self.net.discriminator((self.gen_features,self.gen_models)), self.valid)
-        self.g_loss.backward()
-        self.optimizer_G.step()
+        # self.g_loss.backward()
+        # self.optimizer_G.step()
         del self.fake_mesh
 
     def trainDiscriminator(self):
