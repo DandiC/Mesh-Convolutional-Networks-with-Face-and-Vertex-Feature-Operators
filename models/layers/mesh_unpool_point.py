@@ -67,7 +67,6 @@ class MeshUnpoolPoint(nn.Module):
             # TODO: We can include cases with boundaries, we just have to make sure not to create an edge in the neighbor
             return fe
         else:
-            # TODO: Some of the generated faces are the wrong direction. Look into that
             # Find face vertices opposite to edge_id
             vt_f1 = mesh.faces[f1, mesh.faces[f1] != mesh.edges[edge_id, 0]]
             vt_f1 = vt_f1[vt_f1 != mesh.edges[edge_id, 1]][0]

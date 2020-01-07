@@ -99,6 +99,8 @@ class GenerativeModel:
         del self.fake
         del self.label
 
+        torch.cuda.empty_cache()
+
     def trainGenerator(self):
         self.optimizer_G.zero_grad()
         #     Fake initial data
