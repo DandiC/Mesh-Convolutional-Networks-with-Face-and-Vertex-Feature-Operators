@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+# from memory_profiler import profile
 
 class MeshConvFace(nn.Module):
     """ Computes convolution between edges and 4 incident (1-ring) edge neighbors
@@ -18,6 +19,7 @@ class MeshConvFace(nn.Module):
 
     def __call__(self, edge_f, mesh):
         return self.forward(edge_f, mesh)
+
 
     def forward(self, x, mesh):
         x = x.squeeze(-1)

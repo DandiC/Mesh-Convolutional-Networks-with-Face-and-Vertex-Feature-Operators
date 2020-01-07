@@ -15,7 +15,7 @@ from models.layers.mesh_unpool_point import MeshUnpoolPoint
 from models.layers.mesh import Mesh
 import numpy as np
 from util.util import pad
-
+# from memory_profiler import profile
 
 ###############################################################################
 # Helper Functions

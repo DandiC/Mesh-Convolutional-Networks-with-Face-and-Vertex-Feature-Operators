@@ -9,3 +9,4 @@ datasets
 runs
 wandb
 scripts
+mprofile*
