@@ -7,7 +7,7 @@ from models.layers.mesh import Mesh
 import numpy as np
 from torch.autograd import Variable
 import copy
-
+# from memory_profiler import profile
 
 def weights_init_normal(m):
     classname = m.__class__.__name__
@@ -89,6 +89,7 @@ class GenerativeModel:
         self.loss = self.criterion(out, self.labels)
         self.loss.backward()
 
+
     def optimize_parameters(self):
         for i in range(self.opt.gen_steps):
             self.trainGenerator()
@@ -101,6 +102,7 @@ class GenerativeModel:
 
         torch.cuda.empty_cache()
 
+    # @profile
     def trainGenerator(self):
         self.optimizer_G.zero_grad()
         #     Fake initial data
@@ -120,6 +122,7 @@ class GenerativeModel:
         self.optimizer_G.step()
         del self.fake_mesh
 
+
     def trainDiscriminator(self):
         self.optimizer_D.zero_grad()
         output_disc_real = self.net.discriminator((self.features, self.mesh))
@@ -128,8 +131,8 @@ class GenerativeModel:
         # output_disc_fake = self.fake
         pred = np.concatenate([output_disc_real.data.cpu().numpy(), output_disc_fake.data.cpu().numpy()], axis=0)
         self.disc_accuracy = np.mean(np.round(pred) == self.label)
-        self.mean_output_disc_real = torch.mean(output_disc_real).tolist()
-        self.mean_output_disc_fake = torch.mean(output_disc_fake).tolist()
+        self.mean_output_disc_real = torch.mean(output_disc_real).item()
+        self.mean_output_disc_fake = torch.mean(output_disc_fake).item()
         real_loss = self.criterion_disc(output_disc_real, self.valid)
         fake_loss = self.criterion_disc(output_disc_fake, self.fake)
         self.d_loss = (real_loss+fake_loss)/2

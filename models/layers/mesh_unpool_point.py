@@ -1,12 +1,10 @@
 import torch
 import torch.nn as nn
 from threading import Thread
-from models.layers.mesh_union import MeshUnion
 import numpy as np
 from heapq import heappop, heapify
 
 
-# TODO: Implement this
 class MeshUnpoolPoint(nn.Module):
     def __init__(self, unroll_target, multi_thread=False):
         super(MeshUnpoolPoint, self).__init__()
