@@ -70,7 +70,7 @@ class MeshConvFace(nn.Module):
         # x_2 = f[:, :, :, 2]
         # x_3 = f[:, :, :, 3]
 
-        # TODO: Consider symmetric functions as in MeshCNN
+        #Symmetric functions
         complete_f = torch.unsqueeze(f[:, :, :, 0], dim=3)
         if 1 in self.symm_oper:
             x_1 = f[:, :, :, 1] + f[:, :, :, 2] + f[:, :, :, 3]
