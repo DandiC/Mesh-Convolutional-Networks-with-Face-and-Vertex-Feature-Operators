@@ -95,7 +95,7 @@ class BaseOptions:
         self.parser.add_argument('--latent_path', default='datasets/latent/sphere.obj', help='Path to the OBJ containing the latent for connectivity')
         # network params
         self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
-        self.parser.add_argument('--arch', type=str, default='meshPointGAN', choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
+        self.parser.add_argument('--arch', type=str, default='meshGAN', choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
                                  help='selects network to use')
         self.parser.add_argument('--resblocks', type=int, default=0, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
@@ -118,7 +118,7 @@ class BaseOptions:
         self.parser.add_argument('--feat_from', type=str, default='face',
                                  help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
-        self.parser.add_argument('--gpu_ids', type=str, default='0',
+        self.parser.add_argument('--gpu_ids', type=str, default='-1',
                                  help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         self.parser.add_argument('--name', type=str, default='coseg',
                                  help='name of the experiment. It decides where to store samples and models')

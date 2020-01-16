@@ -267,8 +267,10 @@ def compute_face_normals_and_areas(mesh, faces):
     face_normals = np.cross(mesh.vs[faces[:, 1]] - mesh.vs[faces[:, 0]],
                             mesh.vs[faces[:, 2]] - mesh.vs[faces[:, 1]])
     face_areas = np.sqrt((face_normals ** 2).sum(axis=1))
+    if np.any(face_areas[:, np.newaxis] == 0):
+        print('has zero area face: %s' % mesh.filename)
+        face_areas[face_areas == 0] = 0.000001
     face_normals /= face_areas[:, np.newaxis]
-    assert (not np.any(face_areas[:, np.newaxis] == 0)), 'has zero area face: %s' % mesh.filename
     face_areas *= 0.5
     return face_normals, face_areas
 
