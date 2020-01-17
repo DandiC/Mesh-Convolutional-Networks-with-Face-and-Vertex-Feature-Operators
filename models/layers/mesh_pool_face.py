@@ -53,6 +53,12 @@ class MeshPoolFace(nn.Module):
         edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
 
         while mesh.face_count > self.__out_target:
+            if queue==[]:
+                print('Run out of faces to pool')
+                print(' Mesh:', mesh.filename)
+                print(' # of current faces', mesh.face_count)
+                print(' Target:', self._MeshPoolFace__out_target)
+
             value, face_id = heappop(queue)
             face_id = int(face_id)
             neighbors = mesh.gemm_faces[face_id]
