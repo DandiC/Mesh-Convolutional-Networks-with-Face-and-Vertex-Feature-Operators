@@ -41,6 +41,7 @@ class MeshPoolFace(nn.Module):
     def __pool_main(self, mesh_index):
         mesh = self.__meshes[mesh_index]
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.face_count], mesh.face_count)
+        orig_queue = queue
         fe = self.__fe[mesh_index]
 
         if mesh.face_count<=self.__out_target:
@@ -50,6 +51,7 @@ class MeshPoolFace(nn.Module):
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         face_mask = np.ones(mesh.face_count, dtype=np.bool)
         edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
+        
         while mesh.face_count > self.__out_target:
             value, face_id = heappop(queue)
             face_id = int(face_id)
@@ -58,9 +60,9 @@ class MeshPoolFace(nn.Module):
                 min_val = float("inf")
                 min_n = -1
                 for n in neighbors:
-                    n_idx = np.where(np.asarray(queue)[:, 1] == n)[0]
+                    n_idx = np.where(np.asarray(orig_queue)[:, 1] == n)[0]
                     if face_mask[n] and n_idx.size == 1:
-                        val = queue[n_idx[0]][0]
+                        val = orig_queue[n_idx[0]][0]
                         if val < min_val:
                             min_val = val
                             min_n = n
