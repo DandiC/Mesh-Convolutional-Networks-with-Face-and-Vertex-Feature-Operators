@@ -136,7 +136,7 @@ class GenerativeModel:
         real_loss = self.criterion_disc(output_disc_real, self.valid)
         fake_loss = self.criterion_disc(output_disc_fake, self.fake)
         self.d_loss = (real_loss+fake_loss)/2
-        if self.disc_accuracy < 0.8:
+        if self.disc_accuracy < self.opt.max_disc_acc:
             self.d_loss.backward()
             self.optimizer_D.step()
 

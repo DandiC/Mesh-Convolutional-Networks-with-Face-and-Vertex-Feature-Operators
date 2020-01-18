@@ -95,7 +95,7 @@ class BaseOptions:
         self.parser.add_argument('--latent_path', default='datasets/latent/sphere.obj', help='Path to the OBJ containing the latent for connectivity')
         # network params
         self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
-        self.parser.add_argument('--arch', type=str, default='meshGAN', choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
+        self.parser.add_argument('--arch', type=str, default='meshPointGAN', choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
                                  help='selects network to use')
         self.parser.add_argument('--resblocks', type=int, default=0, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
@@ -114,6 +114,7 @@ class BaseOptions:
         self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
         self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
+        self.parser.add_argument('--max_disc_acc', type=float, default=0.8, help='Maximum accuracy for the discriminator')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='face',
                                  help='Primitive to extract features from. One of: edge, face')
