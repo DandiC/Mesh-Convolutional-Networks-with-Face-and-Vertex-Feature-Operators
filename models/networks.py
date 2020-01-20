@@ -16,6 +16,7 @@ from models.layers.mesh import Mesh
 import numpy as np
 from util.util import pad
 import os
+import wandb
 # from memory_profiler import profile
 
 ###############################################################################
@@ -848,6 +849,8 @@ class MeshPointGenerator(nn.Module):
         out_features = []
         for i in range(len(mesh)):
             gen_output = np.transpose(x.cpu().data.numpy()[i,:,:,0])
+            wandb.log({'gen_output': gen_output})
+            # print(np.transpose(gen_output))
             if self.dilation:
                 gen_vertices = mesh[i].vs*gen_output
             else:
