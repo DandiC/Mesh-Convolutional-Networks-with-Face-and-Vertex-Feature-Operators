@@ -9,13 +9,21 @@ from torch.autograd import Variable
 import copy
 # from memory_profiler import profile
 
-def weights_init_normal(m):
+def weights_init_normal(m, mean=0.0, std=0.02, mean_norm=1.0, std_norm=0.02, bias=0.0):
     classname = m.__class__.__name__
     if classname.find("Conv2d") != -1:
-        torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
+        torch.nn.init.normal_(m.weight.data, mean, std)
     elif classname.find("BatchNorm2d") != -1:
-        torch.nn.init.normal_(m.weight.data, 1.0, 0.02)
-        torch.nn.init.constant_(m.bias.data, 0.0)
+        torch.nn.init.normal_(m.weight.data, mean_norm, std_norm)
+        torch.nn.init.constant_(m.bias.data, bias)
+
+def weights_init_normal_gen(m, mean=0.0, std=0.2, mean_norm=1.0, std_norm=0.2, bias=0.0):
+    classname = m.__class__.__name__
+    if classname.find("Conv2d") != -1:
+        torch.nn.init.normal_(m.weight.data, mean, std)
+    elif classname.find("BatchNorm2d") != -1:
+        torch.nn.init.normal_(m.weight.data, mean_norm, std_norm)
+        torch.nn.init.constant_(m.bias.data, bias)
 
 class GenerativeModel:
     """ Class for training Model weights
@@ -48,7 +56,7 @@ class GenerativeModel:
         self.net.generator.train(self.is_train)
         self.net.discriminator.train(self.is_train)
         self.net.discriminator.apply(weights_init_normal)
-        self.net.generator.apply(weights_init_normal)
+        self.net.generator.apply(weights_init_normal_gen)
 
         self.criterion_disc = networks.define_loss(opt)[0].to(self.device)
         self.criterion_gen = networks.define_loss(opt)[1].to(self.device)
