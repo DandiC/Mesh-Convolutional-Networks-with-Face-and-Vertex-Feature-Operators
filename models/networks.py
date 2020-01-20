@@ -847,18 +847,20 @@ class MeshPointGenerator(nn.Module):
         x = self.final_activation(x)
 
         out_features = []
+        gen_output = []
         for i in range(len(mesh)):
-            gen_output = np.transpose(x.cpu().data.numpy()[i,:,:,0])
-            wandb.log({'gen_output': gen_output})
+            gen_output.append(np.transpose(x.cpu().data.numpy()[i,:,:,0]))
+
             # print(np.transpose(gen_output))
             if self.dilation:
-                gen_vertices = mesh[i].vs*gen_output
+                gen_vertices = mesh[i].vs*gen_output[i]
             else:
-                gen_vertices = gen_output
+                gen_vertices = gen_output[i]
             mesh[i] = Mesh(faces=mesh[i].faces,vertices=gen_vertices, export_folder=self.export_folder)
             out_features.append(mesh[i].extract_features())
             out_features[i] = pad(out_features[i], mesh[i].faces.shape[0])
 
+        wandb.log({'gen_output': np.asarray(gen_output)[:,:,0]})
         fe = torch.from_numpy(np.asarray(out_features)).float().to(x.device)
 
         return fe, mesh
