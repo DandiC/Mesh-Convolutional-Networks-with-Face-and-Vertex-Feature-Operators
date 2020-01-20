@@ -823,11 +823,13 @@ class MeshPointGenerator(nn.Module):
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'unpool{}'.format(i), MeshUnpoolPoint(self.res[i]))
 
-        self.final_conv = MResConvPoint(self.k[-1], 3, nresblocks, symm_oper=symm_oper, relu=False)
+
 
         if self.dilation:
+            self.final_conv = MResConvPoint(self.k[-1], 1, nresblocks, symm_oper=symm_oper, relu=False)
             self.final_activation = nn.Sigmoid()
         else:
+            self.final_conv = MResConvPoint(self.k[-1], 3, nresblocks, symm_oper=symm_oper, relu=False)
             self.final_activation = nn.Tanh()
 
     def forward(self, input):
