@@ -34,7 +34,10 @@ class GenearativeData(BaseDataset):
         # get edge or face features
         features = mesh.extract_features()
         features = pad(features, self.opt.ninput_features)
-        meta['features'] = (features - self.mean) / self.std
+        if 'simplest' not in mesh.filename:
+            meta['features'] = (features - self.mean) / self.std
+        else:
+            meta['features'] = features
         return meta
 
     def __len__(self):
