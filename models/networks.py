@@ -149,7 +149,7 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
             os.makedirs(export_folder)
         net = MeshPointGAN(opt.pool_res, opt.unpool_res, ncf, opt.fc_n, norm_layer, input_nc, ninput_features,
                            nresblocks=opt.resblocks, symm_oper=[1], device=device,
-                           export_folder=export_folder)
+                           export_folder=export_folder, dilation=opt.dilation)
         generative = True
     else:
         raise NotImplementedError('Encoder model name [%s] is not recognized' % arch)
@@ -756,7 +756,7 @@ class MeshPointGAN(nn.Module):
     """
 
     def __init__(self, pool_res, unpool_res, conv_res, fc_n, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1,
-                 device=None, export_folder='generated'):
+                 device=None, export_folder='generated', dilation=True):
         super(MeshPointGAN, self).__init__()
         self.discriminator = MeshPointDiscriminator(pool_res, conv_res, fc_n, norm_layer, nf0, input_res,
                                                     nresblocks=nresblocks, symm_oper=symm_oper)
@@ -764,7 +764,7 @@ class MeshPointGAN(nn.Module):
         up_convs = conv_res[::].copy()
         up_convs.reverse()
         self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 1, input_res, nresblocks=nresblocks,
-                                            symm_oper=symm_oper, device=device, export_folder=export_folder)
+                                            symm_oper=symm_oper, device=device, export_folder=export_folder, dilation=dilation)
 
     # def forward(self, x, meshes):
     #     fe, before_pool = self.encoder((x, meshes))
@@ -808,12 +808,14 @@ class MeshPointDiscriminator(nn.Module):
 
 
 class MeshPointGenerator(nn.Module):
-    def __init__(self, pool_res, conv_res, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1, device=None, export_folder='generated'):
+    def __init__(self, pool_res, conv_res, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1, device=None,
+                 export_folder='generated', dilation=True):
         super(MeshPointGenerator, self).__init__()
         self.k = [nf0] + conv_res
         self.res = pool_res
         self.device = device
         self.export_folder = export_folder
+        self.dilation = dilation
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
@@ -822,13 +824,20 @@ class MeshPointGenerator(nn.Module):
             setattr(self, 'unpool{}'.format(i), MeshUnpoolPoint(self.res[i]))
 
         self.final_conv = MResConvPoint(self.k[-1], 3, nresblocks, symm_oper=symm_oper, relu=False)
-        self.final_activation = nn.Tanh()
+
+        if self.dilation:
+            self.final_activation = nn.Sigmoid()
+        else:
+            self.final_activation = nn.Tanh()
 
     def forward(self, input):
         x, mesh = input
         for i in range(len(self.k) - 1):
             x = getattr(self, 'conv{}'.format(i))(x, mesh)
-            x = F.leaky_relu(getattr(self, 'norm{}'.format(i))(x), negative_slope=0.2)
+            if self.dilation:
+                x = F.relu(getattr(self, 'norm{}'.format(i))(x))
+            else:
+                x = F.leaky_relu(getattr(self, 'norm{}'.format(i))(x), negative_slope=0.2)
             x = getattr(self, 'unpool{}'.format(i))(x, mesh)
 
         x = self.final_conv(x,mesh)
@@ -836,7 +845,11 @@ class MeshPointGenerator(nn.Module):
 
         out_features = []
         for i in range(len(mesh)):
-            gen_vertices = np.transpose(x.cpu().data.numpy()[i,:,:,0])
+            gen_output = np.transpose(x.cpu().data.numpy()[i,:,:,0])
+            if self.dilation:
+                gen_vertices = mesh[i].vs*gen_output
+            else:
+                gen_vertices = gen_output
             mesh[i] = Mesh(faces=mesh[i].faces,vertices=gen_vertices, export_folder=self.export_folder)
             out_features.append(mesh[i].extract_features())
             out_features[i] = pad(out_features[i], mesh[i].faces.shape[0])
