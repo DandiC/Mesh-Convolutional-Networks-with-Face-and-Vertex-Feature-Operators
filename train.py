@@ -4,6 +4,7 @@ from data import DataLoader
 from models import create_model
 from util.writer import Writer
 from test import run_test
+import os
 # from memory_profiler import profile
 
 # @profile
@@ -50,7 +51,7 @@ def train_epoch(epoch, dataset, model, writer, total_steps, opt):
 
     print('End of epoch %d / %d \t Time Taken: %d sec' %
           (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
-    wandb.log({"Epoch": epoch, "generated_model": wandb.Object3D(open('generated/unknown_0.obj'))})
+    wandb.log({"Epoch": epoch, "generated_model": wandb.Object3D(open(os.path.join(opt.checkpoints_dir, opt.name, 'generated', 'unknown_0.obj')))})
     if opt.dataset_mode != 'generative':
         model.update_learning_rate()
         if opt.verbose_plot:
