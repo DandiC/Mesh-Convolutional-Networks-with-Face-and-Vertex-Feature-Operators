@@ -5,6 +5,7 @@ from models import create_model
 from util.writer import Writer
 from test import run_test
 import os
+from random import randrange
 # from memory_profiler import profile
 
 # @profile
@@ -20,7 +21,7 @@ def train_epoch(epoch, dataset, model, writer, total_steps, opt):
         total_steps += opt.batch_size
         epoch_iter += opt.batch_size
         model.set_input(data)
-        model.optimize_parameters()
+        model.optimize_parameters(epoch=epoch)
 
         if total_steps % opt.print_freq == 0:
             t = (time.time() - iter_start_time) / opt.batch_size
@@ -51,8 +52,14 @@ def train_epoch(epoch, dataset, model, writer, total_steps, opt):
 
     print('End of epoch %d / %d \t Time Taken: %d sec' %
           (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
-    wandb.log({"Epoch": epoch, "generated_model": wandb.Object3D(open(os.path.join(opt.checkpoints_dir, opt.name, 'generated', 'unknown_0.obj')))})
-    if opt.dataset_mode != 'generative':
+
+    if opt.dataset_mode == 'generative':
+        # Pick a random generated model and export it
+        export_filename = os.path.join(opt.checkpoints_dir, opt.name, 'generated', 'gen_mesh_' + str(epoch) + '.obj')
+        ridx = randrange(model.gen_models.shape[0])
+        model.gen_models[ridx].export(file=export_filename)
+        wandb.log({"Epoch": epoch, "generated_model": wandb.Object3D(open(export_filename))})
+    else:
         model.update_learning_rate()
         if opt.verbose_plot:
             writer.plot_model_wts(model, epoch)

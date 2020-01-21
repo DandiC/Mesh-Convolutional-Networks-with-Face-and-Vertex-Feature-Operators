@@ -9,7 +9,8 @@ from models.layers.mesh_prepare import fill_mesh
 
 class Mesh:
 
-    def __init__(self, file=None, opt=None, hold_history=False, export_folder='',faces=None,vertices=None, feat_from='face'):
+    def __init__(self, file=None, opt=None, hold_history=False, export_folder='', faces=None,vertices=None,
+                 feat_from='face', export_filename='unknown'):
         if opt!=None:
             feat_from = opt.feat_from
         self.vs = self.v_mask = self.filename = self.features = self.edge_areas = None

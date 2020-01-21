@@ -7,6 +7,7 @@ from models.layers.mesh import Mesh
 import numpy as np
 from torch.autograd import Variable
 import copy
+import os
 # from memory_profiler import profile
 
 def weights_init_normal(m, mean=0.0, std=0.02, mean_norm=1.0, std_norm=0.02, bias=0.0):
@@ -98,9 +99,9 @@ class GenerativeModel:
         self.loss.backward()
 
 
-    def optimize_parameters(self):
+    def optimize_parameters(self, epoch=0):
         for i in range(self.opt.gen_steps):
-            self.trainGenerator()
+            self.trainGenerator(epoch)
 
         for i in range(self.opt.disc_steps):
             self.trainDiscriminator()
@@ -111,7 +112,7 @@ class GenerativeModel:
         torch.cuda.empty_cache()
 
     # @profile
-    def trainGenerator(self):
+    def trainGenerator(self, epoch):
         self.optimizer_G.zero_grad()
         #     Fake initial data
         latent_mesh = Mesh(self.latent_path, opt=self.opt)

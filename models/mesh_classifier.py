@@ -62,7 +62,7 @@ class ClassifierModel:
         self.loss = self.criterion(out, self.labels)
         self.loss.backward()
 
-    def optimize_parameters(self):
+    def optimize_parameters(self, epoch=0):
         self.optimizer.zero_grad()
         out = self.forward()
         self.backward(out)
