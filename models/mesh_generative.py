@@ -18,7 +18,7 @@ def weights_init_normal(m, mean=0.0, std=0.02, mean_norm=1.0, std_norm=0.02, bia
         torch.nn.init.normal_(m.weight.data, mean_norm, std_norm)
         torch.nn.init.constant_(m.bias.data, bias)
 
-def weights_init_normal_gen(m, mean=0.0, std=0.2, mean_norm=1.0, std_norm=0.2, bias=0.0):
+def weights_init_normal_gen(m, mean=0.0, std=0.02, mean_norm=1.0, std_norm=0.02, bias=0.0):
     classname = m.__class__.__name__
     if classname.find("Conv2d") != -1:
         torch.nn.init.normal_(m.weight.data, mean, std)
