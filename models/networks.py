@@ -764,7 +764,7 @@ class MeshPointGAN(nn.Module):
 
         up_convs = conv_res[::].copy()
         up_convs.reverse()
-        self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 1, input_res, nresblocks=nresblocks,
+        self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 3, input_res, nresblocks=nresblocks,
                                             symm_oper=symm_oper, device=device, export_folder=export_folder, dilation=dilation)
 
     # def forward(self, x, meshes):

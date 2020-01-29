@@ -83,9 +83,9 @@ class BaseOptions:
         # self.parser.add_argument('--export_folder', type=str, default='',
         #                          help='exports intermediate collapses to this folder')
         # self.initialized = True
-
-        # PARAMETERS FOR GENERATIVE LEARNING
-        # data params
+        #
+        # # PARAMETERS FOR GENERATIVE LEARNING
+        # # data params
         # self.parser.add_argument('--dataroot', default='datasets/shrec_bird',
         #                          help='path to meshes (should have subfolders train, test)')
         # self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"},
@@ -115,6 +115,8 @@ class BaseOptions:
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # self.parser.add_argument('--max_disc_acc', type=float, default=0.8, help='Maximum accuracy for the discriminator')
+        # self.parser.add_argument('--dilation', type=bool, default=1,
+        #                          help='Determines if the generator outputs dilation (true) or vertex positions (false)')
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='face',
         #                          help='Primitive to extract features from. One of: edge, face')

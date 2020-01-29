@@ -119,8 +119,15 @@ class GenerativeModel:
         self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.features.shape[0])])
 
         if 'Point' in self.opt.arch:
-            self.fake_features = torch.rand(self.opt.batch_size, 1, self.fake_mesh[0].vs_count).to(
-                self.device).requires_grad_(self.is_train)
+            dilations = np.random.rand(self.fake_mesh.shape[0], 1, self.fake_mesh[0].vs_count)
+            features = np.zeros([self.fake_mesh.shape[0], 3, self.fake_mesh[0].vs_count])
+            for i in range(self.fake_mesh.shape[0]):
+                features[i,:,:] = dilations[i,:,:]*np.transpose(self.fake_mesh[i].vs)
+                self.fake_mesh[i].vs = np.transpose(features[i])
+                # Debug code to export the latent meshes.
+                # self.fake_mesh[i].export(file='datasets/latent/dilated_spheres/sphere_'+str(i)+'.obj')
+            self.fake_features = torch.tensor(features).to(self.device).requires_grad_(self.is_train).float()
+
         else:
             self.fake_features = torch.rand(self.opt.batch_size, 1, self.fake_mesh[0].face_count).to(
                 self.device).requires_grad_(self.is_train)
