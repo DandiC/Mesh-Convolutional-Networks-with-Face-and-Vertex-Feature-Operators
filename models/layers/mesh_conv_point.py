@@ -32,7 +32,7 @@ class MeshConvPoint(nn.Module):
         output dimensions: Batch x Channels x Vertices x 2
         """
         # TODO: faster way to do this?
-        x = torch.cat((x.unsqueeze(3), torch.ones(x.shape[0], x.shape[1], x.shape[2], 1)),3)
+        x = torch.cat((x.unsqueeze(3), torch.ones(x.shape[0], x.shape[1], x.shape[2], 1).to(x.device)),3)
 
         for i in range(mesh.shape[0]):
             for j in range(mesh[i].vs.shape[0]):
