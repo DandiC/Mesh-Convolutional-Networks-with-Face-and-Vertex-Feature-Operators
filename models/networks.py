@@ -148,6 +148,7 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
         export_folder = os.path.join(opt.checkpoints_dir, opt.name, 'generated')
         if not os.path.exists(export_folder):
             os.makedirs(export_folder)
+        up_convs = [3] + ncf[::-1] + [3]
         net = MeshPointGAN(opt.pool_res, opt.unpool_res, ncf, opt.fc_n, norm_layer, input_nc, ninput_features,
                            nresblocks=opt.resblocks, symm_oper=[1], device=device,
                            export_folder=export_folder, dilation=opt.dilation)
@@ -752,6 +753,56 @@ class MResConvPoint(nn.Module):
             x = F.relu(x)
         return x
 
+class UpConvPoint(nn.Module):
+
+    def __init__(self, in_channels, out_channels, blocks=0, unroll=0, residual=True,
+                 batch_norm=True, transfer_data=True):
+        super(UpConvPoint, self).__init__()
+        self.residual = residual
+        self.bn = []
+        self.unroll = None
+        self.transfer_data = transfer_data
+        self.up_conv = MeshConvPoint(in_channels, out_channels)
+        if transfer_data:
+            self.conv1 = MeshConvPoint(2 * out_channels, out_channels)
+        else:
+            self.conv1 = MeshConvPoint(out_channels, out_channels)
+        self.conv2 = []
+        for _ in range(blocks):
+            self.conv2.append(MeshConvPoint(out_channels, out_channels))
+            self.conv2 = nn.ModuleList(self.conv2)
+        if batch_norm:
+            for _ in range(blocks + 1):
+                self.bn.append(nn.InstanceNorm2d(out_channels))
+            self.bn = nn.ModuleList(self.bn)
+        if unroll:
+            self.unroll = MeshUnpoolPoint(unroll)
+
+    def __call__(self, x, from_down=None):
+        return self.forward(x, from_down)
+
+    def forward(self, x, from_down):
+        from_up, meshes = x
+        x1 = self.up_conv(from_up, meshes).squeeze(3)
+        if self.unroll:
+            x1 = self.unroll(x1, meshes)
+        if self.transfer_data:
+            x1 = torch.cat((x1, from_down), 1)
+        x1 = self.conv1(x1, meshes)
+        if self.bn:
+            x1 = self.bn[0](x1)
+        x1 = F.relu(x1)
+        x2 = x1
+        for idx, conv in enumerate(self.conv2):
+            x2 = conv(x1, meshes)
+            if self.bn:
+                x2 = self.bn[idx + 1](x2)
+            if self.residual:
+                x2 = x2 + x1
+            x2 = F.relu(x2)
+            x1 = x2
+        x2 = x2.squeeze(3)
+        return x2
 class MeshPointGAN(nn.Module):
     """GAN Network that generates points (vertices)
     """
@@ -764,9 +815,11 @@ class MeshPointGAN(nn.Module):
 
         up_convs = conv_res[::].copy()
         up_convs.reverse()
-        self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 3, input_res, nresblocks=nresblocks,
-                                            symm_oper=symm_oper, device=device, export_folder=export_folder, dilation=dilation)
+        # self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 3, input_res, nresblocks=nresblocks,
+        #                                     symm_oper=symm_oper, device=device, export_folder=export_folder, dilation=dilation)
+        self.generator = MeshPointGenerator2(unpool_res, up_convs, dilation=dilation)
 
+    # unrolls, convs, blocks = 0, batch_norm = True, transfer_data = True
     # def forward(self, x, meshes):
     #     fe, before_pool = self.encoder((x, meshes))
     #     fe = self.decoder((fe, meshes), before_pool)
@@ -864,3 +917,60 @@ class MeshPointGenerator(nn.Module):
         fe = torch.from_numpy(np.asarray(out_features)).float().to(x.device)
 
         return fe, mesh
+
+class MeshPointGenerator2(nn.Module):
+    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=False, device=None,
+                 export_folder='generated', dilation=False):
+        super(MeshPointGenerator2, self).__init__()
+        self.device = device
+        self.export_folder = export_folder
+        self.dilation = dilation
+        self.up_convs = []
+        convs.insert(0,3)
+        if dilation:
+            convs.append(1)
+        else:
+            convs.append(3)
+        for i in range(len(convs) - 2):
+            if i < len(unrolls):
+                unroll = unrolls[i]
+            else:
+                unroll = 0
+            self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
+                                        batch_norm=batch_norm, transfer_data=transfer_data))
+        self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
+                                 batch_norm=batch_norm, transfer_data=False)
+        self.up_convs = nn.ModuleList(self.up_convs)
+        reset_params(self)
+
+    def forward(self, input, encoder_outs=None):
+        x, meshes = input
+        for i, up_conv in enumerate(self.up_convs):
+            before_pool = None
+            if encoder_outs is not None:
+                before_pool = encoder_outs[-(i + 2)]
+            x = up_conv((x, meshes), before_pool)
+        x = self.final_conv((x, meshes))
+
+        out_features = []
+        gen_output = []
+        for i in range(len(meshes)):
+            gen_output.append(np.transpose(x.cpu().data.numpy()[i, :, :]))
+
+            # print(np.transpose(gen_output))
+            if self.dilation:
+                gen_vertices = meshes[i].vs * gen_output[i]
+            else:
+                gen_vertices = gen_output[i]
+            meshes[i] = Mesh(faces=meshes[i].faces, vertices=gen_vertices, export_folder=self.export_folder)
+            out_features.append(meshes[i].extract_features())
+            out_features[i] = pad(out_features[i], meshes[i].faces.shape[0])
+
+        wandb.log({'gen_output': np.asarray(gen_output)[:, :, 0]})
+        fe = torch.from_numpy(np.asarray(out_features)).float().to(x.device)
+
+        return fe, meshes
+
+
+    def __call__(self, x, encoder_outs=None):
+        return self.forward(x, encoder_outs)

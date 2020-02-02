@@ -1,6 +1,8 @@
 import bpy
 import os
 import sys
+from os import listdir
+from os.path import isfile, join
 
 
 '''
@@ -23,7 +25,9 @@ class Process:
     def __init__(self, obj_file, target_faces, export_name):
         mesh = self.load_obj(obj_file)
         self.simplify(mesh, target_faces)
-        self.export_obj(mesh, export_name)
+        nfaces = len(mesh.data.polygons)
+        if nfaces < target_faces+10:
+            self.export_obj(mesh, export_name)
 
     def load_obj(self, obj_file):
         bpy.ops.import_scene.obj(filepath=obj_file, axis_forward='-Z', axis_up='Y', filter_glob="*.obj;*.mtl", use_edges=True,
@@ -71,10 +75,29 @@ class Process:
                                  group_by_material=False, keep_vertex_order=True, global_scale=1, path_mode='AUTO',
                                  axis_forward='-Z', axis_up='Y')
 
-obj_file = sys.argv[-3]
-target_faces = int(sys.argv[-2])
-export_name = sys.argv[-1]
+#obj_file = sys.argv[-3]
+#target_faces = int(sys.argv[-2])
+#export_name = sys.argv[-1]
 
 
-print('args: ', obj_file, target_faces, export_name)
-blender = Process(obj_file, target_faces, export_name)
+#print('args: ', obj_file, target_faces, export_name)
+#blender = Process(obj_file, target_faces, export_name)
+target_faces = 10000
+classes = {'bathtub', 'bed', 'chair', 'desk', 'dresser', 'monitor', 'night_stand', 'sofa', 'table', 'toilet'}
+main_folder = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ModelNet10/'
+
+for c in classes:
+    for split in {'train', 'test'}:
+        subfolder = c + '/' + split
+        in_folder =main_folder + subfolder + '/'
+        out_folder = main_folder + '/processed/' + subfolder + '/'
+        if not os.path.exists(out_folder):
+            os.makedirs(out_folder)
+
+
+        files = [f for f in listdir(in_folder) if (isfile(join(in_folder, f)) and 'vd.obj' in f)]
+
+        for file in files:
+            obj_file = in_folder+file
+            export_name = out_folder+file
+            blender = Process(obj_file, target_faces, export_name)

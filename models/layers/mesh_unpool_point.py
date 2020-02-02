@@ -164,7 +164,7 @@ class MeshUnpoolPoint(nn.Module):
                                            axis=0)
 
             # Features of new vertex is the average between the two parents
-            fe = torch.cat((fe,torch.mean(fe[:,[vt_old,vt_new],:],axis=1).unsqueeze(1)),dim=1)
+            fe = torch.cat((fe,torch.mean(fe[:,[vt_old,vt_new]],axis=1).unsqueeze(1)),dim=1)
 
             # face_mask[f1] = False
             # face_mask[f2] = False
