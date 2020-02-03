@@ -7,6 +7,7 @@ from test import run_test
 import os
 from random import randrange
 # from memory_profiler import profile
+import torch
 
 # @profile
 def train_epoch(epoch, dataset, model, writer, total_steps, opt):
@@ -75,6 +76,7 @@ def train_epoch(epoch, dataset, model, writer, total_steps, opt):
 
 if __name__ == '__main__':
 
+    # torch.autograd.set_detect_anomaly(True)
     import wandb
     wandb.init(project="meshcnn")
 

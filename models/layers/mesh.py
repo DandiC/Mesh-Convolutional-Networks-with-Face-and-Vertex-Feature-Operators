@@ -36,7 +36,12 @@ class Mesh:
         # update pA
         v_a.__iadd__(v_b)
         v_a.__itruediv__(2)
-        self.v_mask[edge[1]] = False
+        self.remove_vertex(edge[1])
+        for index, vt in enumerate(self.gemm_vs[edge[1]]):
+            if vt != edge[0]:
+                self.gemm_vs[vt].add(edge[0])
+                self.gemm_vs[edge[0]].add(vt)
+
         self.faces[self.faces == edge[1]] = edge[0]
         mask = self.edges == edge[1]
         self.ve[edge[0]].extend(self.ve[edge[1]])
@@ -45,6 +50,9 @@ class Mesh:
 
     def remove_vertex(self, v):
         self.v_mask[v] = False
+        self.vs_count -= 1
+        for index, vt in enumerate(self.gemm_vs[v]):
+            self.gemm_vs[vt].remove(v)
 
     def remove_edge(self, edge_id):
         vs = self.edges[edge_id]
@@ -73,6 +81,55 @@ class Mesh:
                 update_ve.append(new_indices[e])
             new_ve.append(update_ve)
         self.ve = new_ve
+        self.__clean_history(groups, torch_mask)
+        self.pool_count += 1
+        self.export()
+
+    def cleanWithPoint(self, edges_mask, groups):
+        edges_mask = edges_mask.astype(bool)
+        torch_mask = torch.from_numpy(edges_mask.copy())
+        self.gemm_edges = self.gemm_edges[edges_mask]
+        self.edges = self.edges[edges_mask]
+        self.sides = self.sides[edges_mask]
+
+        self.vs = self.vs[self.v_mask]
+        # self.gemm_vs = self.gemm_vs[self.v_mask]
+
+
+        new_ve = []
+        edges_mask = np.concatenate([edges_mask, [False]])
+        new_indices = np.zeros(edges_mask.shape[0], dtype=np.int32)
+        new_indices[-1] = -1
+        new_indices[edges_mask] = np.arange(0, np.ma.where(edges_mask)[0].shape[0])
+        self.gemm_edges[:, :] = new_indices[self.gemm_edges[:, :]]
+
+        for v_index, ve in enumerate(self.ve):
+            update_ve = []
+            if self.v_mask[v_index]:
+                for e in ve:
+                    update_ve.append(new_indices[e])
+                new_ve.append(update_ve)
+        self.ve = new_ve
+
+        v_mask = np.concatenate([self.v_mask, [False]])
+        new_vs_indices = np.zeros(v_mask.shape[0], dtype=np.int32)
+        new_vs_indices[-1] = -1
+        new_vs_indices[v_mask] = np.arange(0, np.ma.where(v_mask)[0].shape[0])
+        self.edges = new_vs_indices[self.edges[:,:]]
+        new_gemm_vs = [set() for _ in range(self.vs.shape[0])]
+        for v_index, gemm in enumerate(self.gemm_vs):
+            if self.v_mask[v_index]:
+                for vt in gemm:
+                    if self.v_mask[vt]:
+                        new_gemm_vs[new_vs_indices[v_index]].add(new_vs_indices[vt])
+
+        for vt, gemm in enumerate(new_gemm_vs):
+            for n in gemm:
+                    assert(vt in new_gemm_vs[n])
+
+        self.gemm_vs = new_gemm_vs
+
+        self.v_mask = self.v_mask[self.v_mask]
         self.__clean_history(groups, torch_mask)
         self.pool_count += 1
         self.export()
