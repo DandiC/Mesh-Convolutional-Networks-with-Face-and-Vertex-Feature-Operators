@@ -18,13 +18,13 @@ class MeshConvPoint(nn.Module):
         return self.forward(point_f, mesh)
 
     def forward(self, x, mesh):
-        # x = x.squeeze(-1)
+        x = x.squeeze(-1)
         G = torch.cat([self.pad_gemm(i, x.shape[2], x.device) for i in mesh], 0)
 
         # build 'neighborhood image' and apply convolution
         G = self.create_GeMM(x, G)
         return self.conv(G)
-        # return self.conv(x.unsqueeze(3))
+        # return self.conv(G.unsqueeze(3))
 
     def flatten_gemm_inds(self, Gi):
         (b, ne, nn) = Gi.shape
