@@ -19,12 +19,33 @@ class MeshConvPoint(nn.Module):
 
     def forward(self, x, mesh):
         x = x.squeeze(-1)
-        G = torch.cat([self.pad_gemm(i, x.shape[2], x.device) for i in mesh], 0)
 
         # build 'neighborhood image' and apply convolution
-        G = self.create_GeMM(x, G)
+        if -1 in self.symm_oper:
+            G = self.create_GeMM_average(x, mesh)
+        else:
+            G = torch.cat([self.pad_gemm(i, x.shape[2], x.device) for i in mesh], 0)
+            G = self.create_GeMM(x, G)
+
         return self.conv(G)
         # return self.conv(G.unsqueeze(3))
+
+    def create_GeMM_average(self, x, mesh):
+        """ gathers the edge features (x) with from the 1-ring indices (Gi)
+        applys symmetric functions to handle order invariance
+        returns a 'fake image' which can use 2d convolution on
+        output dimensions: Batch x Channels x Vertices x 2
+        """
+        # TODO: faster way to do this?
+        G = torch.cat((x.unsqueeze(3), torch.ones(x.shape[0], x.shape[1], x.shape[2], 1).to(x.device)), 3)
+
+        for i in range(mesh.shape[0]):
+            for j in range(mesh[i].vs.shape[0]):
+                # Do mean to account for different number of neighbors
+                G[i, :, j, 1] = torch.mean(x[i, :, np.fromiter(mesh[i].gemm_vs[j], int, len(mesh[i].gemm_vs[j]))],
+                                           dim=1)
+
+        return G
 
     def flatten_gemm_inds(self, Gi):
         (b, ne, nn) = Gi.shape
