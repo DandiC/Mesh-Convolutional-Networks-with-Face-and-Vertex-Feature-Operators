@@ -6,9 +6,8 @@ import numpy as np
 from heapq import heappop, heapify
 from torch.nn import ConstantPad2d
 
-
 class MeshPoolPoint(nn.Module):
-
+    
     def __init__(self, target, multi_thread=False):
         super(MeshPoolPoint, self).__init__()
         self.__out_target = target
@@ -56,12 +55,12 @@ class MeshPoolPoint(nn.Module):
                                               np.logical_and(mesh.edges[:, 0] == n_id, mesh.edges[:, 1] == vt_id)))
             if mask[edge_id]:
                 self.__pool_edge(mesh, edge_id, mask, edge_groups)
-                assert (mesh.vs_count == mesh.v_mask.sum())
+                assert(mesh.vs_count == mesh.v_mask.sum())
         fe = self.__fe[mesh_index]
         v_mask = np.zeros((fe.shape[1]), dtype=bool)
         v_mask[:mesh.v_mask.shape[0]] = mesh.v_mask
         mesh.cleanWithPoint(mask, edge_groups)
-        fe = fe[:, v_mask]
+        fe = fe[:,v_mask]
 
         padding_b = self.__out_target - fe.shape[1]
         if padding_b > 0:
@@ -74,9 +73,9 @@ class MeshPoolPoint(nn.Module):
         # Not pool if the edge or one of its neighbors is in a boundary
         if self.has_boundaries(mesh, edge_id):
             return False
-        elif self.__clean_side(mesh, edge_id, mask, edge_groups, 0) \
-                and self.__clean_side(mesh, edge_id, mask, edge_groups, 2) \
-                and self.__is_one_ring_valid(mesh, edge_id):
+        elif self.__clean_side(mesh, edge_id, mask, edge_groups, 0)\
+            and self.__clean_side(mesh, edge_id, mask, edge_groups, 2) \
+            and self.__is_one_ring_valid(mesh, edge_id):
             self.__merge_edges[0] = self.__pool_side(mesh, edge_id, mask, edge_groups, 0)
             self.__merge_edges[1] = self.__pool_side(mesh, edge_id, mask, edge_groups, 2)
             mesh.merge_vertices(edge_id)
@@ -107,6 +106,7 @@ class MeshPoolPoint(nn.Module):
                 return True
         return False
 
+
     @staticmethod
     def __is_one_ring_valid(mesh, edge_id):
         v_a = set(mesh.edges[mesh.ve[mesh.edges[edge_id, 0]]].reshape(-1))
@@ -118,8 +118,7 @@ class MeshPoolPoint(nn.Module):
         info = MeshPoolPoint.__get_face_info(mesh, edge_id, side)
         key_a, key_b, side_a, side_b, _, other_side_b, _, other_keys_b = info
         self.__redirect_edges(mesh, key_a, side_a - side_a % 2, other_keys_b[0], mesh.sides[key_b, other_side_b])
-        self.__redirect_edges(mesh, key_a, side_a - side_a % 2 + 1, other_keys_b[1],
-                              mesh.sides[key_b, other_side_b + 1])
+        self.__redirect_edges(mesh, key_a, side_a - side_a % 2 + 1, other_keys_b[1], mesh.sides[key_b, other_side_b + 1])
         MeshPoolPoint.__union_groups(mesh, edge_groups, key_b, key_a)
         MeshPoolPoint.__union_groups(mesh, edge_groups, edge_id, key_a)
         mask[key_b] = False
@@ -144,8 +143,7 @@ class MeshPoolPoint(nn.Module):
             update_side_b = mesh.sides[key_b, other_side_b + 1 - shared_items[1]]
             MeshPoolPoint.__redirect_edges(mesh, edge_id, side, update_key_a, update_side_a)
             MeshPoolPoint.__redirect_edges(mesh, edge_id, side + 1, update_key_b, update_side_b)
-            MeshPoolPoint.__redirect_edges(mesh, update_key_a, MeshPoolPoint.__get_other_side(update_side_a),
-                                           update_key_b, MeshPoolPoint.__get_other_side(update_side_b))
+            MeshPoolPoint.__redirect_edges(mesh, update_key_a, MeshPoolPoint.__get_other_side(update_side_a), update_key_b, MeshPoolPoint.__get_other_side(update_side_b))
             MeshPoolPoint.__union_groups(mesh, edge_groups, key_a, edge_id)
             MeshPoolPoint.__union_groups(mesh, edge_groups, key_b, edge_id)
             MeshPoolPoint.__union_groups(mesh, edge_groups, key_a, update_key_a)
@@ -195,7 +193,7 @@ class MeshPoolPoint(nn.Module):
             MeshPoolPoint.__remove_group(mesh, edge_groups, edge_key)
         mesh.edges_count -= 3
         vertex = list(vertex)
-        assert (len(vertex) == 1)
+        assert(len(vertex) == 1)
         mesh.remove_vertex(vertex[0])
 
     def __build_queue(self, features, mesh):
