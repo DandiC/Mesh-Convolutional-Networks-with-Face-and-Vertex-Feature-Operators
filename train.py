@@ -68,7 +68,7 @@ def train_epoch(epoch, dataset, model, writer, total_steps, opt):
         if epoch % opt.run_test_freq == 0:
             acc = run_test(epoch)
             writer.plot_acc(acc, epoch)
-            wandb.log({"Test Accuracy": acc})
+            wandb.log({"Epoch": epoch, "Test Accuracy": acc})
 
 
     wandb.log({"Training Time": time.time() - startT})
