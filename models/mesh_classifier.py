@@ -87,7 +87,7 @@ class ClassifierModel:
         net.load_state_dict(state_dict)
 
 
-    def save_network(self, which_epoch, wandb_save=False):
+    def save_network(self, which_epoch, wandb_save=False, dataset_mode=None):
         """save model to disk"""
         save_filename = '%s_net.pth' % (which_epoch)
         save_path = join(self.save_dir, save_filename)
