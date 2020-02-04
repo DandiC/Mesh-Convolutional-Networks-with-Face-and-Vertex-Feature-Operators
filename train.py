@@ -14,7 +14,7 @@ def train_epoch(epoch, dataset, model, writer, total_steps, opt):
     epoch_start_time = time.time()
     iter_data_time = time.time()
     epoch_iter = 0
-    
+
     for i, data in enumerate(dataset):
         iter_start_time = time.time()
         if total_steps % opt.print_freq == 0:

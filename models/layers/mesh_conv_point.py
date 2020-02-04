@@ -7,10 +7,18 @@ import random
 
 class MeshConvPoint(nn.Module):
 
-    def __init__(self, in_channels, out_channels, bias=True, symm_oper=None):
+    def __init__(self, in_channels, out_channels, bias=True, symm_oper=None, n_neighbors=6):
         super(MeshConvPoint, self).__init__()
         self.symm_oper = symm_oper
-        self.k = 2
+        self.n_neighbors = n_neighbors
+
+        if n_neighbors==0:
+            self.symm_oper = []
+        elif n_neighbors == -1:
+            self.symm_oper = [1]
+
+        self.k = 1+len(self.symm_oper)
+
         self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(1, self.k),
                               bias=bias)
 
@@ -21,7 +29,7 @@ class MeshConvPoint(nn.Module):
         x = x.squeeze(-1)
 
         # build 'neighborhood image' and apply convolution
-        if -1 in self.symm_oper:
+        if self.n_neighbors==-1:
             G = self.create_GeMM_average(x, mesh)
         else:
             G = torch.cat([self.pad_gemm(i, x.shape[2], x.device) for i in mesh], 0)
@@ -119,9 +127,12 @@ class MeshConvPoint(nn.Module):
         add the edge_id itself to make #edges x 4
         then pad to desired size e.g., xsz x 4
         """
-        rand_gemm = np.zeros((m.vs.shape[0], 3), dtype=int)
+        rand_gemm = -np.ones((m.vs.shape[0], self.n_neighbors), dtype=int)
         for i, gemm in enumerate(m.gemm_vs):
-            rand_gemm[i,:] = np.array(random.sample(gemm,3))
+            if self.n_neighbors>len(gemm):
+                rand_gemm[i,0:len(gemm)] = np.array(list(gemm))
+            else:
+                rand_gemm[i,:] = np.array(random.sample(gemm,self.n_neighbors))
         padded_gemm = torch.tensor(rand_gemm, device=device).float()
         padded_gemm = padded_gemm.requires_grad_()
         padded_gemm = torch.cat((torch.arange(m.vs.shape[0], device=device).float().unsqueeze(1), padded_gemm), dim=1)

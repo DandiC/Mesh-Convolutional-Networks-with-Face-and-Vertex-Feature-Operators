@@ -27,7 +27,8 @@ class BaseOptions:
         self.parser.add_argument('--init_type', type=str, default='normal', help='network initialization [normal|xavier|kaiming|orthogonal]')
         self.parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
         self.parser.add_argument('--face_pool', type=str, default='v2', help='Version of face pool. For tracking purposes only.')
-        self.parser.add_argument('--symm_oper', nargs='+', default=[-1], type=int, help='pooling res')
+        self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
+        self.parser.add_argument('--n_neighbors', nargs='+', default=6, type=int, help='Number of neighbors selected for point (vertex) convolution. If set to -1, network does the average of all vertices')
         self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # general params
