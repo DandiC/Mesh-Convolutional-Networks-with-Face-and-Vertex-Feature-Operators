@@ -19,7 +19,8 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
                                 edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
                                 faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
                                 face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef,
-                                gemm_vs=mesh_data.gemm_vs, vs_count=mesh_data.vs_count)
+                                gemm_vs=mesh_data.gemm_vs, vs_count=mesh_data.vs_count, vf=mesh_data.vf,
+                                vs_normals=mesh_data.vs_normals)
 
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.vs_count = int(mesh_data['vs_count'])
@@ -39,13 +40,16 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
     mesh2fill.face_count = int(mesh_data['face_count'])
     mesh2fill.edges_in_face = mesh_data['edges_in_face']
     mesh2fill.ef = mesh_data['ef']
+    mesh2fill.vf = mesh_data['vf']
+    mesh2fill.vs_normals = mesh_data['vs_normals']
 
     if feat_from == 'edge':
         mesh2fill.features = mesh_data['edge_features']
     elif feat_from == 'face':
         mesh2fill.features = mesh_data['face_features']
     elif feat_from == 'point':
-        mesh2fill.features = np.transpose(mesh_data['vs'])
+        # mesh2fill.features = np.transpose(mesh_data['vs'])
+        mesh2fill.features = np.transpose(np.concatenate([mesh_data['vs'], mesh_data['vs_normals']], axis=1))
     else:
         raise ValueError(opt.feat_from, 'Wrong parameter value in --feat_from')
 
@@ -70,6 +74,7 @@ def from_scratch(file, opt):
     mesh_data.gemm_edges = mesh_data.sides = None
     mesh_data.edges_count = None
     mesh_data.ve = None
+    mesh_data.vf = None
     mesh_data.v_mask = None
     mesh_data.filename = 'unknown'
     mesh_data.edge_lengths = None
@@ -177,6 +182,7 @@ def remove_non_manifolds(mesh, faces):
 
 def build_gemm(mesh):
     mesh.ve = [[] for _ in mesh.vs]
+    mesh.vf = [[] for _ in mesh.vs]
     edge_nb = []
     sides = []
     edge2key = dict()
@@ -193,6 +199,7 @@ def build_gemm(mesh):
         face_edges = []
         face_nb_count.append(0)
         for i in range(3):
+            mesh.vf[face[i]].append(face_id)
             cur_edge = (face[i], face[(i + 1) % 3])
             face_edges.append(cur_edge)
             point_nb[face[i]].add(face[(i + 1) % 3])
@@ -247,7 +254,7 @@ def build_gemm(mesh):
     # for vt, gemm in enumerate(point_nb):
     #     for n in gemm:
     #         assert(vt in point_nb[n])
-
+    compute_vs_normals(mesh)
     mesh.edges = np.array(edges, dtype=np.int32)
     mesh.gemm_vs = np.array(point_nb)
     mesh.gemm_edges = np.array(edge_nb, dtype=np.int64)
@@ -268,6 +275,11 @@ def build_gemm(mesh):
     #         ve[ve_id] = np.where(ridx==edge)[0][0]
 
 
+def compute_vs_normals(mesh):
+    mesh.vs_normals = np.zeros(mesh.vs.shape)
+    for v_id, vertices in enumerate(mesh.vf):
+        mesh.vs_normals[v_id] = np.sum(mesh.face_normals[vertices,:], axis=0)
+        mesh.vs_normals[v_id]=mesh.vs_normals[v_id]/np.linalg.norm(mesh.vs_normals[v_id])
 
 def compute_face_normals_and_areas(mesh, faces):
     face_normals = np.cross(mesh.vs[faces[:, 1]] - mesh.vs[faces[:, 0]],
