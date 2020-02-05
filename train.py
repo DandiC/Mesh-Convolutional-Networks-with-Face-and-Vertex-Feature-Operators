@@ -70,8 +70,6 @@ def train_epoch(epoch, dataset, model, writer, total_steps, opt):
             writer.plot_acc(acc, epoch)
             wandb.log({"Epoch": epoch, "Test Accuracy": acc})
 
-
-    wandb.log({"Training Time": time.time() - startT})
     writer.close()
 
 if __name__ == '__main__':
@@ -100,3 +98,4 @@ if __name__ == '__main__':
     startT = time.time()
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         train_epoch(epoch, dataset, model, writer, total_steps, opt)
+    wandb.log({"Training Time": time.time() - startT})
