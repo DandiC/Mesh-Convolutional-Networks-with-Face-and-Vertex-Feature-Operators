@@ -815,20 +815,20 @@ class MeshGenerator(nn.Module):
 class UpConvPoint(nn.Module):
 
     def __init__(self, in_channels, out_channels, blocks=0, unroll=0, residual=True,
-                 batch_norm=True, transfer_data=True):
+                 batch_norm=True, transfer_data=True, symm_oper=None):
         super(UpConvPoint, self).__init__()
         self.residual = residual
         self.bn = []
         self.unroll = None
         self.transfer_data = transfer_data
-        self.up_conv = MeshConvPoint(in_channels, out_channels)
+        self.up_conv = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper)
         if transfer_data:
-            self.conv1 = MeshConvPoint(2 * out_channels, out_channels)
+            self.conv1 = MeshConvPoint(2 * out_channels, out_channels, symm_oper=symm_oper)
         else:
-            self.conv1 = MeshConvPoint(out_channels, out_channels)
+            self.conv1 = MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper)
         self.conv2 = []
         for _ in range(blocks):
-            self.conv2.append(MeshConvPoint(out_channels, out_channels))
+            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper))
             self.conv2 = nn.ModuleList(self.conv2)
         if batch_norm:
             for _ in range(blocks + 1):
@@ -876,7 +876,7 @@ class MeshPointGAN(nn.Module):
         up_convs.reverse()
         # self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 3, input_res, nresblocks=nresblocks,
         #                                     symm_oper=symm_oper, device=device, export_folder=export_folder, dilation=dilation)
-        self.generator = MeshPointGenerator2(unpool_res, up_convs, dilation=dilation)
+        self.generator = MeshPointGenerator2(unpool_res, up_convs, dilation=dilation, symm_oper=symm_oper)
 
     # unrolls, convs, blocks = 0, batch_norm = True, transfer_data = True
     # def forward(self, x, meshes):
@@ -896,9 +896,9 @@ class MeshPointDiscriminator(nn.Module):
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
-            setattr(self, 'conv{}'.format(i), MResConvFace(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper))
+            setattr(self, 'conv{}'.format(i), MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
-            setattr(self, 'pool{}'.format(i), MeshPoolFace(self.res[i + 1]))
+            setattr(self, 'pool{}'.format(i), MeshPoolPoint(self.res[i + 1]))
 
         self.gp = torch.nn.AvgPool1d(self.res[-1])
         # self.gp = torch.nn.MaxPool1d(self.res[-1])
@@ -979,7 +979,7 @@ class MeshPointGenerator(nn.Module):
 
 class MeshPointGenerator2(nn.Module):
     def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=False, device=None,
-                 export_folder='generated', dilation=False):
+                 export_folder='generated', dilation=False, symm_oper=None):
         super(MeshPointGenerator2, self).__init__()
         self.device = device
         self.export_folder = export_folder
@@ -996,9 +996,9 @@ class MeshPointGenerator2(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data))
+                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False)
+                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
         reset_params(self)
 
@@ -1021,9 +1021,9 @@ class MeshPointGenerator2(nn.Module):
                 gen_vertices = meshes[i].vs * gen_output[i]
             else:
                 gen_vertices = gen_output[i]
-            meshes[i] = Mesh(faces=meshes[i].faces, vertices=gen_vertices, export_folder=self.export_folder)
+            meshes[i] = Mesh(faces=meshes[i].faces, vertices=gen_vertices, export_folder=self.export_folder, feat_from='point')
             out_features.append(meshes[i].extract_features())
-            out_features[i] = pad(out_features[i], meshes[i].faces.shape[0])
+            out_features[i] = pad(out_features[i], meshes[i].vs.shape[0])
 
         wandb.log({'gen_output': np.asarray(gen_output)[:, :, 0]})
         fe = torch.from_numpy(np.asarray(out_features)).float().to(x.device)
