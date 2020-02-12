@@ -285,7 +285,8 @@ def compute_vs_normals(mesh):
     mesh.vs_normals = np.zeros(mesh.vs.shape)
     for v_id, vertices in enumerate(mesh.vf):
         mesh.vs_normals[v_id] = np.sum(mesh.face_normals[vertices,:], axis=0)
-        mesh.vs_normals[v_id]=mesh.vs_normals[v_id]/np.linalg.norm(mesh.vs_normals[v_id])
+        if not np.all(mesh.vs_normals[v_id] == 0):
+            mesh.vs_normals[v_id]=mesh.vs_normals[v_id]/np.linalg.norm(mesh.vs_normals[v_id])
 
 def compute_face_normals_and_areas(mesh, faces):
     face_normals = np.cross(mesh.vs[faces[:, 1]] - mesh.vs[faces[:, 0]],
