@@ -82,22 +82,15 @@ class Process:
 
 #print('args: ', obj_file, target_faces, export_name)
 #blender = Process(obj_file, target_faces, export_name)
-target_faces = 10000
-classes = {'bathtub', 'bed', 'chair', 'desk', 'dresser', 'monitor', 'night_stand', 'sofa', 'table', 'toilet'}
-main_folder = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ModelNet10/'
+main_folder = 'C:/Users/dpere013/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
+#main folder = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
+in_folder = main_folder +'table/'
+out_folder = main_folder + 'processed/table/'
+target_faces = 15000
 
-for c in classes:
-    for split in {'train', 'test'}:
-        subfolder = c + '/' + split
-        in_folder =main_folder + subfolder + '/'
-        out_folder = main_folder + '/processed/' + subfolder + '/'
-        if not os.path.exists(out_folder):
-            os.makedirs(out_folder)
+files = [f for f in listdir(in_folder) if isfile(join(in_folder, f))]
 
-
-        files = [f for f in listdir(in_folder) if (isfile(join(in_folder, f)) and 'vd.obj' in f)]
-
-        for file in files:
-            obj_file = in_folder+file
-            export_name = out_folder+file
-            blender = Process(obj_file, target_faces, export_name)
+for file in files:
+    obj_file = in_folder+file
+    export_name = out_folder+file
+    blender = Process(obj_file, target_faces, export_name)
