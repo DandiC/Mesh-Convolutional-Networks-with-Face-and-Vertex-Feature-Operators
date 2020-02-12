@@ -28,6 +28,8 @@ class BaseOptions:
         # self.parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
         # self.parser.add_argument('--face_pool', type=str, default='v2', help='Version of face pool. For tracking purposes only.')
         # self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
+        # self.parser.add_argument('--vertex_feature', type=str, default='norm',
+        #                          help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
         # self.parser.add_argument('--n_neighbors', default=6, type=int, help='Number of neighbors selected for point (vertex) convolution. If set to -1, network does the average of all vertices')
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
@@ -67,6 +69,8 @@ class BaseOptions:
         # self.parser.add_argument('--face_pool', type=str, default='v2',
         #                          help='Version of face pool. For tracking purposes only.')
         # self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
+        # self.parser.add_argument('--vertex_feature', type=str, default='norm',
+        #                          help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # # general params
@@ -113,6 +117,8 @@ class BaseOptions:
         # self.parser.add_argument('--face_pool', type=str, default='v2',
         #                          help='Version of face pool. For tracking purposes only.')
         # self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
+        # self.parser.add_argument('--vertex_feature', type=str, default='norm',
+        #                          help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # self.parser.add_argument('--max_disc_acc', type=float, default=0.8, help='Maximum accuracy for the discriminator')
@@ -146,15 +152,15 @@ class BaseOptions:
         self.parser.add_argument('--latent_path', default='datasets/latent/simplest_cube.obj',
                                  help='Path to the OBJ containing the latent for connectivity')
         # network params
-        self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
+        self.parser.add_argument('--batch_size', type=int, default=8, help='input batch size')
         self.parser.add_argument('--arch', type=str, default='meshPointGAN',
                                  choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
                                  help='selects network to use')
         self.parser.add_argument('--resblocks', type=int, default=0, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=16, help='# between fc and nclasses')  # todo make generic
-        self.parser.add_argument('--ncf', nargs='+', default=[16, 32], type=int, help='conv filters')
-        self.parser.add_argument('--pool_res', nargs='+', default=[12, 12], type=int, help='pooling res')
-        self.parser.add_argument('--unpool_res', nargs='+', default=[12, 12], type=int,
+        self.parser.add_argument('--ncf', nargs='+', default=[16, 32, 64], type=int, help='conv filters')
+        self.parser.add_argument('--pool_res', nargs='+', default=[12, 12, 12], type=int, help='pooling res')
+        self.parser.add_argument('--unpool_res', nargs='+', default=[12, 12, 12], type=int,
                                  help='unpooling res (for MeshPointGAN)')
         self.parser.add_argument('--norm', type=str, default='batch',
                                  help='instance normalization or batch normalization or group normalization')
@@ -165,12 +171,14 @@ class BaseOptions:
                                  help='scaling factor for normal, xavier and orthogonal.')
         self.parser.add_argument('--face_pool', type=str, default='v2',
                                  help='Version of face pool. For tracking purposes only.')
+        self.parser.add_argument('--vertex_feature', type=str, default='norm',
+                                 help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
         self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
         self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         self.parser.add_argument('--max_disc_acc', type=float, default=0.8,
                                  help='Maximum accuracy for the discriminator')
-        self.parser.add_argument('--dilation', type=bool, default=0,
+        self.parser.add_argument('--dilation', type=bool, default=False,
                                  help='Determines if the generator outputs dilation (true) or vertex positions (false)')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point',

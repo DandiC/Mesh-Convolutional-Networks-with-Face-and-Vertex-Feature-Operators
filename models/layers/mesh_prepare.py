@@ -48,9 +48,14 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
     elif feat_from == 'face':
         mesh2fill.features = mesh_data['face_features']
     elif feat_from == 'point':
-        # mesh2fill.features = np.transpose(mesh_data['vs'])
-        # mesh2fill.features = np.transpose(np.concatenate([mesh_data['vs'], mesh_data['vs_normals']], axis=1))
-        mesh2fill.features = np.transpose(mesh_data['vs_normals'])
+        if opt.vertex_feature == 'coord':
+            mesh2fill.features = np.transpose(mesh_data['vs'])
+        elif opt.vertex_feature == 'norm':
+            mesh2fill.features = np.transpose(mesh_data['vs_normals'])
+        elif opt.vertex_feature == 'coord-norm':
+            mesh2fill.features = np.transpose(np.concatenate([mesh_data['vs'], mesh_data['vs_normals']], axis=1))
+        else:
+            raise ValueError(opt.vertex_feature, 'Wrong parameter value in --vertex_feature')
     else:
         raise ValueError(opt.feat_from, 'Wrong parameter value in --feat_from')
 
