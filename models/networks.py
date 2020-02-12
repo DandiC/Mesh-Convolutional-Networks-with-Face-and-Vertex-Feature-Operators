@@ -153,9 +153,7 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
         if not os.path.exists(export_folder):
             os.makedirs(export_folder)
         up_convs = [3] + ncf[::-1] + [3]
-        net = MeshPointGAN(opt.pool_res, opt.unpool_res, ncf, opt.fc_n, norm_layer, input_nc, ninput_features,
-                           nresblocks=opt.resblocks, symm_oper=[1], device=device,
-                           export_folder=export_folder, dilation=opt.dilation)
+        net = MeshPointGAN(opt,  ncf, norm_layer, input_nc, ninput_features, export_folder=export_folder)
         generative = True
     else:
         raise NotImplementedError('Encoder model name [%s] is not recognized' % arch)
@@ -866,17 +864,16 @@ class MeshPointGAN(nn.Module):
     """GAN Network that generates points (vertices)
     """
 
-    def __init__(self, pool_res, unpool_res, conv_res, fc_n, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1,
-                 device=None, export_folder='generated', dilation=True):
+    def __init__(self, opt, conv_res, norm_layer, nf0, input_res, export_folder='generated'):
         super(MeshPointGAN, self).__init__()
-        self.discriminator = MeshPointDiscriminator(pool_res, conv_res, fc_n, norm_layer, nf0, input_res,
-                                                    nresblocks=nresblocks, symm_oper=symm_oper)
+        self.discriminator = MeshPointDiscriminator(opt.pool_res, conv_res, opt.fc_n, norm_layer, nf0, input_res,
+                                                    nresblocks=opt.resblocks, symm_oper=opt.symm_oper)
 
         up_convs = conv_res[::].copy()
         up_convs.reverse()
         # self.generator = MeshPointGenerator(unpool_res, up_convs, norm_layer, 3, input_res, nresblocks=nresblocks,
         #                                     symm_oper=symm_oper, device=device, export_folder=export_folder, dilation=dilation)
-        self.generator = MeshPointGenerator2(unpool_res, up_convs, dilation=dilation, symm_oper=symm_oper)
+        self.generator = MeshPointGenerator2(opt.unpool_res, up_convs, opt=opt)
 
     # unrolls, convs, blocks = 0, batch_norm = True, transfer_data = True
     # def forward(self, x, meshes):
@@ -979,14 +976,14 @@ class MeshPointGenerator(nn.Module):
 
 class MeshPointGenerator2(nn.Module):
     def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=False, device=None,
-                 export_folder='generated', dilation=False, symm_oper=None):
+                 export_folder='generated', opt=None):
         super(MeshPointGenerator2, self).__init__()
         self.device = device
         self.export_folder = export_folder
-        self.dilation = dilation
+        self.opt = opt
         self.up_convs = []
         convs.insert(0,3)
-        if dilation:
+        if opt.dilation:
             convs.append(1)
         else:
             convs.append(3)
@@ -996,9 +993,9 @@ class MeshPointGenerator2(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
+                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=opt.symm_oper))
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
+                                 batch_norm=batch_norm, transfer_data=False, symm_oper=opt.symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
         reset_params(self)
 
@@ -1017,11 +1014,11 @@ class MeshPointGenerator2(nn.Module):
             gen_output.append(np.transpose(x.cpu().data.numpy()[i, :, :]))
 
             # print(np.transpose(gen_output))
-            if self.dilation:
+            if self.opt.dilation:
                 gen_vertices = meshes[i].vs * gen_output[i]
             else:
                 gen_vertices = gen_output[i]
-            meshes[i] = Mesh(faces=meshes[i].faces, vertices=gen_vertices, export_folder=self.export_folder, feat_from='point')
+            meshes[i] = Mesh(faces=meshes[i].faces, vertices=gen_vertices, export_folder=self.export_folder, opt=self.opt)
             out_features.append(meshes[i].extract_features())
             out_features[i] = pad(out_features[i], meshes[i].vs.shape[0])
 
