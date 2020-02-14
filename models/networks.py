@@ -997,6 +997,11 @@ class MeshPointGenerator2(nn.Module):
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
                                  batch_norm=batch_norm, transfer_data=False, symm_oper=opt.symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
+        if opt.dilation:
+            self.final_activation = nn.Sigmoid()
+        else:
+            self.final_activation = nn.Tanh()
+
         reset_params(self)
 
     def forward(self, input, encoder_outs=None):
@@ -1007,6 +1012,7 @@ class MeshPointGenerator2(nn.Module):
                 before_pool = encoder_outs[-(i + 2)]
             x = up_conv((x, meshes), before_pool)
         x = self.final_conv((x, meshes))
+        x = self.final_activation(x)
 
         out_features = []
         gen_output = []
