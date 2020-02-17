@@ -2,6 +2,7 @@ import numpy as np
 import os
 import ntpath
 import random
+import math
 
 def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='face'):
     if file==None:
@@ -20,7 +21,7 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
                                 faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
                                 face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef,
                                 gemm_vs=mesh_data.gemm_vs, vs_count=mesh_data.vs_count, vf=mesh_data.vf,
-                                vs_normals=mesh_data.vs_normals)
+                                vs_normals=mesh_data.vs_normals, vertex_fatures=mesh_data.vertex_features)
 
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.vs_count = int(mesh_data['vs_count'])
@@ -48,14 +49,7 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
     elif feat_from == 'face':
         mesh2fill.features = mesh_data['face_features']
     elif feat_from == 'point':
-        if opt.vertex_feature == 'coord':
-            mesh2fill.features = np.transpose(mesh_data['vs'])
-        elif opt.vertex_feature == 'norm':
-            mesh2fill.features = np.transpose(mesh_data['vs_normals'])
-        elif opt.vertex_feature == 'coord-norm':
-            mesh2fill.features = np.transpose(np.concatenate([mesh_data['vs'], mesh_data['vs_normals']], axis=1))
-        else:
-            raise ValueError(opt.vertex_feature, 'Wrong parameter value in --vertex_feature')
+        mesh2fill.features = mesh_data['vertex_features']
     else:
         raise ValueError(opt.feat_from, 'Wrong parameter value in --feat_from')
 
@@ -95,7 +89,7 @@ def from_scratch(file, opt):
     build_gemm(mesh_data)
     if opt.num_aug > 1:
         post_augmentation(mesh_data, opt)
-    mesh_data.edge_features, mesh_data.face_features = extract_features(mesh_data)
+    mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data)
     return mesh_data
 
 def from_faces_and_vertices(faces,vertices):
@@ -123,7 +117,8 @@ def from_faces_and_vertices(faces,vertices):
 
     build_gemm(mesh_data)
 
-    mesh_data.edge_features, mesh_data.face_features = extract_features(mesh_data)
+    mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data)
+
     return mesh_data
 # Fills vertices and faces by reading the OBJ file line by line
 def fill_from_file(mesh, file):
@@ -462,7 +457,57 @@ def extract_features(mesh):
             print(e)
             raise ValueError(mesh.filename, 'bad face features')
 
-    return edge_features, face_features
+    # Extraction of Vertex Features
+    vertex_features = []
+    with np.errstate(divide='raise'):
+        try:
+            for extractor in [vertex_normals, mean_curvature, gaussian_curvature]:
+                feature = extractor(mesh, edge_features)
+                vertex_features.append(feature)
+            vertex_features = np.concatenate(vertex_features, axis=0)
+        except Exception as e:
+            print(e)
+            raise ValueError(mesh.filename, 'bad vertex features')
+
+    return edge_features, face_features, vertex_features
+
+def gaussian_curvature(mesh, edge_features):
+    gaussian_curv = np.zeros((1,mesh.vs.shape[0]))
+    for v_i, vt in enumerate(mesh.vs):
+        Ai = np.sum(mesh.face_areas[mesh.vf[v_i]]) / 3
+        for j, f_j in enumerate(mesh.vf[v_i]):
+            neighbors = mesh.faces[f_j,mesh.faces[f_j]!=v_i]
+            edge_a = mesh.vs[neighbors[0]] - vt
+            edge_b = mesh.vs[neighbors[1]] - vt
+
+            edge_a /= fixed_division(np.linalg.norm(edge_a, ord=2), epsilon=0.0001)
+            edge_b /= fixed_division(np.linalg.norm(edge_b, ord=2), epsilon=0.0001)
+            dot = np.sum(edge_a * edge_b).clip(-1, 1)
+            gaussian_curv[0,v_i] += np.arccos(dot)
+        gaussian_curv[0,v_i] = (2*np.pi - gaussian_curv[0,v_i])/Ai
+    return gaussian_curv
+
+def get_cotangent_laplacian_beltrami(mesh, edge_features):
+    laplacian = np.zeros(mesh.vs.shape)
+    for v_i, vt in enumerate(mesh.vs):
+        Ai=np.sum(mesh.face_areas[mesh.vf[v_i]])/3
+        for j, v_j in enumerate(mesh.gemm_vs[v_i]):
+            #Get edge between two vertices
+            # TODO: Optimize this
+            edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == v_i, mesh.edges[:, 1] == v_j),
+                                              np.logical_and(mesh.edges[:, 0] == v_j, mesh.edges[:, 1] == v_i)))
+            angles = edge_features[1:3,edge_id]
+            laplacian[v_i,:] += (1/math.tan(angles[0])+1/math.tan(angles[1]))*(mesh.vs[v_j] - vt)
+        laplacian[v_i,:] = laplacian[v_i]/(2*Ai)
+    return laplacian
+
+def mean_curvature(mesh, edge_features):
+    laplacians = get_cotangent_laplacian_beltrami(mesh, edge_features)
+    return np.expand_dims(np.linalg.norm(laplacians, axis=1)/2, 0)
+
+def vertex_normals(mesh, edge_features):
+    return np.transpose(mesh.vs_normals)
+
 
 def face_angles(mesh):
     angles_a = get_angles(mesh, 0)
