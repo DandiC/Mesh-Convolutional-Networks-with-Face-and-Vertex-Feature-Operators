@@ -21,7 +21,7 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
                                 faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
                                 face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef,
                                 gemm_vs=mesh_data.gemm_vs, vs_count=mesh_data.vs_count, vf=mesh_data.vf,
-                                vs_normals=mesh_data.vs_normals, vertex_fatures=mesh_data.vertex_features)
+                                vs_normals=mesh_data.vs_normals, vertex_features=mesh_data.vertex_features)
 
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.vs_count = int(mesh_data['vs_count'])
