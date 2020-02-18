@@ -8,6 +8,8 @@ import os
 from random import randrange
 # from memory_profiler import profile
 import torch
+import glob
+import shutil
 
 # @profile
 def train_epoch(epoch, dataset, model, writer, total_steps, opt):
@@ -81,6 +83,14 @@ if __name__ == '__main__':
     #Parse options from arguments
     opt = TrainOptions().parse()
     wandb.config.update(opt)
+
+    if opt.clean_data:
+        dirs = glob.glob(opt.dataroot+'/*/*/cache') + glob.glob(opt.dataroot+'/*/cache')
+        for dir in dirs:
+            shutil.rmtree(dir)
+        mean_files = glob.glob(opt.dataroot+'/*.p')
+        for file in mean_files:
+            os.remove(file)
 
     #Load dataset ready for training (with extracted features)
     dataset = DataLoader(opt)

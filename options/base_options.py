@@ -33,6 +33,8 @@ class BaseOptions:
         self.parser.add_argument('--n_neighbors', default=6, type=int, help='Number of neighbors selected for point (vertex) convolution. If set to -1, network does the average of all vertices')
         self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
+        self.parser.add_argument('--dilation', type=bool, default=1,
+                                 help='Determines if the generator outputs dilation (true) or vertex positions (false)')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point', help='Primitive to extract features from. One of: edge, face, point')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
@@ -41,6 +43,8 @@ class BaseOptions:
         self.parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         self.parser.add_argument('--serial_batches', action='store_true', help='if true, takes meshes in order, otherwise takes them randomly')
         self.parser.add_argument('--seed', type=int, help='if specified, uses seed')
+        self.parser.add_argument('--clean_data', type=bool, default=True,
+                                 help='If true, it deletes the cache NPZ files in the dataset before training.')
         # visualization params
         self.parser.add_argument('--export_folder', type=str, default='', help='exports intermediate collapses to this folder')
 
@@ -84,6 +88,8 @@ class BaseOptions:
         # self.parser.add_argument('--serial_batches', action='store_true',
         #                          help='if true, takes meshes in order, otherwise takes them randomly')
         # self.parser.add_argument('--seed', type=int, help='if specified, uses seed')
+        # self.parser.add_argument('--clean_data', type=bool, default=True,
+        #                          help='If true, it deletes the cache NPZ files in the dataset before training.')
         # # visualization params
         # self.parser.add_argument('--export_folder', type=str, default='',
         #                          help='exports intermediate collapses to this folder')
@@ -136,6 +142,8 @@ class BaseOptions:
         # self.parser.add_argument('--serial_batches', action='store_true',
         #                          help='if true, takes meshes in order, otherwise takes them randomly')
         # self.parser.add_argument('--seed', type=int, help='if specified, uses seed')
+        # self.parser.add_argument('--clean_data', type=bool, default=True,
+        #                          help='If true, it deletes the cache NPZ files in the dataset before training.')
         # # visualization params
         # self.parser.add_argument('--export_folder', type=str, default='',
         #                          help='exports intermediate collapses to this folder')
@@ -192,6 +200,8 @@ class BaseOptions:
         # self.parser.add_argument('--serial_batches', action='store_true',
         #                          help='if true, takes meshes in order, otherwise takes them randomly')
         # self.parser.add_argument('--seed', type=int, help='if specified, uses seed')
+        # self.parser.add_argument('--clean_data', type=bool, default=True,
+        #                          help='If true, it deletes the cache NPZ files in the dataset before training.')
         # # visualization params
         # self.parser.add_argument('--export_folder', type=str, default='',
         #                          help='exports intermediate collapses to this folder')

@@ -461,7 +461,8 @@ def extract_features(mesh):
     vertex_features = []
     with np.errstate(divide='raise'):
         try:
-            for extractor in [vertex_normals, mean_curvature, gaussian_curvature]:
+            # for extractor in [vertex_normals, mean_curvature, gaussian_curvature]:
+            for extractor in [mean_curvature, gaussian_curvature]:
                 feature = extractor(mesh, edge_features)
                 vertex_features.append(feature)
             vertex_features = np.concatenate(vertex_features, axis=0)
