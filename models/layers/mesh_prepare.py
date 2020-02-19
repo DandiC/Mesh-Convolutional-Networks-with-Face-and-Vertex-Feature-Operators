@@ -462,7 +462,7 @@ def extract_features(mesh):
     with np.errstate(divide='raise'):
         try:
             # for extractor in [vertex_normals, mean_curvature, gaussian_curvature]:
-            for extractor in [mean_curvature, gaussian_curvature]:
+            for extractor in [vertex_coordinates]:
                 feature = extractor(mesh, edge_features)
                 vertex_features.append(feature)
             vertex_features = np.concatenate(vertex_features, axis=0)
@@ -509,6 +509,8 @@ def mean_curvature(mesh, edge_features):
 def vertex_normals(mesh, edge_features):
     return np.transpose(mesh.vs_normals)
 
+def vertex_coordinates(mesh, edge_features):
+    return np.transpose(mesh.vs)
 
 def face_angles(mesh):
     angles_a = get_angles(mesh, 0)
