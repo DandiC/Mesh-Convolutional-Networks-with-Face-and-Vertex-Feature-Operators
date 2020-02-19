@@ -886,7 +886,7 @@ class MeshPointGAN(nn.Module):
 
 
 class MeshPointDiscriminator(nn.Module):
-    def __init__(self, pool_res, conv_res, fc_n, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1):
+    def __init__(self, pool_res, conv_res, fc_n, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1, global_pool=None):
         super(MeshPointDiscriminator, self).__init__()
         self.k = [nf0] + conv_res
         self.res = [input_res] + pool_res
@@ -899,7 +899,18 @@ class MeshPointDiscriminator(nn.Module):
 
         self.gp = torch.nn.AvgPool1d(self.res[-1])
         # self.gp = torch.nn.MaxPool1d(self.res[-1])
-        self.fc1 = nn.Linear(self.k[-1], fc_n)
+        self.global_pool = None
+        last_length = self.k[-1]
+        if global_pool is not None:
+            if global_pool == 'max':
+                self.global_pool = nn.MaxPool1d(pool_res[-1])
+            elif global_pool == 'avg':
+                self.global_pool = nn.AvgPool1d(pool_res[-1])
+            else:
+                assert False, 'global_pool %s is not defined' % global_pool
+        else:
+            last_length *= pool_res[-1]
+        self.fc1 = nn.Linear(last_length, fc_n)
         self.fc2 = nn.Sequential(nn.Linear(fc_n, 1), nn.Sigmoid())
 
     def forward(self, input):
@@ -909,8 +920,9 @@ class MeshPointDiscriminator(nn.Module):
             x = F.relu(getattr(self, 'norm{}'.format(i))(x))
             x = getattr(self, 'pool{}'.format(i))(x, mesh)
 
-        x = self.gp(x)
-        x = x.view(-1, self.k[-1])
+        if self.global_pool is not None:
+            x = self.gp(x)
+        x = x.contiguous().view(x.size()[0], -1)
 
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
@@ -1036,3 +1048,113 @@ class MeshPointGenerator2(nn.Module):
 
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
+
+class MeshAutoencoder(nn.Module):
+    """Autoencoder Network for generative learning
+    """
+
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True):
+        super(MeshAutoencoder, self).__init__()
+        self.transfer_data = transfer_data
+        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks)
+        unrolls = pools[:-1].copy()
+        unrolls.reverse()
+        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data)
+
+    def forward(self, x, meshes):
+        fe, before_pool = self.encoder((x, meshes))
+        fe = self.decoder((fe, meshes), before_pool)
+        return fe
+
+    def __call__(self, x, meshes):
+        return self.forward(x, meshes)
+
+
+class MeshEncoderPoint(nn.Module):
+    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None):
+        super(MeshEncoderPoint, self).__init__()
+        self.fcs = None
+        self.convs = []
+        for i in range(len(convs) - 1):
+            if i + 1 < len(pools):
+                pool = pools[i + 1]
+            else:
+                pool = 0
+            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool))
+        self.global_pool = None
+        if fcs is not None:
+            self.fcs = []
+            self.fcs_bn = []
+            last_length = convs[-1]
+            if global_pool is not None:
+                if global_pool == 'max':
+                    self.global_pool = nn.MaxPool1d(pools[-1])
+                elif global_pool == 'avg':
+                    self.global_pool = nn.AvgPool1d(pools[-1])
+                else:
+                    assert False, 'global_pool %s is not defined' % global_pool
+            else:
+                last_length *= pools[-1]
+            if fcs[0] == last_length:
+                fcs = fcs[1:]
+            for length in fcs:
+                self.fcs.append(nn.Linear(last_length, length))
+                self.fcs_bn.append(nn.InstanceNorm1d(length))
+                last_length = length
+            self.fcs = nn.ModuleList(self.fcs)
+            self.fcs_bn = nn.ModuleList(self.fcs_bn)
+        self.convs = nn.ModuleList(self.convs)
+        reset_params(self)
+
+    def forward(self, x):
+        fe, meshes = x
+        encoder_outs = []
+        for conv in self.convs:
+            fe, before_pool = conv((fe, meshes))
+            encoder_outs.append(before_pool)
+        if self.fcs is not None:
+            if self.global_pool is not None:
+                fe = self.global_pool(fe)
+            fe = fe.contiguous().view(fe.size()[0], -1)
+            for i in range(len(self.fcs)):
+                fe = self.fcs[i](fe)
+                if self.fcs_bn:
+                    x = fe.unsqueeze(1)
+                    fe = self.fcs_bn[i](x).squeeze(1)
+                if i < len(self.fcs) - 1:
+                    fe = F.relu(fe)
+        return fe, encoder_outs
+
+    def __call__(self, x):
+        return self.forward(x)
+
+
+class MeshDecoderPoint(nn.Module):
+    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=True):
+        super(MeshDecoderPoint, self).__init__()
+        self.up_convs = []
+        for i in range(len(convs) - 2):
+            if i < len(unrolls):
+                unroll = unrolls[i]
+            else:
+                unroll = 0
+            self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
+                                        batch_norm=batch_norm, transfer_data=transfer_data))
+        self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
+                                 batch_norm=batch_norm, transfer_data=False)
+        self.up_convs = nn.ModuleList(self.up_convs)
+        reset_params(self)
+
+    def forward(self, x, encoder_outs=None):
+        fe, meshes = x
+        for i, up_conv in enumerate(self.up_convs):
+            before_pool = None
+            if encoder_outs is not None:
+                before_pool = encoder_outs[-(i + 2)]
+            fe = up_conv((fe, meshes), before_pool)
+        fe = self.final_conv((fe, meshes))
+        return fe
+
+    def __call__(self, x, encoder_outs=None):
+        return self.forward(x, encoder_outs)
+
