@@ -30,8 +30,8 @@ class BaseOptions:
         # self.parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
         # self.parser.add_argument('--face_pool', type=str, default='v2', help='Version of face pool. For tracking purposes only.')
         # self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
-        # self.parser.add_argument('--vertex_feature', type=str, default='norm',
-        #                          help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
+        # self.parser.add_argument('--vertex_features', nargs='+', type=str, default=['mean_c', 'gaussian_c'],
+        #                          help='Type of vertex features to be used (for vertex convolution). Options are coord (for coordinates), norm (for normals), mean_c (for mean curvature) and gauss_c (for gaussian curvature)')
         # self.parser.add_argument('--n_neighbors', default=6, type=int, help='Number of neighbors selected for point (vertex) convolution. If set to -1, network does the average of all vertices')
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
@@ -75,8 +75,8 @@ class BaseOptions:
         # self.parser.add_argument('--face_pool', type=str, default='v2',
         #                          help='Version of face pool. For tracking purposes only.')
         # self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
-        # self.parser.add_argument('--vertex_feature', type=str, default='norm',
-        #                          help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
+        # self.parser.add_argument('--vertex_features', nargs='+', type=str, default=['mean_c', 'gaussian_c'],
+        #                          help='Type of vertex features to be used (for vertex convolution). Options are coord (for coordinates), norm (for normals), mean_c (for mean curvature) and gauss_c (for gaussian curvature)')
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # # general params
@@ -126,8 +126,8 @@ class BaseOptions:
         # self.parser.add_argument('--face_pool', type=str, default='v2',
         #                          help='Version of face pool. For tracking purposes only.')
         # self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
-        # self.parser.add_argument('--vertex_feature', type=str, default='norm',
-        #                          help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
+        # self.parser.add_argument('--vertex_features', nargs='+', type=str, default=['mean_c', 'gaussian_c'],
+        #                          help='Type of vertex features to be used (for vertex convolution). Options are coord (for coordinates), norm (for normals), mean_c (for mean curvature) and gauss_c (for gaussian curvature)')
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # self.parser.add_argument('--max_disc_acc', type=float, default=0.8, help='Maximum accuracy for the discriminator')
@@ -182,8 +182,8 @@ class BaseOptions:
                                  help='scaling factor for normal, xavier and orthogonal.')
         self.parser.add_argument('--face_pool', type=str, default='v2',
                                  help='Version of face pool. For tracking purposes only.')
-        self.parser.add_argument('--vertex_feature', type=str, default='norm',
-                                 help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
+        self.parser.add_argument('--vertex_features', nargs='+', type=str, default=['mean_c', 'gaussian_c'],
+                                 help='Type of vertex features to be used (for vertex convolution). Options are coord (for coordinates), norm (for normals), mean_c (for mean curvature) and gauss_c (for gaussian curvature)')
 
         self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
         self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
@@ -237,8 +237,8 @@ class BaseOptions:
         # self.parser.add_argument('--face_pool', type=str, default='v2',
         #                          help='Version of face pool. For tracking purposes only.')
         # self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
-        # self.parser.add_argument('--vertex_feature', type=str, default='norm',
-        #                          help='Type of vertex feature to be used (for vertex convolution). One of coord (for coordinates), norm (for normals) or coord-norm (for a concatenation of coordinates and normals)')
+        # self.parser.add_argument('--vertex_features', nargs='+', type=str, default=['mean_c', 'gaussian_c'],
+        #                          help='Type of vertex features to be used (for vertex convolution). Options are coord (for coordinates), norm (for normals), mean_c (for mean curvature) and gauss_c (for gaussian curvature)')
         # self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         # self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         # # general params
