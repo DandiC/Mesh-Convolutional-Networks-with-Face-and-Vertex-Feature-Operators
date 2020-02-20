@@ -125,6 +125,11 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
     net = None
     norm_layer = get_norm_layer(norm_type=opt.norm, num_groups=opt.num_groups)
     generative = False
+    if opt.dataset_mode == 'generative':
+        export_folder = os.path.join(opt.checkpoints_dir, opt.name, 'generated')
+        if not os.path.exists(export_folder):
+            os.makedirs(export_folder)
+
     if arch == 'mconvnet':
         if feat_from == 'edge':
             net = MeshConvNet(norm_layer, input_nc, ncf, nclasses, ninput_features, opt.pool_res, opt.fc_n,
@@ -149,9 +154,6 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
                       transfer_data=False,  symm_oper=opt.symm_oper)
         generative = True
     elif arch == 'meshPointGAN':
-        export_folder = os.path.join(opt.checkpoints_dir, opt.name, 'generated')
-        if not os.path.exists(export_folder):
-            os.makedirs(export_folder)
         up_convs = [3] + ncf[::-1] + [3]
         net = MeshPointGAN(opt,  ncf, norm_layer, input_nc, ninput_features, export_folder=export_folder)
         generative = True
@@ -166,9 +168,12 @@ def define_loss(opt):
     elif opt.dataset_mode == 'segmentation':
         loss = torch.nn.CrossEntropyLoss(ignore_index=-1)
     elif opt.dataset_mode == 'generative':
-        disc_loss = torch.nn.BCELoss()
-        gen_loss = torch.nn.BCELoss()
-        loss = [disc_loss, gen_loss]
+        if opt.arch == 'meshunet':
+            loss = torch.nn.MSELoss()
+        else:
+            disc_loss = torch.nn.BCELoss()
+            gen_loss = torch.nn.BCELoss()
+            loss = [disc_loss, gen_loss]
     return loss
 
 
@@ -860,6 +865,47 @@ class UpConvPoint(nn.Module):
             x1 = x2
         x2 = x2.squeeze(3)
         return x2
+
+class DownConvPoint(nn.Module):
+    def __init__(self, in_channels, out_channels, blocks=0, pool=0, symm_oper=None):
+        super(DownConvPoint, self).__init__()
+        self.bn = []
+        self.pool = None
+        self.conv1 = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper)
+        self.conv2 = []
+        for _ in range(blocks):
+            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper))
+            self.conv2 = nn.ModuleList(self.conv2)
+        for _ in range(blocks + 1):
+            self.bn.append(nn.InstanceNorm2d(out_channels))
+            self.bn = nn.ModuleList(self.bn)
+        if pool:
+            self.pool = MeshPoolPoint(pool)
+
+    def __call__(self, x):
+        return self.forward(x)
+
+    def forward(self, x):
+        fe, meshes = x
+        x1 = self.conv1(fe, meshes)
+        if self.bn:
+            x1 = self.bn[0](x1)
+        x1 = F.relu(x1)
+        x2 = x1
+        for idx, conv in enumerate(self.conv2):
+            x2 = conv(x1, meshes)
+            if self.bn:
+                x2 = self.bn[idx + 1](x2)
+            x2 = x2 + x1
+            x2 = F.relu(x2)
+            x1 = x2
+        x2 = x2.squeeze(3)
+        before_pool = x2
+        if self.pool:
+            # before_pool = x2
+            x2 = self.pool(x2, meshes)
+        return x2, before_pool
+
 class MeshPointGAN(nn.Module):
     """GAN Network that generates points (vertices)
     """
@@ -1053,13 +1099,13 @@ class MeshAutoencoder(nn.Module):
     """Autoencoder Network for generative learning
     """
 
-    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True):
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=1):
         super(MeshAutoencoder, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks)
+        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
-        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data)
+        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
 
     def forward(self, x, meshes):
         fe, before_pool = self.encoder((x, meshes))
@@ -1071,7 +1117,7 @@ class MeshAutoencoder(nn.Module):
 
 
 class MeshEncoderPoint(nn.Module):
-    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None):
+    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None):
         super(MeshEncoderPoint, self).__init__()
         self.fcs = None
         self.convs = []
@@ -1080,7 +1126,7 @@ class MeshEncoderPoint(nn.Module):
                 pool = pools[i + 1]
             else:
                 pool = 0
-            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool))
+            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper))
         self.global_pool = None
         if fcs is not None:
             self.fcs = []
@@ -1130,7 +1176,7 @@ class MeshEncoderPoint(nn.Module):
 
 
 class MeshDecoderPoint(nn.Module):
-    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=True):
+    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=True, symm_oper=None):
         super(MeshDecoderPoint, self).__init__()
         self.up_convs = []
         for i in range(len(convs) - 2):
@@ -1139,10 +1185,11 @@ class MeshDecoderPoint(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data))
+                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False)
+                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
+        self.final_activation = nn.Tanh()
         reset_params(self)
 
     def forward(self, x, encoder_outs=None):
@@ -1153,6 +1200,7 @@ class MeshDecoderPoint(nn.Module):
                 before_pool = encoder_outs[-(i + 2)]
             fe = up_conv((fe, meshes), before_pool)
         fe = self.final_conv((fe, meshes))
+        fe = self.final_activation(fe)
         return fe
 
     def __call__(self, x, encoder_outs=None):
