@@ -462,6 +462,7 @@ def extract_features(mesh, vf=None):
     with np.errstate(divide='raise'):
         try:
             for f in vf:
+                print('Extracting', f)
                 if f == 'coord':
                     feature = vertex_coordinates(mesh)
                 elif f == 'norm':
