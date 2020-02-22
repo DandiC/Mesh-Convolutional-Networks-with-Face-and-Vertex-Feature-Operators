@@ -34,8 +34,8 @@ class AutoencoderModel:
         self.nclasses = opt.nclasses
 
         # load/define networks
-        down_convs = [3] + opt.ncf
-        up_convs = opt.ncf[::-1] + [3]
+        down_convs = [3] + opt.ncf + [1]
+        up_convs = [1] + opt.ncf[::-1] + [3]
         pool_res = [opt.ninput_features] + opt.pool_res
         self.net = MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=opt.symm_oper)
 
