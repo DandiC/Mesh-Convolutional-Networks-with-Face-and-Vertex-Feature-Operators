@@ -7,6 +7,7 @@ from .networks import MeshAutoencoder
 import copy
 import numpy as np
 from models.layers.mesh import Mesh
+from .networks import init_net
 import os
 
 class AutoencoderModel:
@@ -37,7 +38,8 @@ class AutoencoderModel:
         down_convs = [3] + opt.ncf + [1]
         up_convs = [1] + opt.ncf[::-1] + [3]
         pool_res = [opt.ninput_features] + opt.pool_res
-        self.net = MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=opt.symm_oper)
+        self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=opt.symm_oper),
+                 opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
 
         self.net.train(self.is_train)
         self.criterion = networks.define_loss(opt).to(self.device)
