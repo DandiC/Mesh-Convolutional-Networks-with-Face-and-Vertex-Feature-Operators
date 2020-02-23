@@ -44,6 +44,9 @@ if __name__ == '__main__':
     else:
         wandb.watch(model.net, log="all")
     startT = time.time()
+
+    gen_model_id = 0
+
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
         iter_data_time = time.time()
@@ -73,6 +76,15 @@ if __name__ == '__main__':
                     writer.plot_loss(loss, epoch, epoch_iter, dataset_size)
                     wandb.log({"loss": loss, "Iters": total_steps, "lr": model.optimizer.param_groups[-1]['lr']})
 
+                if opt.dataset_mode == 'generative':
+                    # Pick a random generated model and export it
+                    gen_model_id += 1
+                    export_filename = os.path.join(opt.checkpoints_dir, opt.name, 'generated',
+                                                   'gen_mesh_' + str(gen_model_id) + '.obj')
+                    ridx = randrange(model.gen_models.shape[0])
+                    model.gen_models[ridx].export(file=export_filename)
+                    wandb.log({"generated_model": wandb.Object3D(open(export_filename))})
+
             if i % opt.save_latest_freq == 0:
                 print('saving the latest model (epoch %d, total_steps %d)' %
                       (epoch, total_steps))
@@ -87,15 +99,8 @@ if __name__ == '__main__':
 
         print('End of epoch %d / %d \t Time Taken: %d sec' %
               (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
-
-        if opt.dataset_mode == 'generative':
-            # Pick a random generated model and export it
-            export_filename = os.path.join(opt.checkpoints_dir, opt.name, 'generated',
-                                           'gen_mesh_' + str(epoch) + '.obj')
-            ridx = randrange(model.gen_models.shape[0])
-            model.gen_models[ridx].export(file=export_filename)
-            wandb.log({"Epoch": epoch, "generated_model": wandb.Object3D(open(export_filename))})
-        else:
+        wandb.log({"Epoch": epoch})
+        if 'GAN' not in opt.arch:
             model.update_learning_rate()
             if opt.verbose_plot:
                 writer.plot_model_wts(model, epoch)
@@ -103,7 +108,7 @@ if __name__ == '__main__':
             if epoch % opt.run_test_freq == 0:
                 acc = run_test(epoch)
                 writer.plot_acc(acc, epoch)
-                wandb.log({"Epoch": epoch, "Test Accuracy": acc})
+                wandb.log({"Test Accuracy": acc})
 
         writer.close()
     wandb.log({"Training Time": time.time() - startT})
