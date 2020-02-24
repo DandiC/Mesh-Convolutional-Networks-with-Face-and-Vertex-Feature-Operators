@@ -3,8 +3,8 @@ from .base_options import BaseOptions
 class TrainOptions(BaseOptions):
     def initialize(self):
         BaseOptions.initialize(self)
-        self.parser.add_argument('--print_freq', type=int, default=16, help='frequency of showing training results on console')
-        self.parser.add_argument('--save_latest_freq', type=int, default=1600, help='frequency of saving the latest results')
+        self.parser.add_argument('--print_freq', type=int, default=1280, help='frequency of showing training results on console')
+        self.parser.add_argument('--save_latest_freq', type=int, default=500, help='frequency of saving the latest results')
         self.parser.add_argument('--save_epoch_freq', type=int, default=1, help='frequency of saving checkpoints at the end of epochs')
         self.parser.add_argument('--run_test_freq', type=int, default=1, help='frequency of running test in training script')
         self.parser.add_argument('--continue_train', action='store_true', help='continue training: load the latest model')
