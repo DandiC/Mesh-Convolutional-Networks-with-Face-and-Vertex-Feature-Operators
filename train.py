@@ -27,7 +27,7 @@ if __name__ == '__main__':
         else:
             raise ValueError(wandb.run.id, 'Wrong value value in wandb.run.name')
 
-    wandb.config.update(opt)
+    wandb.config.update(opt, allow_val_change=True)
 
     if opt.clean_data:
         dirs = glob.glob(opt.dataroot+'/*/*/cache') + glob.glob(opt.dataroot+'/*/cache')
