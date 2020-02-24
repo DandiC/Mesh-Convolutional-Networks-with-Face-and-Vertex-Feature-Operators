@@ -213,7 +213,7 @@ class BaseOptions:
 
         # PARAMETERS FOR GENERATIVE LEARNING USING AUTOENCODER
         # data params
-        self.parser.add_argument('--dataroot', default='datasets/simplest_cubes',
+        self.parser.add_argument('--dataroot', default='datasets/simple_quads_reduced',
                                  help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"}, default='generative')
         self.parser.add_argument('--ninput_features', type=int, default=8,
