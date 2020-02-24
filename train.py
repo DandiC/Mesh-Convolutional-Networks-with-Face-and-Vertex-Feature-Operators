@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
         for i, data in enumerate(dataset):
             iter_start_time = time.time()
-            if freq_steps > opt.print_freq:
+            if freq_steps+opt.batch_size > opt.print_freq:
                 t_data = iter_start_time - iter_data_time
             total_steps += opt.batch_size
             freq_steps += opt.batch_size
