@@ -39,6 +39,7 @@ if __name__ == '__main__':
     model = create_model(opt)
     writer = Writer(opt)
     total_steps = 0
+    freq_steps = 0
     if (opt.arch=='meshGAN'):
         wandb.watch((model.net.generator, model.net.discriminator), log="all")
     else:
@@ -54,14 +55,16 @@ if __name__ == '__main__':
 
         for i, data in enumerate(dataset):
             iter_start_time = time.time()
-            if total_steps % opt.print_freq == 0:
+            if freq_steps > opt.print_freq:
                 t_data = iter_start_time - iter_data_time
             total_steps += opt.batch_size
+            freq_steps += opt.batch_size
             epoch_iter += opt.batch_size
             model.set_input(data)
             model.optimize_parameters(epoch=epoch)
 
-            if total_steps % opt.print_freq == 0:
+            if freq_steps > opt.print_freq:
+                freq_steps = 0
                 t = (time.time() - iter_start_time) / opt.batch_size
                 if opt.dataset_mode == 'generative' and 'GAN' in opt.arch:
                     gen_loss = model.g_loss
