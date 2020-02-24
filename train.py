@@ -22,11 +22,11 @@ if __name__ == '__main__':
     opt = TrainOptions().parse()
 
     if opt.name == 'sweep':
-        if wandb.run.name != None:
-            opt.name = wandb.run.name
+        if wandb.run.id != None:
+            opt.name = wandb.run.id
         else:
-            raise ValueError(wandb.run.name, 'Wrong value value in wandb.run.name')
-    
+            raise ValueError(wandb.run.id, 'Wrong value value in wandb.run.name')
+
     wandb.config.update(opt)
 
     if opt.clean_data:
