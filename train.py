@@ -111,7 +111,8 @@ if __name__ == '__main__':
               (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
         wandb.log({"Epoch": epoch})
 
-        model.update_learning_rate()
+        if 'GAN' not in opt.arch:
+            model.update_learning_rate()
 
         if opt.dataset_mode != 'generative':
 
