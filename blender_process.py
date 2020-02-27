@@ -79,18 +79,22 @@ class Process:
 #target_faces = int(sys.argv[-2])
 #export_name = sys.argv[-1]
 
+obj_file = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/latent/simplest_cube.obj'
+target_faces = 12
+export_name = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/latent/simplest_cube_2.obj'
+blender = Process(obj_file, target_faces, export_name)
 
-#print('args: ', obj_file, target_faces, export_name)
-#blender = Process(obj_file, target_faces, export_name)
-main_folder = 'C:/Users/dpere013/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
-#main folder = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
-in_folder = main_folder +'table/'
-out_folder = main_folder + 'processed/table/'
-target_faces = 15000
+##print('args: ', obj_file, target_faces, export_name)
+##blender = Process(obj_file, target_faces, export_name)
+#main_folder = 'C:/Users/dpere013/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
+##main folder = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
+#in_folder = main_folder +'table/'
+#out_folder = main_folder + 'processed/table/'
+#target_faces = 15000
 
-files = [f for f in listdir(in_folder) if isfile(join(in_folder, f))]
+#files = [f for f in listdir(in_folder) if isfile(join(in_folder, f))]
 
-for file in files:
-    obj_file = in_folder+file
-    export_name = out_folder+file
-    blender = Process(obj_file, target_faces, export_name)
+#for file in files:
+#    obj_file = in_folder+file
+#    export_name = out_folder+file
+#    blender = Process(obj_file, target_faces, export_name)
