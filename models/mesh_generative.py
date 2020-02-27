@@ -120,10 +120,11 @@ class GenerativeModel:
 
         if 'Point' in self.opt.arch:
             dilations = np.random.rand(self.fake_mesh.shape[0], 1, self.fake_mesh[0].vs_count)
-            features = np.zeros([self.fake_mesh.shape[0], 3, self.fake_mesh[0].vs_count])
+            features = np.zeros([self.fake_mesh.shape[0], 5, self.fake_mesh[0].vs_count])
             for i in range(self.fake_mesh.shape[0]):
-                features[i,:,:] = dilations[i,:,:]*np.transpose(self.fake_mesh[i].vs)
-                self.fake_mesh[i].vs = np.transpose(features[i])
+                features[i,:3,:] = dilations[i,:,:]*np.transpose(self.fake_mesh[i].vs)
+                self.fake_mesh[i] = Mesh(faces=self.fake_mesh[i].faces, vertices=np.transpose(features[i,:3,:]), export_folder='', opt=self.opt)
+                features[i,3:,:] = self.fake_mesh[i].features
                 # Debug code to export the latent meshes.
                 # self.fake_mesh[i].export(file='datasets/latent/dilated_spheres/sphere_'+str(i)+'.obj')
             self.fake_features = torch.tensor(features).to(self.device).requires_grad_(self.is_train).float()
