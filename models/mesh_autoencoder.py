@@ -48,6 +48,10 @@ class AutoencoderModel:
         if not os.path.exists(export_folder):
             os.makedirs(export_folder)
 
+        self.results_folder = os.path.join(opt.checkpoints_dir, opt.name, 'results')
+        if not os.path.exists(self.results_folder):
+            os.makedirs(self.results_folder)
+
         if self.is_train:
             self.optimizer = torch.optim.Adam(self.net.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.scheduler = networks.get_scheduler(self.optimizer, opt)
@@ -130,12 +134,15 @@ class AutoencoderModel:
         """
         with torch.no_grad():
             out = self.forward()
-            # compute number of correct
-            pred_class = out.data.max(1)[1]
-            label_class = self.labels
-            self.export_segmentation(pred_class.cpu())
-            correct = self.get_accuracy(pred_class, label_class)
-        return correct, len(label_class)
+            self.gen_models = copy.deepcopy(self.mesh)
+            vs_out = out.cpu().data.numpy()
+            for i in range(self.gen_models.shape[0]):
+                self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
+                                          export_folder='',
+                                          opt=self.opt)
+                export_file = os.path.join(self.results_folder, self.mesh[i].filename)
+                self.gen_models[i].export(file=export_file)
+
 
     def get_accuracy(self, pred, labels):
         """computes accuracy for classification / segmentation """
