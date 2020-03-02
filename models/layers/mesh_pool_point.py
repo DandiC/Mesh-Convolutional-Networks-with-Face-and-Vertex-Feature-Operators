@@ -59,6 +59,7 @@ class MeshPoolPoint(nn.Module):
         fe = self.__fe[mesh_index]
         v_mask = np.zeros((fe.shape[1]), dtype=bool)
         v_mask[:mesh.v_mask.shape[0]] = mesh.v_mask
+        # TODO: Need to clean faces too in order for decoder to work
         mesh.cleanWithPoint(mask, edge_groups)
         fe = fe[:,v_mask]
 
