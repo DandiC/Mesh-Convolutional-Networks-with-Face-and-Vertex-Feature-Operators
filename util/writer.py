@@ -12,6 +12,10 @@ class Writer:
         self.name = opt.name
         self.opt = opt
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
+
+        if not os.path.exists(self.save_dir):
+            os.makedirs(self.save_dir)
+
         self.log_name = os.path.join(self.save_dir, 'loss_log.txt')
         self.testacc_log = os.path.join(self.save_dir, 'testacc_log.txt')
         self.start_logs()
