@@ -12,7 +12,7 @@ class BaseOptions:
     def initialize(self):
         # PARAMETERS FOR CLASSIFICATION
         # data params
-        self.parser.add_argument('--dataroot', default='datasets/shrec_16a', help='path to meshes (should have subfolders train, test)')
+        self.parser.add_argument('--dataroot', default='datasets/shrec_16e', help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"}, default='classification')
         self.parser.add_argument('--ninput_features', type=int, default=500, help='# of input features (will include dummy features)')
         # network params
