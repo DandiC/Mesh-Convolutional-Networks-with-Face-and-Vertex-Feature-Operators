@@ -47,7 +47,7 @@ if __name__ == '__main__':
     writer = Writer(opt)
     total_steps = 0
     freq_steps = 0
-    if (opt.arch=='meshGAN'):
+    if 'GAN' in opt.arch:
         wandb.watch((model.net.generator, model.net.discriminator), log="all")
     else:
         wandb.watch(model.net, log="all")

@@ -5,11 +5,18 @@ from util.writer import Writer
 import glob
 import shutil
 import os
+import wandb
 
 def run_test(epoch=-1):
     print('Running Test')
     opt = TestOptions().parse()
     opt.serial_batches = True  # no shuffle
+
+    if opt.name == 'sweep':
+        if wandb.run.id != None:
+            opt.name = wandb.run.id
+        else:
+            raise ValueError(wandb.run.id, 'Wrong value value in wandb.run.name')
 
     if opt.clean_data:
         dirs = glob.glob(opt.dataroot+'/*/*/cache') + glob.glob(opt.dataroot+'/*/cache')
