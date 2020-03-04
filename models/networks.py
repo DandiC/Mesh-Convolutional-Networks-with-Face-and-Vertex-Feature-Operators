@@ -856,6 +856,8 @@ class UpConvPoint(nn.Module):
             x1 = self.bn[0](x1)
         if self.relu:
             x1 = F.relu(x1)
+        else:
+            x1 = torch.tanh(x1)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
@@ -865,17 +867,20 @@ class UpConvPoint(nn.Module):
                 x2 = x2 + x1
             if self.relu:
                 x2 = F.relu(x2)
+            else:
+                x2 = torch.tanh(x2)
             x1 = x2
         x2 = x2.squeeze(3)
         return x2
 
 class DownConvPoint(nn.Module):
-    def __init__(self, in_channels, out_channels, blocks=0, pool=0, symm_oper=None):
+    def __init__(self, in_channels, out_channels, blocks=0, pool=0, symm_oper=None, relu=True):
         super(DownConvPoint, self).__init__()
         self.bn = []
         self.pool = None
         self.conv1 = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper)
         self.conv2 = []
+        self.relu = relu
         for _ in range(blocks):
             self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper))
             self.conv2 = nn.ModuleList(self.conv2)
@@ -893,14 +898,20 @@ class DownConvPoint(nn.Module):
         x1 = self.conv1(fe, meshes)
         if self.bn:
             x1 = self.bn[0](x1)
-        x1 = F.relu(x1)
+        if self.relu:
+            x1 = F.relu(x1)
+        else:
+            x1 = torch.tanh(x1)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
             if self.bn:
                 x2 = self.bn[idx + 1](x2)
             x2 = x2 + x1
-            x2 = F.relu(x2)
+            if self.relu:
+                x2 = F.relu(x2)
+            else:
+                x2 = torch.tanh(x2)
             x1 = x2
         x2 = x2.squeeze(3)
         before_pool = x2
