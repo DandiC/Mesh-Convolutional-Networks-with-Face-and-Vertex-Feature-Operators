@@ -856,8 +856,8 @@ class UpConvPoint(nn.Module):
             x1 = self.bn[0](x1)
         if self.relu:
             x1 = F.relu(x1)
-        else:
-            x1 = torch.tanh(x1)
+        # else:
+        #     x1 = torch.tanh(x1)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
@@ -867,8 +867,8 @@ class UpConvPoint(nn.Module):
                 x2 = x2 + x1
             if self.relu:
                 x2 = F.relu(x2)
-            else:
-                x2 = torch.tanh(x2)
+            # else:
+            #     x2 = torch.tanh(x2)
             x1 = x2
         x2 = x2.squeeze(3)
         return x2
@@ -1199,7 +1199,7 @@ class MeshDecoderPoint(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
+                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper, relu=True))
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
                                  batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
