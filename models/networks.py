@@ -1082,7 +1082,7 @@ class MeshPointGenerator2(nn.Module):
                 gen_vertices = meshes[i].vs * gen_output[i]
             else:
                 gen_vertices = gen_output[i]
-            meshes[i] = Mesh(faces=meshes[i].faces, vertices=gen_vertices, export_folder=self.export_folder, opt=self.opt)
+            meshes[i] = Mesh(faces=meshes[i].faces, vertices=gen_vertices, export_folder='', opt=self.opt)
             out_features.append(meshes[i].extract_features())
             out_features[i] = pad(out_features[i], meshes[i].vs.shape[0])
 
