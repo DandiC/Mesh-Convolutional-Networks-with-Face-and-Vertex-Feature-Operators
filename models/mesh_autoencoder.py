@@ -37,8 +37,10 @@ class AutoencoderModel:
         # load/define networks
         down_convs = [3] + opt.ncf + [1]
         up_convs = [1] + opt.ncf[::-1] + [3]
+        # down_convs = [3] + opt.ncf
+        # up_convs = opt.ncf[::-1] + [3]
         pool_res = [opt.ninput_features] + opt.pool_res
-        self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=opt.symm_oper),
+        self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=opt.symm_oper),
                  opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
 
         self.net.train(self.is_train)
@@ -88,7 +90,7 @@ class AutoencoderModel:
         self.gen_models = copy.deepcopy(self.mesh)
         vs_out = out.cpu().data.numpy()
         for i in range(self.gen_models.shape[0]):
-            self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]), export_folder='generated',
+            self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]), export_folder='',
                              opt=self.opt)
 
 ##################

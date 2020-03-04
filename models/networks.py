@@ -818,12 +818,13 @@ class MeshGenerator(nn.Module):
 class UpConvPoint(nn.Module):
 
     def __init__(self, in_channels, out_channels, blocks=0, unroll=0, residual=True,
-                 batch_norm=True, transfer_data=True, symm_oper=None):
+                 batch_norm=True, transfer_data=True, symm_oper=None, relu=False):
         super(UpConvPoint, self).__init__()
         self.residual = residual
         self.bn = []
         self.unroll = None
         self.transfer_data = transfer_data
+        self.relu = relu
         self.up_conv = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper)
         if transfer_data:
             self.conv1 = MeshConvPoint(2 * out_channels, out_channels, symm_oper=symm_oper)
@@ -853,7 +854,8 @@ class UpConvPoint(nn.Module):
         x1 = self.conv1(x1, meshes)
         if self.bn:
             x1 = self.bn[0](x1)
-        x1 = F.relu(x1)
+        if self.relu:
+            x1 = F.relu(x1)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
@@ -861,7 +863,8 @@ class UpConvPoint(nn.Module):
                 x2 = self.bn[idx + 1](x2)
             if self.residual:
                 x2 = x2 + x1
-            x2 = F.relu(x2)
+            if self.relu:
+                x2 = F.relu(x2)
             x1 = x2
         x2 = x2.squeeze(3)
         return x2
