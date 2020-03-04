@@ -40,8 +40,8 @@ class AutoencoderModel:
         # down_convs = [3] + opt.ncf
         # up_convs = opt.ncf[::-1] + [3]
         pool_res = [opt.ninput_features] + opt.pool_res
-        self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=opt.symm_oper),
-                 opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
+        self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
+                                            symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
 
         self.net.train(self.is_train)
         self.criterion = networks.define_loss(opt).to(self.device)

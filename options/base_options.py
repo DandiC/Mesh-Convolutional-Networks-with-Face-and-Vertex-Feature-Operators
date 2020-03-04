@@ -243,12 +243,14 @@ class BaseOptions:
                                  help='Type of vertex features to be used (for vertex convolution). Options are coord (for coordinates), norm (for normals), mean_c (for mean curvature) and gaussian_c (for gaussian curvature)')
         self.parser.add_argument('--gen_steps', type=int, default=1, help='# of training steps for the generator')
         self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
+        self.parser.add_argument('--skip_connections', default=False, action='store_true',
+                                 help='If true, there are skip connections between encoder and decoder')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point',
                                  help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        self.parser.add_argument('--name', type=str, default='autoencoder_cuboids_26v_2',
+        self.parser.add_argument('--name', type=str, default='autoencoder_cuboids_8v_noRelu_noSkip',
                                  help='name of the experiment. It decides where to store samples and models')
         self.parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         self.parser.add_argument('--serial_batches', action='store_true',
