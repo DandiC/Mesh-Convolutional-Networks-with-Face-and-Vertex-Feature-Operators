@@ -3,12 +3,13 @@ from . import networks
 from os.path import join
 from util.util import seg_accuracy, print_network
 import wandb
-from .networks import MeshAutoencoder
+from .networks import MeshAutoencoder, MeshVAE
 import copy
 import numpy as np
 from models.layers.mesh import Mesh
 from .networks import init_net
 import os
+import torch.nn.functional as F
 
 class AutoencoderModel:
     """ Class for training Model weights
@@ -40,8 +41,13 @@ class AutoencoderModel:
         # down_convs = [3] + opt.ncf
         # up_convs = opt.ncf[::-1] + [3]
         pool_res = [opt.ninput_features] + opt.pool_res
-        self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
-                                            symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
+        if self.opt.vae:
+            self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
+                                                symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
+        else:
+            self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
+                                        symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids,
+                                generative=False)
 
         self.net.train(self.is_train)
         self.criterion = networks.define_loss(opt).to(self.device)
@@ -63,6 +69,17 @@ class AutoencoderModel:
         if not self.is_train or opt.continue_train:
             self.load_network(opt.which_epoch)
 
+    def loss_vae(self, recon_x, x, mu, logvar):
+        # BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
+        BCE = self.criterion(recon_x, x)
+
+        # see Appendix B from VAE paper:
+        # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
+        # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+        KLD = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
+
+        return BCE + KLD, BCE, KLD
+
     def set_input(self, data):
         input_features = torch.from_numpy(data['features']).float()
         labels = torch.from_numpy(data['label']).long()
@@ -79,7 +96,10 @@ class AutoencoderModel:
         return out
 
     def backward(self, out):
-        self.loss = self.criterion(out, self.labels)
+        if self.opt.vae:
+            self.loss, bce, kld = self.loss_vae(out[0], self.labels, out[1], out[2])
+        else:
+            self.loss = self.criterion(out, self.labels)
         self.loss.backward()
 
     def optimize_parameters(self, epoch=0):
@@ -88,7 +108,10 @@ class AutoencoderModel:
         self.backward(out)
         self.optimizer.step()
         self.gen_models = copy.deepcopy(self.mesh)
-        vs_out = out.cpu().data.numpy()
+        if self.opt.vae:
+            vs_out = out[0].cpu().data.numpy()
+        else:
+            vs_out = out.cpu().data.numpy()
         for i in range(self.gen_models.shape[0]):
             self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]), export_folder='',
                              opt=self.opt)

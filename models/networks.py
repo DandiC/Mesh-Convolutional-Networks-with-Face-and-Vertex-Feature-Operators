@@ -1113,8 +1113,38 @@ class MeshVAE(nn.Module):
     """Autoencoder Network for generative learning
     """
 
-    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=1):
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=1):
         super(MeshVAE, self).__init__()
+        self.transfer_data = transfer_data
+        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper, variational=True)
+        unrolls = pools[:-1].copy()
+        unrolls.reverse()
+        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
+
+    def reparameterize(self, mu, logvar):
+        std = logvar.mul(0.5).exp_()
+        # return torch.normal(mu, std)
+        esp = torch.randn(*mu.size()).to(mu.device)
+        z = mu + std * esp
+        return z
+
+    def forward(self, x, meshes):
+        mu, lvar, before_pool = self.encoder((x, meshes))
+        fe = self.reparameterize(mu, lvar)
+        fe = self.decoder((fe, meshes), before_pool)
+        return fe, mu, lvar
+
+
+
+    def __call__(self, x, meshes):
+        return self.forward(x, meshes)
+
+class MeshAutoencoder(nn.Module):
+    """Autoencoder Network for generative learning
+    """
+
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=1):
+        super(MeshAutoencoder, self).__init__()
         self.transfer_data = transfer_data
         self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
         unrolls = pools[:-1].copy()
@@ -1129,32 +1159,13 @@ class MeshVAE(nn.Module):
     def __call__(self, x, meshes):
         return self.forward(x, meshes)
 
-class MeshAutoencoder(nn.Module):
-    """Autoencoder Network for generative learning
-    """
-
-    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=1):
-        super(MeshAutoencoder, self).__init__()
-        self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper, fcs=[8])
-        unrolls = pools[:-1].copy()
-        unrolls.reverse()
-        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
-
-    def forward(self, x, meshes):
-        fe, before_pool = self.encoder((x, meshes))
-        fe = self.decoder((fe, meshes), before_pool)
-        return fe
-
-    def __call__(self, x, meshes):
-        return self.forward(x, meshes)
-
 
 class MeshEncoderPoint(nn.Module):
-    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None):
+    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None, variational=False):
         super(MeshEncoderPoint, self).__init__()
         self.fcs = None
         self.convs = []
+        self.variational = variational
         for i in range(len(convs) - 1):
             if i + 1 < len(pools):
                 pool = pools[i + 1]
@@ -1162,19 +1173,21 @@ class MeshEncoderPoint(nn.Module):
                 pool = 0
             self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper))
         self.global_pool = None
+
+        last_length = convs[-1]
+        if global_pool is not None:
+            if global_pool == 'max':
+                self.global_pool = nn.MaxPool1d(pools[-1])
+            elif global_pool == 'avg':
+                self.global_pool = nn.AvgPool1d(pools[-1])
+            else:
+                assert False, 'global_pool %s is not defined' % global_pool
+        else:
+            last_length *= pools[-1]
+
         if fcs is not None:
             self.fcs = []
             self.fcs_bn = []
-            last_length = convs[-1]
-            if global_pool is not None:
-                if global_pool == 'max':
-                    self.global_pool = nn.MaxPool1d(pools[-1])
-                elif global_pool == 'avg':
-                    self.global_pool = nn.AvgPool1d(pools[-1])
-                else:
-                    assert False, 'global_pool %s is not defined' % global_pool
-            else:
-                last_length *= pools[-1]
             if fcs[0] == last_length:
                 fcs = fcs[1:]
             for length in fcs:
@@ -1183,6 +1196,13 @@ class MeshEncoderPoint(nn.Module):
                 last_length = length
             self.fcs = nn.ModuleList(self.fcs)
             self.fcs_bn = nn.ModuleList(self.fcs_bn)
+
+        self.last_fc = nn.Linear(last_length, pools[-1])
+        self.last_bn = nn.InstanceNorm1d(pools[-1])
+        if self.variational:
+            self.last_fc_2 = nn.Linear(last_length, pools[-1])
+            self.last_bn_2 = nn.InstanceNorm1d(pools[-1])
+
         self.convs = nn.ModuleList(self.convs)
         reset_params(self)
 
@@ -1192,10 +1212,12 @@ class MeshEncoderPoint(nn.Module):
         for conv in self.convs:
             fe, before_pool = conv((fe, meshes))
             encoder_outs.append(before_pool)
+
+        if self.global_pool is not None:
+            fe = self.global_pool(fe)
+        fe = fe.contiguous().view(fe.size()[0], -1)
+
         if self.fcs is not None:
-            if self.global_pool is not None:
-                fe = self.global_pool(fe)
-            fe = fe.contiguous().view(fe.size()[0], -1)
             for i in range(len(self.fcs)):
                 fe = self.fcs[i](fe)
                 if self.fcs_bn:
@@ -1203,8 +1225,21 @@ class MeshEncoderPoint(nn.Module):
                     fe = self.fcs_bn[i](x).squeeze(1)
                 if i < len(self.fcs) - 1:
                     fe = F.relu(fe)
-            fe = fe.unsqueeze(1)
-        return fe, encoder_outs
+        if self.variational:
+            fe_2 = self.last_fc_2(fe)
+            x = fe_2.unsqueeze(1)
+            fe_2 = self.last_bn_2(x).squeeze(1)
+            fe_2 = fe_2.unsqueeze(1)
+
+        fe = self.last_fc(fe)
+        x = fe.unsqueeze(1)
+        fe = self.last_bn(x).squeeze(1)
+        fe = fe.unsqueeze(1)
+
+        if self.variational:
+            return fe, fe_2, encoder_outs
+        else:
+            return fe, encoder_outs
 
     def __call__(self, x):
         return self.forward(x)

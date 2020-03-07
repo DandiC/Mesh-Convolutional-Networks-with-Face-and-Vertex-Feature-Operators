@@ -249,6 +249,8 @@ class BaseOptions:
         self.parser.add_argument('--disc_steps', type=int, default=1, help='# of training steps for the discriminator')
         self.parser.add_argument('--skip_connections', default=False, action='store_true',
                                  help='If true, there are skip connections between encoder and decoder')
+        self.parser.add_argument('--vae', default=False, action='store_true',
+                                 help='If true, the autoencoder is a variational autoencoder')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point',
                                  help='Primitive to extract features from. One of: edge, face')
