@@ -1109,6 +1109,26 @@ class MeshPointGenerator2(nn.Module):
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
 
+class MeshVAE(nn.Module):
+    """Autoencoder Network for generative learning
+    """
+
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=1):
+        super(MeshVAE, self).__init__()
+        self.transfer_data = transfer_data
+        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
+        unrolls = pools[:-1].copy()
+        unrolls.reverse()
+        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
+
+    def forward(self, x, meshes):
+        fe, before_pool = self.encoder((x, meshes))
+        fe = self.decoder((fe, meshes), before_pool)
+        return fe
+
+    def __call__(self, x, meshes):
+        return self.forward(x, meshes)
+
 class MeshAutoencoder(nn.Module):
     """Autoencoder Network for generative learning
     """
@@ -1116,7 +1136,7 @@ class MeshAutoencoder(nn.Module):
     def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=1):
         super(MeshAutoencoder, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
+        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper, fcs=[8])
         unrolls = pools[:-1].copy()
         unrolls.reverse()
         self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
@@ -1183,6 +1203,7 @@ class MeshEncoderPoint(nn.Module):
                     fe = self.fcs_bn[i](x).squeeze(1)
                 if i < len(self.fcs) - 1:
                     fe = F.relu(fe)
+            fe = fe.unsqueeze(1)
         return fe, encoder_outs
 
     def __call__(self, x):
@@ -1193,6 +1214,7 @@ class MeshDecoderPoint(nn.Module):
     def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=True, symm_oper=None):
         super(MeshDecoderPoint, self).__init__()
         self.up_convs = []
+        self.transfer_data = transfer_data
         for i in range(len(convs) - 2):
             if i < len(unrolls):
                 unroll = unrolls[i]
@@ -1210,7 +1232,7 @@ class MeshDecoderPoint(nn.Module):
         fe, meshes = x
         for i, up_conv in enumerate(self.up_convs):
             before_pool = None
-            if encoder_outs is not None:
+            if self.transfer_data and encoder_outs is not None:
                 before_pool = encoder_outs[-(i + 2)]
             fe = up_conv((fe, meshes), before_pool)
         fe = self.final_conv((fe, meshes))
