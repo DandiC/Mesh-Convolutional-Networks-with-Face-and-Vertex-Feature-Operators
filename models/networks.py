@@ -169,7 +169,7 @@ def define_loss(opt):
         loss = torch.nn.CrossEntropyLoss(ignore_index=-1)
     elif opt.dataset_mode == 'generative':
         if opt.arch == 'meshunet':
-            loss = torch.nn.MSELoss()
+            loss = torch.nn.MSELoss(reduction='sum')
         else:
             disc_loss = torch.nn.BCELoss()
             gen_loss = torch.nn.BCELoss()
