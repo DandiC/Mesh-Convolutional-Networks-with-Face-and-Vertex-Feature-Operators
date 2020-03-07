@@ -105,7 +105,7 @@ if __name__ == '__main__':
             print('saving the model at the end of epoch %d, iters %d' %
                   (epoch, total_steps))
             model.save_network('latest', wandb_save=False, dataset_mode=opt.dataset_mode)
-            model.save_network(epoch, dataset_mode=opt.dataset_mode)
+            # model.save_network(epoch, dataset_mode=opt.dataset_mode)
 
         print('End of epoch %d / %d \t Time Taken: %d sec' %
               (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
