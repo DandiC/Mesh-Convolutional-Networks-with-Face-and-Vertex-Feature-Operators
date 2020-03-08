@@ -169,7 +169,7 @@ def define_loss(opt):
         loss = torch.nn.CrossEntropyLoss(ignore_index=-1)
     elif opt.dataset_mode == 'generative':
         if opt.arch == 'meshunet':
-            loss = torch.nn.MSELoss(reduction='sum')
+            loss = torch.nn.MSELoss()
         else:
             disc_loss = torch.nn.BCELoss()
             gen_loss = torch.nn.BCELoss()
@@ -1120,6 +1120,7 @@ class MeshVAE(nn.Module):
         unrolls = pools[:-1].copy()
         unrolls.reverse()
         self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
+        self.fc = nn.Linear(pools[-1], pools[-1])
 
     def reparameterize(self, mu, logvar):
         std = logvar.mul(0.5).exp_()
@@ -1131,6 +1132,7 @@ class MeshVAE(nn.Module):
     def forward(self, x, meshes):
         mu, lvar, before_pool = self.encoder((x, meshes))
         fe = self.reparameterize(mu, lvar)
+        fe = self.fc(fe)
         fe = self.decoder((fe, meshes), before_pool)
         return fe, mu, lvar
 

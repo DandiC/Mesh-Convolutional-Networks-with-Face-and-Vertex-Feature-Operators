@@ -160,7 +160,10 @@ class AutoencoderModel:
         with torch.no_grad():
             out = self.forward()
             self.gen_models = copy.deepcopy(self.mesh)
-            vs_out = out.cpu().data.numpy()
+            if self.opt.vae:
+                vs_out = out[0].cpu().data.numpy()
+            else:
+                vs_out = out.cpu().data.numpy()
             for i in range(self.gen_models.shape[0]):
                 self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                           export_folder='',
