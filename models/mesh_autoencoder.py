@@ -60,6 +60,10 @@ class AutoencoderModel:
         if not os.path.exists(self.results_folder):
             os.makedirs(self.results_folder)
 
+        self.sample_folder = os.path.join(opt.checkpoints_dir, opt.name, 'sample')
+        if not os.path.exists(self.sample_folder):
+            os.makedirs(self.sample_folder)
+
         if self.is_train:
             self.optimizer = torch.optim.Adam(self.net.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.scheduler = networks.get_scheduler(self.optimizer, opt)
@@ -152,6 +156,12 @@ class AutoencoderModel:
         self.scheduler.step()
         lr = self.optimizer.param_groups[0]['lr']
         print('learning rate = %.7f' % lr)
+
+    def generate(self, z):
+        with torch.no_grad():
+            latent_mesh = Mesh(self.opt.latent_path, opt=self.opt)
+            out = self.net(z, [latent_mesh], from_latent=True)
+            return Mesh(faces=latent_mesh.faces, vertices=np.transpose(out[0].cpu().data.numpy()), export_folder='', opt=self.opt)
 
     def test(self):
         """tests model

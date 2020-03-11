@@ -1130,16 +1130,26 @@ class MeshVAE(nn.Module):
         return z
 
     def forward(self, x, meshes):
-        mu, lvar, before_pool = self.encoder((x, meshes))
+        mu, lvar, before_pool = self.encode(x, meshes)
         fe = self.reparameterize(mu, lvar)
-        fe = self.fc(fe)
-        fe = self.decoder((fe, meshes), before_pool)
+        fe = self.decode(fe, meshes)
         return fe, mu, lvar
 
+    def encode(self, x, meshes):
+        return self.encoder((x, meshes))
+
+    def decode(self, z, meshes):
+        fe = self.fc(z)
+        fe = self.decoder((fe, meshes))
+        return fe
 
 
-    def __call__(self, x, meshes):
-        return self.forward(x, meshes)
+
+    def __call__(self, x, meshes, from_latent=False):
+        if from_latent:
+            return self.decode(x, meshes)
+        else:
+            return self.forward(x, meshes)
 
 class MeshAutoencoder(nn.Module):
     """Autoencoder Network for generative learning

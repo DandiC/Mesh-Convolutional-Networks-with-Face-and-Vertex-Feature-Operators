@@ -6,6 +6,7 @@ import glob
 import shutil
 import os
 import wandb
+import torch
 
 def run_test(epoch=-1):
     print('Running Test')
@@ -32,6 +33,13 @@ def run_test(epoch=-1):
     # test
     writer.reset_counter()
     if opt.dataset_mode == 'generative':
+
+        for i in range(8):
+            for j in range(-4,5):
+                z = torch.zeros((1, 1, 8)).to(model.device)
+                z[0,0,i] = 0.5*j
+                gen_mesh = model.generate(z)
+                gen_mesh.export(file=model.sample_folder + '/gen_mesh_' + str(i) + '_' + str(j) + '.obj')
         for i, data in enumerate(dataset):
             model.set_input(data)
             model.test()
