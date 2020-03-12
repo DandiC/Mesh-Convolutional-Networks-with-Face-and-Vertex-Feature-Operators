@@ -120,7 +120,7 @@ class GenerativeModel:
 
         if 'Point' in self.opt.arch:
             dilations = np.random.rand(self.fake_mesh.shape[0], 1, self.fake_mesh[0].vs_count)
-            features = np.zeros([self.fake_mesh.shape[0], 5, self.fake_mesh[0].vs_count])
+            features = np.zeros([self.fake_mesh.shape[0], 4, self.fake_mesh[0].vs_count])
             for i in range(self.fake_mesh.shape[0]):
                 features[i,:3,:] = dilations[i,:,:]*np.transpose(self.fake_mesh[i].vs)
                 self.fake_mesh[i] = Mesh(faces=self.fake_mesh[i].faces, vertices=np.transpose(features[i,:3,:]), export_folder='', opt=self.opt)
