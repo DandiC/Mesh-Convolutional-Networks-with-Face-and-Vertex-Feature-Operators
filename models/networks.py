@@ -1054,7 +1054,7 @@ class MeshPointGenerator2(nn.Module):
         self.export_folder = export_folder
         self.opt = opt
         self.up_convs = []
-        convs.insert(0,5)
+        convs.insert(0,4)
         if opt.dilation:
             convs.append(1)
         else:
