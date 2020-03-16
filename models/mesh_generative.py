@@ -48,6 +48,7 @@ class GenerativeModel:
         self.loss = None
         self.disc_accuracy = 0
         self.latent_path = opt.latent_path
+        self.clip_value = opt.clip_value
         #
         self.nclasses = opt.nclasses
 
@@ -63,10 +64,8 @@ class GenerativeModel:
         self.criterion_gen = networks.define_loss(opt)[1].to(self.device)
 
         if self.is_train:
-            self.optimizer_D = torch.optim.Adam(self.net.discriminator.parameters(), lr=opt.lr_disc,
-                                                betas=(opt.beta1, 0.999))
-            self.optimizer_G = torch.optim.Adam(self.net.generator.parameters(), lr=opt.lr_gen,
-                                                betas=(opt.beta1, 0.999))
+            self.optimizer_D = torch.optim.RMSprop(self.net.discriminator.parameters(), lr=opt.lr_disc)
+            self.optimizer_G = torch.optim.RMSprop(self.net.generator.parameters(), lr=opt.lr_gen)
             # self.scheduler = networks.get_scheduler(self.optimizer, opt)
             print("DISCRIMINATOR:")
             disc_params = print_network(self.net.discriminator)
@@ -100,20 +99,7 @@ class GenerativeModel:
 
 
     def optimize_parameters(self, epoch=0):
-        for i in range(self.opt.gen_steps):
-            self.trainGenerator(epoch)
 
-        for i in range(self.opt.disc_steps):
-            self.trainDiscriminator()
-        del self.valid
-        del self.fake
-        del self.label
-
-        torch.cuda.empty_cache()
-
-    # @profile
-    def trainGenerator(self, epoch):
-        self.optimizer_G.zero_grad()
         #     Fake initial data
         latent_mesh = Mesh(self.latent_path, opt=self.opt)
         self.fake_mesh = np.asarray([copy.deepcopy(latent_mesh) for i in range(self.features.shape[0])])
@@ -122,9 +108,10 @@ class GenerativeModel:
             dilations = np.random.rand(self.fake_mesh.shape[0], 1, self.fake_mesh[0].vs_count)
             features = np.zeros([self.fake_mesh.shape[0], 4, self.fake_mesh[0].vs_count])
             for i in range(self.fake_mesh.shape[0]):
-                features[i,:3,:] = dilations[i,:,:]*np.transpose(self.fake_mesh[i].vs)
-                self.fake_mesh[i] = Mesh(faces=self.fake_mesh[i].faces, vertices=np.transpose(features[i,:3,:]), export_folder='', opt=self.opt)
-                features[i,3:,:] = self.fake_mesh[i].features
+                features[i, :3, :] = dilations[i, :, :] * np.transpose(self.fake_mesh[i].vs)
+                self.fake_mesh[i] = Mesh(faces=self.fake_mesh[i].faces, vertices=np.transpose(features[i, :3, :]),
+                                         export_folder='', opt=self.opt)
+                features[i, 3:, :] = self.fake_mesh[i].features
                 # Debug code to export the latent meshes.
                 # self.fake_mesh[i].export(file='datasets/latent/dilated_spheres/sphere_'+str(i)+'.obj')
             self.fake_features = torch.tensor(features).to(self.device).requires_grad_(self.is_train).float()
@@ -134,7 +121,22 @@ class GenerativeModel:
                 self.device).requires_grad_(self.is_train)
         self.gen_features, self.gen_models = self.net.generator((self.fake_features, self.fake_mesh))
         self.gen_features = self.gen_features.to(self.device).requires_grad_(self.is_train)
-        self.g_loss = self.criterion_gen(self.net.discriminator((self.gen_features,self.gen_models)), self.valid)
+
+        for i in range(self.opt.disc_steps):
+            self.trainDiscriminator()
+        for i in range(self.opt.gen_steps):
+            self.trainGenerator(epoch)
+        del self.valid
+        del self.fake
+        del self.label
+
+        torch.cuda.empty_cache()
+
+    # @profile
+    def trainGenerator(self, epoch):
+        self.optimizer_G.zero_grad()
+
+        self.g_loss = -torch.mean(self.net.discriminator((self.gen_features,self.gen_models)))
         self.g_loss.backward()
         self.optimizer_G.step()
         del self.fake_mesh
@@ -148,14 +150,20 @@ class GenerativeModel:
         # output_disc_fake = self.fake
         pred = np.concatenate([output_disc_real.data.cpu().numpy(), output_disc_fake.data.cpu().numpy()], axis=0)
         self.disc_accuracy = np.mean(np.round(pred) == self.label)
+
+        mean_disc_real = torch.mean(output_disc_real)
+        mean_disc_fake = torch.mean(output_disc_fake)
+
+        self.d_loss = -mean_disc_real + mean_disc_fake
+
         self.mean_output_disc_real = torch.mean(output_disc_real).item()
         self.mean_output_disc_fake = torch.mean(output_disc_fake).item()
-        real_loss = self.criterion_disc(output_disc_real, self.valid)
-        fake_loss = self.criterion_disc(output_disc_fake, self.fake)
-        self.d_loss = (real_loss+fake_loss)/2
+
         if self.disc_accuracy < self.opt.max_disc_acc:
             self.d_loss.backward()
             self.optimizer_D.step()
+        for p in self.net.discriminator.parameters():
+            p.data.clamp_(-self.clip_value, self.clip_value)
 
 ##################
 

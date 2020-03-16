@@ -971,7 +971,8 @@ class MeshPointDiscriminator(nn.Module):
         else:
             last_length *= pool_res[-1]
         self.fc1 = nn.Linear(last_length, fc_n)
-        self.fc2 = nn.Sequential(nn.Linear(fc_n, 1), nn.Sigmoid())
+        # self.fc2 = nn.Sequential(nn.Linear(fc_n, 1), nn.Sigmoid())
+        self.fc2 = nn.Linear(fc_n, 1)
 
     def forward(self, input):
         x, mesh = input
@@ -1069,10 +1070,8 @@ class MeshPointGenerator2(nn.Module):
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
                                  batch_norm=batch_norm, transfer_data=False, symm_oper=opt.symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
-        if opt.dilation:
-            self.final_activation = nn.Sigmoid()
-        else:
-            self.final_activation = nn.Tanh()
+
+        self.final_activation = nn.Tanh()
 
         reset_params(self)
 
