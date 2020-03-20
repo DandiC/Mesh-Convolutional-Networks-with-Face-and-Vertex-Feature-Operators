@@ -669,7 +669,7 @@ class UpConvFace(nn.Module):
         x1 = self.conv1(x1, meshes)
         if self.bn:
             x1 = self.bn[0](x1)
-        #     TODO: relu eliminated to avoid not having negative vertices. Consider another activation function
+
         if self.relu:
             x1 = F.relu(x1)
         x2 = x1
