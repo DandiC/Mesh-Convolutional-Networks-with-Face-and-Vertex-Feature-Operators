@@ -35,6 +35,7 @@ class MeshPoolPoint(nn.Module):
         if self.__multi_thread:
             for mesh_index in range(len(meshes)):
                 pool_threads[mesh_index].join()
+        # ufe = self.__updated_fe
         out_features = torch.cat(self.__updated_fe).view(len(meshes), -1, self.__out_target)
         return out_features
 
@@ -66,7 +67,7 @@ class MeshPoolPoint(nn.Module):
         padding_b = self.__out_target - fe.shape[1]
         if padding_b > 0:
             padding_b = ConstantPad2d((0, padding_b, 0, 0), 0)
-            fe = padding_b(fe.squeeze(-1)).unsqueeze(-1)
+            fe = padding_b(fe.squeeze(-1))
 
         self.__updated_fe[mesh_index] = fe
 

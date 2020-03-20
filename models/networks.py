@@ -14,10 +14,12 @@ from models.layers.mesh_conv_point import MeshConvPoint
 from models.layers.mesh_unpool_point import MeshUnpoolPoint
 from models.layers.mesh_pool_point import MeshPoolPoint
 from models.layers.mesh import Mesh
+from models.layers.mesh_prepare import build_gemm
 import numpy as np
 from util.util import pad
 import os
 import wandb
+
 # from memory_profiler import profile
 
 ###############################################################################
@@ -1112,7 +1114,7 @@ class MeshVAE(nn.Module):
     """Autoencoder Network for generative learning
     """
 
-    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=1):
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=1, opt=None):
         super(MeshVAE, self).__init__()
         self.transfer_data = transfer_data
         self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper, variational=True)
@@ -1120,6 +1122,7 @@ class MeshVAE(nn.Module):
         unrolls.reverse()
         self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
         self.fc = nn.Linear(pools[-1], pools[-1])
+        self.opt = opt
 
     def reparameterize(self, mu, logvar):
         std = logvar.mul(0.5).exp_()
@@ -1130,6 +1133,10 @@ class MeshVAE(nn.Module):
 
     def forward(self, x, meshes):
         mu, lvar, before_pool = self.encode(x, meshes)
+        for i,m in enumerate(meshes):
+            # TODO: Optimize current process (mesh -> pool with edges and verts -> mesh with faces -> mesh with gemm)
+            m.build_faces()
+            meshes[i] = Mesh(faces=m.faces, vertices=m.vs, export_folder='', opt=self.opt)
         fe = self.reparameterize(mu, lvar)
         fe = self.decode(fe, meshes)
         return fe, mu, lvar

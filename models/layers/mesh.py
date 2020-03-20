@@ -173,6 +173,17 @@ class Mesh:
         self.pool_count += 1
         self.export()
 
+    def build_faces(self):
+        self.faces = []
+        gemm = np.array(self.gemm_edges)
+        new_indices = np.zeros(self.v_mask.shape[0], dtype=np.int32)
+        new_indices[self.v_mask] = np.arange(0, np.ma.where(self.v_mask)[0].shape[0])
+        for edge_index in range(len(gemm)):
+            cycles = self.__get_cycle(gemm, edge_index)
+            for cycle in cycles:
+                self.faces.append(self.__cycle_to_face(cycle, new_indices))
+        self.faces = np.asarray(self.faces)
+
     def export(self, file=None, vcolor=None, extension='.obj'):
         if file is None:
             if self.export_folder:

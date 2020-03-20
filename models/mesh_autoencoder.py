@@ -43,7 +43,7 @@ class AutoencoderModel:
         pool_res = [opt.ninput_features] + opt.pool_res
         if self.opt.vae:
             self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
-                                                symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
+                                                symm_oper=opt.symm_oper, opt=opt), opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
         else:
             self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
                                         symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids,

@@ -40,7 +40,8 @@ class MeshUnpoolPoint(nn.Module):
     def __unpool_main(self, mesh_index):
         mesh = self.__meshes[mesh_index]
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.vs_count], mesh)
-        fe = self.__fe[mesh_index]
+        fe = self.__fe[mesh_index][:,:mesh.vs_count]
+
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         face_mask = np.ones(mesh.face_count, dtype=np.bool)
         # edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)

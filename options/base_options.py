@@ -256,7 +256,7 @@ class BaseOptions:
         self.parser.add_argument('--resblocks', type=int, default=3, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
         self.parser.add_argument('--ncf', nargs='+', default=[8, 16, 32, 64], type=int, help='conv filters')
-        self.parser.add_argument('--pool_res', nargs='+', default=[], type=int, help='pooling res')
+        self.parser.add_argument('--pool_res', nargs='+', default=[0, 20, 14, 10], type=int, help='pooling res')
         self.parser.add_argument('--norm', type=str, default='batch',
                                  help='instance normalization or batch normalization or group normalization')
         self.parser.add_argument('--num_groups', type=int, default=16, help='# of groups for groupnorm')
