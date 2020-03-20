@@ -85,7 +85,7 @@ class Mesh:
         self.pool_count += 1
         self.export()
 
-    def cleanWithPoint(self, edges_mask, groups):
+    def cleanWithPoint(self, edges_mask, face_mask, groups):
         edges_mask = edges_mask.astype(bool)
         torch_mask = torch.from_numpy(edges_mask.copy())
         self.gemm_edges = self.gemm_edges[edges_mask]
@@ -95,19 +95,32 @@ class Mesh:
         self.vs = self.vs[self.v_mask]
         # self.gemm_vs = self.gemm_vs[self.v_mask]
 
+        face_mask = face_mask.astype(bool)
+        self.gemm_faces = self.gemm_faces[face_mask]
+        self.faces = self.faces[face_mask]
+        self.face_areas = self.face_areas[face_mask]
+        self.edges_in_face = self.edges_in_face[face_mask]
+
 
         new_ve = []
         edges_mask = np.concatenate([edges_mask, [False]])
-        new_indices = np.zeros(edges_mask.shape[0], dtype=np.int32)
-        new_indices[-1] = -1
-        new_indices[edges_mask] = np.arange(0, np.ma.where(edges_mask)[0].shape[0])
-        self.gemm_edges[:, :] = new_indices[self.gemm_edges[:, :]]
+        new_edge_indices = np.zeros(edges_mask.shape[0], dtype=np.int32)
+        new_edge_indices[-1] = -1
+        new_edge_indices[edges_mask] = np.arange(0, np.ma.where(edges_mask)[0].shape[0])
+        self.gemm_edges[:, :] = new_edge_indices[self.gemm_edges[:, :]]
+        self.edges_in_face[:, :] = new_edge_indices[self.edges_in_face[:, :]]
+
+        face_mask = np.concatenate([face_mask, [False]])
+        new_face_indices = np.zeros(face_mask.shape[0], dtype=np.int32)
+        new_face_indices[-1] = -1
+        new_face_indices[face_mask] = np.arange(0, np.ma.where(face_mask)[0].shape[0])
+        self.gemm_faces[:, :] = new_face_indices[self.gemm_faces[:, :]]
 
         for v_index, ve in enumerate(self.ve):
             update_ve = []
             if self.v_mask[v_index]:
                 for e in ve:
-                    update_ve.append(new_indices[e])
+                    update_ve.append(new_edge_indices[e])
                 new_ve.append(update_ve)
         self.ve = new_ve
 

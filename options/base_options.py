@@ -256,7 +256,7 @@ class BaseOptions:
         self.parser.add_argument('--resblocks', type=int, default=3, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
         self.parser.add_argument('--ncf', nargs='+', default=[8, 16, 32, 64], type=int, help='conv filters')
-        self.parser.add_argument('--pool_res', nargs='+', default=[], type=int, help='pooling res')
+        self.parser.add_argument('--pool_res', nargs='+', default=[0,20,14,8], type=int, help='pooling res')
         self.parser.add_argument('--norm', type=str, default='batch',
                                  help='instance normalization or batch normalization or group normalization')
         self.parser.add_argument('--num_groups', type=int, default=16, help='# of groups for groupnorm')
@@ -282,7 +282,7 @@ class BaseOptions:
                                  help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        self.parser.add_argument('--name', type=str, default='vae_cuboids_8v_fc',
+        self.parser.add_argument('--name', type=str, default='vae_vases',
                                  help='name of the experiment. It decides where to store samples and models')
         self.parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         self.parser.add_argument('--serial_batches', action='store_true',

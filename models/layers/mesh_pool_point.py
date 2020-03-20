@@ -45,6 +45,7 @@ class MeshPoolPoint(nn.Module):
         # last_queue_len = len(queue)
         last_count = mesh.edges_count + 1
         mask = np.ones(mesh.edges_count, dtype=np.bool)
+        face_mask = np.ones(mesh.face_count, dtype=np.bool)
         edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
         while mesh.vs_count > self.__out_target:
             value, vt_id, n_id = heappop(queue)
@@ -54,13 +55,13 @@ class MeshPoolPoint(nn.Module):
             edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == vt_id, mesh.edges[:, 1] == n_id),
                                               np.logical_and(mesh.edges[:, 0] == n_id, mesh.edges[:, 1] == vt_id)))
             if mask[edge_id]:
-                self.__pool_edge(mesh, edge_id, mask, edge_groups)
+                self.__pool_edge(mesh, edge_id, mask, edge_groups, face_mask)
                 assert(mesh.vs_count == mesh.v_mask.sum())
         fe = self.__fe[mesh_index]
         v_mask = np.zeros((fe.shape[1]), dtype=bool)
         v_mask[:mesh.v_mask.shape[0]] = mesh.v_mask
         # TODO: Need to clean faces too in order for decoder to work
-        mesh.cleanWithPoint(mask, edge_groups)
+        mesh.cleanWithPoint(mask, face_mask, edge_groups)
         fe = fe[:,v_mask]
 
         padding_b = self.__out_target - fe.shape[1]
@@ -70,29 +71,48 @@ class MeshPoolPoint(nn.Module):
 
         self.__updated_fe[mesh_index] = fe
 
-    def __pool_edge(self, mesh, edge_id, mask, edge_groups):
+    def __pool_edge(self, mesh, edge_id, mask, edge_groups, face_mask):
         # Not pool if the edge or one of its neighbors is in a boundary
         if self.has_boundaries(mesh, edge_id):
             return False
-        elif self.__clean_side(mesh, edge_id, mask, edge_groups, 0)\
-            and self.__clean_side(mesh, edge_id, mask, edge_groups, 2) \
+        elif self.__clean_side(mesh, edge_id, mask, face_mask, edge_groups, 0)\
+            and self.__clean_side(mesh, edge_id, mask, face_mask, edge_groups, 2) \
             and self.__is_one_ring_valid(mesh, edge_id):
             self.__merge_edges[0] = self.__pool_side(mesh, edge_id, mask, edge_groups, 0)
             self.__merge_edges[1] = self.__pool_side(mesh, edge_id, mask, edge_groups, 2)
             mesh.merge_vertices(edge_id)
+
+            #Remove edge
             mask[edge_id] = False
             MeshPoolPoint.__remove_group(mesh, edge_groups, edge_id)
+            # mesh.remove_edge(edge_id)
             mesh.edges_count -= 1
+
+            # Remove faces
+            self.__pool_face(mesh, face_mask, mesh.ef[edge_id,0], edge_id)
+            self.__pool_face(mesh, face_mask, mesh.ef[edge_id,1], edge_id)
+
             return True
         else:
             return False
 
-    def __clean_side(self, mesh, edge_id, mask, edge_groups, side):
+    def __pool_face(self, mesh, face_mask, face_id, edge_id):
+        # Remove face
+        face_mask[face_id] = False
+        mesh.face_count -= 1
+
+        # Update neighbors
+        neighbors = mesh.gemm_faces[face_id]
+        neighbors = np.delete(neighbors, np.where(mesh.edges_in_face[neighbors] == edge_id)[0][0], axis=0)
+        mesh.gemm_faces[neighbors[0], np.where(mesh.gemm_faces[neighbors[0]] == face_id)[0][0]] = neighbors[1]
+        mesh.gemm_faces[neighbors[1], np.where(mesh.gemm_faces[neighbors[1]] == face_id)[0][0]] = neighbors[0]
+
+    def __clean_side(self, mesh, edge_id, mask, face_mask, edge_groups, side):
         if mesh.edges_count <= self.__out_target:
             return False
         invalid_edges = MeshPoolPoint.__get_invalids(mesh, edge_id, edge_groups, side)
         while len(invalid_edges) != 0 and mesh.edges_count > self.__out_target:
-            self.__remove_triplete(mesh, mask, edge_groups, invalid_edges)
+            self.__remove_triplete(mesh, mask, face_mask, edge_groups, invalid_edges)
             if mesh.edges_count <= self.__out_target:
                 return False
             if self.has_boundaries(mesh, edge_id):
@@ -125,6 +145,7 @@ class MeshPoolPoint(nn.Module):
         mask[key_b] = False
         MeshPoolPoint.__remove_group(mesh, edge_groups, key_b)
         mesh.remove_edge(key_b)
+        mesh.edges_in_face[mesh.edges_in_face == key_b] = key_a
         mesh.edges_count -= 1
         return key_a
 
@@ -186,16 +207,56 @@ class MeshPoolPoint(nn.Module):
         return key_a, key_b, side_a, side_b, other_side_a, other_side_b, other_keys_a, other_keys_b
 
     @staticmethod
-    def __remove_triplete(mesh, mask, edge_groups, invalid_edges):
+    def __remove_triplete(mesh, mask, face_mask, edge_groups, invalid_edges):
         vertex = set(mesh.edges[invalid_edges[0]])
         for edge_key in invalid_edges:
+            # print('Remove triplete in edge ', edge_key)
             vertex &= set(mesh.edges[edge_key])
             mask[edge_key] = False
             MeshPoolPoint.__remove_group(mesh, edge_groups, edge_key)
+
+        # Get faces adjacent to vertex. Remove 2 and keep 1
+        faces = np.where(mesh.faces == list(vertex)[0])[0]
+        faces = faces[face_mask[faces]]
+        assert len(faces) == 3
+        face_mask[faces[1:]] = 0
+
+        # Update neighbors of new face
+        neighbors = mesh.gemm_faces[faces[1]]
+        neighbors = neighbors[neighbors != faces[0]]
+        n1 = neighbors[neighbors != faces[2]][0]
+        mesh.gemm_faces[faces[0], np.where(mesh.gemm_faces[faces[0]] == faces[1])[0][0]] = n1
+        mesh.gemm_faces[n1, np.where(mesh.gemm_faces[n1] == faces[1])[0][0]] = faces[0]
+
+        neighbors = mesh.gemm_faces[faces[2]]
+        neighbors = neighbors[neighbors != faces[0]]
+        n2 = neighbors[neighbors != faces[1]][0]
+        mesh.gemm_faces[faces[0], np.where(mesh.gemm_faces[faces[0]] == faces[2])[0][0]] = n2
+        mesh.gemm_faces[n2, np.where(mesh.gemm_faces[n2] == faces[2])[0][0]] = faces[0]
+
+        # Udate edges in face of new face
+        edges = mesh.edges_in_face[faces[0]]
+        for i, edge in enumerate(edges):
+            if edge in invalid_edges:
+                if edge in mesh.edges_in_face[faces[1]]:
+                    neighbors = mesh.edges_in_face[faces[1]]
+                elif edge in mesh.edges_in_face[faces[2]]:
+                    neighbors = mesh.edges_in_face[faces[2]]
+
+                for invalid in invalid_edges:
+                    neighbors = neighbors[neighbors != invalid]
+                mesh.edges_in_face[faces[0], i] = neighbors[0]
+
+        mesh.face_count -= 2
         mesh.edges_count -= 3
         vertex = list(vertex)
-        assert(len(vertex) == 1)
+        assert (len(vertex) == 1)
         mesh.remove_vertex(vertex[0])
+        vertices = np.reshape(mesh.edges[invalid_edges], -1)
+        for v in mesh.faces[faces[0]]:
+            vertices = vertices[vertices != v]
+        assert len(vertices) == 1
+        mesh.faces[faces[0], np.where(mesh.faces[faces[0]] == vertex[0])[0][0]] = vertices[0]
 
     def __build_queue(self, features, mesh):
         # delete edges with smallest norm
