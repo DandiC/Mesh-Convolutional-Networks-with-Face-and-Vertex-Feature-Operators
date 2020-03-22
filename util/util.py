@@ -68,3 +68,61 @@ def calculate_entropy(np_array):
             entropy -= a * np.log(a)
     entropy /= np.log(np_array.shape[0])
     return entropy
+
+def chamfer_distance(p1, p2, debug=False):
+
+    '''
+    Calculate Chamfer Distance between two point sets
+    :param p1: size[B, N, D]
+    :param p2: size[B, M, D]
+    :param debug: whether need to output debug info
+    :return: sum of all batches of Chamfer Distance of two point sets
+    '''
+
+    assert p1.size(0) == p2.size(0) and p1.size(2) == p2.size(2)
+
+    if debug:
+        print(p1[0])
+
+    p1 = p1.unsqueeze(1)
+    p2 = p2.unsqueeze(1)
+    if debug:
+        print('p1 size is {}'.format(p1.size()))
+        print('p2 size is {}'.format(p2.size()))
+        print(p1[0][0])
+
+    p1 = p1.repeat(1, p2.size(2), 1, 1)
+    if debug:
+        print('p1 size is {}'.format(p1.size()))
+
+    p1 = p1.transpose(1, 2)
+    if debug:
+        print('p1 size is {}'.format(p1.size()))
+        print(p1[0][0])
+
+    p2 = p2.repeat(1, p1.size(1), 1, 1)
+    if debug:
+        print('p2 size is {}'.format(p2.size()))
+        print(p2[0][0])
+
+    dist = torch.add(p1, torch.neg(p2))
+    if debug:
+        print('dist size is {}'.format(dist.size()))
+        print(dist[0])
+
+    dist = torch.norm(dist, 2, dim=3)
+    if debug:
+        print('dist size is {}'.format(dist.size()))
+        print(dist)
+
+    dist = torch.min(dist, dim=2)[0]
+    if debug:
+        print('dist size is {}'.format(dist.size()))
+        print(dist)
+
+    dist = torch.sum(dist)
+    if debug:
+        print('-------')
+        print(dist)
+
+    return dist

@@ -19,7 +19,6 @@ import numpy as np
 from util.util import pad
 import os
 import wandb
-
 # from memory_profiler import profile
 
 ###############################################################################
@@ -1117,7 +1116,7 @@ class MeshVAE(nn.Module):
     def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=1, opt=None):
         super(MeshVAE, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper, variational=True)
+        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper, variational=True, opt=opt)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
         self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
@@ -1133,10 +1132,11 @@ class MeshVAE(nn.Module):
 
     def forward(self, x, meshes):
         mu, lvar, before_pool = self.encode(x, meshes)
-        for i,m in enumerate(meshes):
-            # TODO: Optimize current process (mesh -> pool with edges and verts -> mesh with faces -> mesh with gemm)
-            m.build_faces()
-            meshes[i] = Mesh(faces=m.faces, vertices=m.vs, export_folder='', opt=self.opt)
+        if self.opt.pool_res != []:
+            for i,m in enumerate(meshes):
+                # TODO: Optimize current process (mesh -> pool with edges and verts -> mesh with faces -> mesh with gemm)
+                m.build_faces()
+                meshes[i] = Mesh(faces=m.faces, vertices=m.vs, export_folder='', opt=self.opt)
         fe = self.reparameterize(mu, lvar)
         fe = self.decode(fe, meshes)
         return fe, mu, lvar
@@ -1179,11 +1179,12 @@ class MeshAutoencoder(nn.Module):
 
 
 class MeshEncoderPoint(nn.Module):
-    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None, variational=False):
+    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None, variational=False, opt=None):
         super(MeshEncoderPoint, self).__init__()
         self.fcs = None
         self.convs = []
         self.variational = variational
+        self.opt = opt
         for i in range(len(convs) - 1):
             if i + 1 < len(pools):
                 pool = pools[i + 1]

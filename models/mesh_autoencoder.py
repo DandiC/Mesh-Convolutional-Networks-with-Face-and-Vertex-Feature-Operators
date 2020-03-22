@@ -1,7 +1,7 @@
 import torch
 from . import networks
 from os.path import join
-from util.util import seg_accuracy, print_network
+from util.util import seg_accuracy, print_network, chamfer_distance
 import wandb
 from .networks import MeshAutoencoder, MeshVAE
 import copy
@@ -75,7 +75,7 @@ class AutoencoderModel:
 
     def loss_vae(self, recon_x, x, mu, logvar):
         # BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
-        BCE = self.criterion(recon_x, x)
+        BCE = chamfer_distance(recon_x, x)
 
         # see Appendix B from VAE paper:
         # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
