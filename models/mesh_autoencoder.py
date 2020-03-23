@@ -10,6 +10,7 @@ from models.layers.mesh import Mesh
 from .networks import init_net
 import os
 import torch.nn.functional as F
+import neuralnet_pytorch as nnt
 
 class AutoencoderModel:
     """ Class for training Model weights
@@ -75,7 +76,8 @@ class AutoencoderModel:
 
     def loss_vae(self, recon_x, x, mu, logvar):
         # BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
-        BCE = self.criterion(recon_x, x)
+        # BCE = self.criterion(recon_x, x)
+        BCE = nnt.metrics.chamfer_loss(recon_x, x)
         # BCE = chamfer_distance(recon_x, x)
 
         # see Appendix B from VAE paper:
