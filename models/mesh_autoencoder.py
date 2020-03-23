@@ -77,7 +77,7 @@ class AutoencoderModel:
     def loss_vae(self, recon_x, x, mu, logvar):
         # BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
         # BCE = self.criterion(recon_x, x)
-        BCE = nnt.metrics.chamfer_loss(recon_x, x)
+        BCE = nnt.metrics.chamfer_loss(recon_x, x, reduce='mean')
         # BCE = chamfer_distance(recon_x, x)
 
         # see Appendix B from VAE paper:
