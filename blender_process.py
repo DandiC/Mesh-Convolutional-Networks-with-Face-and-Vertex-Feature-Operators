@@ -26,8 +26,8 @@ class Process:
         mesh = self.load_obj(obj_file)
         self.simplify(mesh, target_faces)
         nfaces = len(mesh.data.polygons)
-        if nfaces < target_faces+10:
-            self.export_obj(mesh, export_name)
+        #if nfaces < target_faces+10:
+        self.export_obj(mesh, export_name)
 
     def load_obj(self, obj_file):
         bpy.ops.import_scene.obj(filepath=obj_file, axis_forward='-Z', axis_up='Y', filter_glob="*.obj;*.mtl", use_edges=True,
@@ -79,22 +79,22 @@ class Process:
 #target_faces = int(sys.argv[-2])
 #export_name = sys.argv[-1]
 
-obj_file = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/latent/simplest_cube.obj'
-target_faces = 12
-export_name = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/latent/simplest_cube_2.obj'
-blender = Process(obj_file, target_faces, export_name)
+#obj_file = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/latent/simplest_cube.obj'
+#target_faces = 12
+#export_name = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/latent/simplest_cube_2.obj'
+#blender = Process(obj_file, target_faces, export_name)
 
 ##print('args: ', obj_file, target_faces, export_name)
 ##blender = Process(obj_file, target_faces, export_name)
 #main_folder = 'C:/Users/dpere013/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
-##main folder = 'D:/Daniel/Google Drive/Universidad/PhD/MeshCNN/MeshCNN/datasets/ShapeNet/'
-#in_folder = main_folder +'table/'
-#out_folder = main_folder + 'processed/table/'
-#target_faces = 15000
+main_folder = 'D:/Daniel/MeshCNN/datasets/coma_gen/'
+in_folder = main_folder +'faces/'
+out_folder = main_folder + 'processed/'
+target_faces = 1500
 
-#files = [f for f in listdir(in_folder) if isfile(join(in_folder, f))]
+files = [f for f in listdir(in_folder) if isfile(join(in_folder, f))]
 
-#for file in files:
-#    obj_file = in_folder+file
-#    export_name = out_folder+file
-#    blender = Process(obj_file, target_faces, export_name)
+for file in files[:2]:
+    obj_file = in_folder+file
+    export_name = out_folder+file
+    blender = Process(obj_file, target_faces, export_name)
