@@ -47,8 +47,6 @@ class BaseOptions:
         #                          help='If true, the autoencoder is a variational autoencoder')
         # self.parser.add_argument("--clip_value", type=float, default=0.01,
         #                   help="lower and upper clip value for disc. weights")
-        # self.parser.add_argument('--z_dim', type=int, default=26, help='Dimension of the latent vector')
-
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='face', help='Primitive to extract features from. One of: edge, face, point')
         # self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
@@ -97,8 +95,6 @@ class BaseOptions:
         #                          help='If true, the autoencoder is a variational autoencoder')
         # self.parser.add_argument("--clip_value", type=float, default=0.01,
         #                   help="lower and upper clip value for disc. weights")
-        # self.parser.add_argument('--z_dim', type=int, default=26, help='Dimension of the latent vector')
-
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='edge',
         #                          help='Primitive to extract features from. One of: edge, face')
@@ -159,8 +155,6 @@ class BaseOptions:
         #                          help='If true, the autoencoder is a variational autoencoder')
         # self.parser.add_argument("--clip_value", type=float, default=0.01,
         #                   help="lower and upper clip value for disc. weights")
-        # self.parser.add_argument('--z_dim', type=int, default=26, help='Dimension of the latent vector')
-
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='face',
         #                          help='Primitive to extract features from. One of: edge, face')
@@ -226,7 +220,6 @@ class BaseOptions:
         #                          help='If true, the autoencoder is a variational autoencoder')
         # self.parser.add_argument("--clip_value", type=float, default=0.01,
         #                   help="lower and upper clip value for disc. weights")
-        # self.parser.add_argument('--z_dim', type=int, default=26, help='Dimension of the latent vector')
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='point',
         #                          help='Primitive to extract features from. One of: edge, face, point')
@@ -284,7 +277,6 @@ class BaseOptions:
                                  help='If true, the autoencoder is a variational autoencoder')
         self.parser.add_argument("--clip_value", type=float, default=0.01,
                             help="lower and upper clip value for disc. weights")
-        self.parser.add_argument('--z_dim', type=int, default=30, help='Dimension of the latent vector')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point',
                                  help='Primitive to extract features from. One of: edge, face')
