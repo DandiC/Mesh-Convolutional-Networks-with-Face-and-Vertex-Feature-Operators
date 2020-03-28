@@ -38,12 +38,12 @@ class AutoencoderModel:
 
         # load/define networks
         down_convs = [3] + opt.ncf
-        up_convs = [1] + opt.ncf[::-1] + [3]
+        up_convs = [2] + opt.ncf[::-1] + [3]
         # down_convs = [3] + opt.ncf
         # up_convs = opt.ncf[::-1] + [3]
         pool_res = [opt.ninput_features] + opt.pool_res
         if self.opt.vae:
-            self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
+            self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, opt.ninput_features*2, blocks=0, transfer_data=opt.skip_connections,
                                                 symm_oper=opt.symm_oper, opt=opt), opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
         else:
             self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
@@ -163,8 +163,14 @@ class AutoencoderModel:
     def generate(self, z):
         with torch.no_grad():
             latent_mesh = Mesh(self.opt.latent_path, opt=self.opt)
-            out = self.net(z, [latent_mesh], from_latent=True)
+            out = self.net(z, [latent_mesh], mode='decode')
             return Mesh(faces=latent_mesh.faces, vertices=np.transpose(out[0].cpu().data.numpy()), export_folder='', opt=self.opt)
+
+    def encode(self, mesh):
+        with torch.no_grad():
+            x = torch.tensor(mesh.features).to(self.device).float()
+            fe, mu, lvar = self.net(x.unsqueeze(0), [mesh], mode='encode')
+            return fe
 
     def test(self):
         """tests model

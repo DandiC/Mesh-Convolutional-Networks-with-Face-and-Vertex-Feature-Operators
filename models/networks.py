@@ -19,6 +19,8 @@ import numpy as np
 from util.util import pad
 import os
 import wandb
+
+
 # from memory_profiler import profile
 
 ###############################################################################
@@ -122,7 +124,8 @@ def init_net(net, init_type, init_gain, gpu_ids, generative=False):
     return net
 
 
-def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, arch, init_type, init_gain, feat_from, device=None):
+def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, arch, init_type, init_gain, feat_from,
+                      device=None):
     net = None
     norm_layer = get_norm_layer(norm_type=opt.norm, num_groups=opt.num_groups)
     generative = False
@@ -140,10 +143,10 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
                                   opt.resblocks, symm_oper=opt.symm_oper)
         elif feat_from == 'point':
             net = MeshConvNetPoint(norm_layer, input_nc, ncf, nclasses, ninput_features, opt.pool_res, opt.fc_n,
-                                  opt.resblocks, symm_oper=opt.symm_oper, n_neighbors=opt.n_neighbors)
+                                   opt.resblocks, symm_oper=opt.symm_oper, n_neighbors=opt.n_neighbors)
     elif arch == 'meshunet':
         down_convs = [input_nc] + ncf
-        up_convs =  ncf[::-1] + [nclasses]
+        up_convs = ncf[::-1] + [nclasses]
         pool_res = [ninput_features] + opt.pool_res
         net = MeshEncoderDecoder(pool_res, down_convs, up_convs, blocks=opt.resblocks,
                                  transfer_data=True)
@@ -152,11 +155,11 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
         up_convs = [1] + ncf[::-1] + [9]
         pool_res = [ninput_features] + opt.pool_res
         net = MeshGAN(pool_res, down_convs, up_convs, blocks=opt.resblocks,
-                      transfer_data=False,  symm_oper=opt.symm_oper)
+                      transfer_data=False, symm_oper=opt.symm_oper)
         generative = True
     elif arch == 'meshPointGAN':
         up_convs = [3] + ncf[::-1] + [3]
-        net = MeshPointGAN(opt,  ncf, norm_layer, input_nc, ninput_features, export_folder=export_folder)
+        net = MeshPointGAN(opt, ncf, norm_layer, input_nc, ninput_features, export_folder=export_folder)
         generative = True
     else:
         raise NotImplementedError('Encoder model name [%s] is not recognized' % arch)
@@ -184,6 +187,7 @@ def define_loss(opt):
 class MeshConvNetPoint(nn.Module):
     """Network for learning a global shape descriptor (classification)
     """
+
     def __init__(self, norm_layer, nf0, conv_res, nclasses, input_res, pool_res, fc_n,
                  nresblocks=3, symm_oper=None, n_neighbors=6):
         super(MeshConvNetPoint, self).__init__()
@@ -192,7 +196,8 @@ class MeshConvNetPoint(nn.Module):
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
-            setattr(self, 'conv{}'.format(i), MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, n_neighbors=n_neighbors))
+            setattr(self, 'conv{}'.format(i),
+                    MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, n_neighbors=n_neighbors))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'pool{}'.format(i), MeshPoolPoint(self.res[i + 1]))
 
@@ -215,13 +220,15 @@ class MeshConvNetPoint(nn.Module):
         x = self.fc2(x)
         return x
 
+
 class MResConvPoint(nn.Module):
     def __init__(self, in_channels, out_channels, skips=1, symm_oper=None, relu=True, n_neighbors=6):
         super(MResConvPoint, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
-        self.conv0 = MeshConvPoint(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper, n_neighbors=n_neighbors)
+        self.conv0 = MeshConvPoint(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper,
+                                   n_neighbors=n_neighbors)
         self.relu = relu
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))
@@ -238,6 +245,7 @@ class MResConvPoint(nn.Module):
         if self.relu:
             x = F.relu(x)
         return x
+
 
 class MResConvFace(nn.Module):
     def __init__(self, in_channels, out_channels, skips=1, symm_oper=None):
@@ -261,9 +269,11 @@ class MResConvFace(nn.Module):
         x = F.relu(x)
         return x
 
+
 class MeshConvNetFace(nn.Module):
     """Network for learning a global shape descriptor (classification)
     """
+
     def __init__(self, norm_layer, nf0, conv_res, nclasses, input_res, pool_res, fc_n,
                  nresblocks=3, symm_oper=None):
         super(MeshConvNetFace, self).__init__()
@@ -696,10 +706,12 @@ class MeshGAN(nn.Module):
     def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=None):
         super(MeshGAN, self).__init__()
         self.transfer_data = transfer_data
-        self.discriminator = MeshDiscriminator(pools, down_convs, fcs=[1], blocks=blocks, global_pool='avg', symm_oper=symm_oper)
+        self.discriminator = MeshDiscriminator(pools, down_convs, fcs=[1], blocks=blocks, global_pool='avg',
+                                               symm_oper=symm_oper)
         unrolls = pools[::].copy()
         unrolls.reverse()
-        self.generator = MeshGenerator(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
+        self.generator = MeshGenerator(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data,
+                                       symm_oper=symm_oper)
 
     # def forward(self, x, meshes):
     #     fe, before_pool = self.encoder((x, meshes))
@@ -781,9 +793,9 @@ class MeshGenerator(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvFace(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
+                                            batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
         self.final_conv = UpConvFace(convs[-1], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper, relu=False)
+                                     batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper, relu=False)
         self.up_convs = nn.ModuleList(self.up_convs)
         self.final_activation = nn.Tanh()
         reset_params(self)
@@ -802,11 +814,11 @@ class MeshGenerator(nn.Module):
         # make meshes.faces=fe, call build_mesh(meshes), extract_features(meshes) and return extracted features and generated meshes
         for i in range(len(meshes)):
             mesh = meshes[i]
-            vt_values = np.swapaxes(features[i],0,1)
-            vt_values = np.reshape(vt_values, [vt_values.shape[0], 3,3])
+            vt_values = np.swapaxes(features[i], 0, 1)
+            vt_values = np.reshape(vt_values, [vt_values.shape[0], 3, 3])
             for v in range(mesh.vs.shape[0]):
-                mesh.vs[v,:] = np.mean(vt_values[np.where(v==mesh.faces)],axis=0)
-            meshes[i] = Mesh(faces=mesh.faces,vertices=mesh.vs, export_folder='generated' )
+                mesh.vs[v, :] = np.mean(vt_values[np.where(v == mesh.faces)], axis=0)
+            meshes[i] = Mesh(faces=mesh.faces, vertices=mesh.vs, export_folder='generated')
             out_features.append(meshes[i].extract_features())
             out_features[i] = pad(out_features[i], mesh.faces.shape[0])
 
@@ -815,6 +827,7 @@ class MeshGenerator(nn.Module):
 
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
+
 
 class UpConvPoint(nn.Module):
 
@@ -874,6 +887,7 @@ class UpConvPoint(nn.Module):
         x2 = x2.squeeze(3)
         return x2
 
+
 class DownConvPoint(nn.Module):
     def __init__(self, in_channels, out_channels, blocks=0, pool=0, symm_oper=None, relu=True):
         super(DownConvPoint, self).__init__()
@@ -921,6 +935,7 @@ class DownConvPoint(nn.Module):
             x2 = self.pool(x2, meshes)
         return x2, before_pool
 
+
 class MeshPointGAN(nn.Module):
     """GAN Network that generates points (vertices)
     """
@@ -947,7 +962,8 @@ class MeshPointGAN(nn.Module):
 
 
 class MeshPointDiscriminator(nn.Module):
-    def __init__(self, pool_res, conv_res, fc_n, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1, global_pool=None):
+    def __init__(self, pool_res, conv_res, fc_n, norm_layer, nf0, input_res, nresblocks=3, symm_oper=1,
+                 global_pool=None):
         super(MeshPointDiscriminator, self).__init__()
         self.k = [nf0] + conv_res
         self.res = [input_res] + pool_res
@@ -1003,11 +1019,10 @@ class MeshPointGenerator(nn.Module):
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
-            setattr(self, 'conv{}'.format(i), MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, relu=False))
+            setattr(self, 'conv{}'.format(i),
+                    MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, relu=False))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'unpool{}'.format(i), MeshUnpoolPoint(self.res[i]))
-
-
 
         if self.dilation:
             self.final_conv = MResConvPoint(self.k[-1], 1, nresblocks, symm_oper=symm_oper, relu=False)
@@ -1026,27 +1041,28 @@ class MeshPointGenerator(nn.Module):
                 x = F.leaky_relu(getattr(self, 'norm{}'.format(i))(x), negative_slope=0.2)
             x = getattr(self, 'unpool{}'.format(i))(x, mesh)
 
-        x = self.final_conv(x,mesh)
+        x = self.final_conv(x, mesh)
         x = self.final_activation(x)
 
         out_features = []
         gen_output = []
         for i in range(len(mesh)):
-            gen_output.append(np.transpose(x.cpu().data.numpy()[i,:,:,0]))
+            gen_output.append(np.transpose(x.cpu().data.numpy()[i, :, :, 0]))
 
             # print(np.transpose(gen_output))
             if self.dilation:
-                gen_vertices = mesh[i].vs*gen_output[i]
+                gen_vertices = mesh[i].vs * gen_output[i]
             else:
                 gen_vertices = gen_output[i]
-            mesh[i] = Mesh(faces=mesh[i].faces,vertices=gen_vertices, export_folder=self.export_folder)
+            mesh[i] = Mesh(faces=mesh[i].faces, vertices=gen_vertices, export_folder=self.export_folder)
             out_features.append(mesh[i].extract_features())
             out_features[i] = pad(out_features[i], mesh[i].faces.shape[0])
 
-        wandb.log({'gen_output': np.asarray(gen_output)[:,:,0]})
+        wandb.log({'gen_output': np.asarray(gen_output)[:, :, 0]})
         fe = torch.from_numpy(np.asarray(out_features)).float().to(x.device)
 
         return fe, mesh
+
 
 class MeshPointGenerator2(nn.Module):
     def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=False, device=None,
@@ -1056,7 +1072,7 @@ class MeshPointGenerator2(nn.Module):
         self.export_folder = export_folder
         self.opt = opt
         self.up_convs = []
-        convs.insert(0,4)
+        convs.insert(0, 4)
         if opt.dilation:
             convs.append(1)
         else:
@@ -1067,9 +1083,10 @@ class MeshPointGenerator2(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=opt.symm_oper))
+                                             batch_norm=batch_norm, transfer_data=transfer_data,
+                                             symm_oper=opt.symm_oper))
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False, symm_oper=opt.symm_oper)
+                                      batch_norm=batch_norm, transfer_data=False, symm_oper=opt.symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
 
         self.final_activation = nn.Tanh()
@@ -1105,22 +1122,24 @@ class MeshPointGenerator2(nn.Module):
 
         return fe, meshes
 
-
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
+
 
 class MeshVAE(nn.Module):
     """Autoencoder Network for generative learning
     """
 
-    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=False, symm_oper=1, opt=None):
+    def __init__(self, pools, down_convs, up_convs, z_dim, blocks=0, transfer_data=False, symm_oper=1, opt=None):
         super(MeshVAE, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper, variational=True, opt=opt)
+        self.encoder = MeshEncoderPoint(pools, down_convs, z_dim, blocks=blocks, symm_oper=symm_oper, variational=True,
+                                        opt=opt)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
-        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
-        self.fc = nn.Linear(pools[-1], pools[-1])
+        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data,
+                                        symm_oper=symm_oper)
+        self.fc = nn.Linear(z_dim, z_dim)
         self.opt = opt
 
     def reparameterize(self, mu, logvar):
@@ -1131,31 +1150,37 @@ class MeshVAE(nn.Module):
         return z
 
     def forward(self, x, meshes):
-        mu, lvar, before_pool = self.encode(x, meshes)
-        if self.opt.pool_res != []:
-            for i,m in enumerate(meshes):
-                # TODO: Optimize current process (mesh -> pool with edges and verts -> mesh with faces -> mesh with gemm)
-                m.build_faces()
-                meshes[i] = Mesh(faces=m.faces, vertices=m.vs, export_folder='', opt=self.opt)
-        fe = self.reparameterize(mu, lvar)
+        fe, mu, lvar = self.encode(x, meshes)
         fe = self.decode(fe, meshes)
         return fe, mu, lvar
 
     def encode(self, x, meshes):
-        return self.encoder((x, meshes))
+        mu, lvar, before_pool = self.encoder((x, meshes))
+        if self.opt.pool_res != []:
+            for i, m in enumerate(meshes):
+                # TODO: Optimize current process (mesh -> pool with edges and verts -> mesh with faces -> mesh with gemm)
+                m.build_faces()
+                meshes[i] = Mesh(faces=m.faces, vertices=m.vs, export_folder='', opt=self.opt)
+        fe = self.reparameterize(mu, lvar)
+        return fe, mu, lvar
 
     def decode(self, z, meshes):
         fe = self.fc(z)
         fe = self.decoder((fe, meshes))
         return fe
 
+    # Mode is one of 'encode', 'decode', 'autoencode'
+    def __call__(self, x, meshes, mode='autoencode'):
 
-
-    def __call__(self, x, meshes, from_latent=False):
-        if from_latent:
-            return self.decode(x, meshes)
-        else:
+        if mode == 'autoencode':
             return self.forward(x, meshes)
+        elif mode == 'decode':
+            return self.decode(x, meshes)
+        elif mode == 'encode':
+            return self.encode(x, meshes)
+        else:
+            raise ValueError(mode, 'Wrong value in vae mode')
+
 
 class MeshAutoencoder(nn.Module):
     """Autoencoder Network for generative learning
@@ -1167,7 +1192,8 @@ class MeshAutoencoder(nn.Module):
         self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
-        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
+        self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data,
+                                        symm_oper=symm_oper)
 
     def forward(self, x, meshes):
         fe, before_pool = self.encoder((x, meshes))
@@ -1179,7 +1205,7 @@ class MeshAutoencoder(nn.Module):
 
 
 class MeshEncoderPoint(nn.Module):
-    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None, variational=False, opt=None):
+    def __init__(self, pools, convs, z_dim, fcs=None, blocks=0, global_pool=None, symm_oper=None, variational=False, opt=None):
         super(MeshEncoderPoint, self).__init__()
         self.fcs = None
         self.convs = []
@@ -1216,11 +1242,11 @@ class MeshEncoderPoint(nn.Module):
             self.fcs = nn.ModuleList(self.fcs)
             self.fcs_bn = nn.ModuleList(self.fcs_bn)
 
-        self.last_fc = nn.Linear(last_length, pools[-1])
-        self.last_bn = nn.InstanceNorm1d(pools[-1])
+        self.last_fc = nn.Linear(last_length, z_dim)
+        self.last_bn = nn.InstanceNorm1d(z_dim)
         if self.variational:
-            self.last_fc_2 = nn.Linear(last_length, pools[-1])
-            self.last_bn_2 = nn.InstanceNorm1d(pools[-1])
+            self.last_fc_2 = nn.Linear(last_length, z_dim)
+            self.last_bn_2 = nn.InstanceNorm1d(z_dim)
 
         self.convs = nn.ModuleList(self.convs)
         reset_params(self)
@@ -1275,15 +1301,17 @@ class MeshDecoderPoint(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper, relu=True))
+                                             batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper,
+                                             relu=True))
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
+                                      batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
         self.final_activation = nn.Tanh()
         reset_params(self)
 
     def forward(self, x, encoder_outs=None):
         fe, meshes = x
+        fe = fe.reshape((fe.shape[0], 2, -1))
         for i, up_conv in enumerate(self.up_convs):
             before_pool = None
             if self.transfer_data and encoder_outs is not None:
@@ -1295,4 +1323,3 @@ class MeshDecoderPoint(nn.Module):
 
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
-
