@@ -12,6 +12,7 @@ import os
 import torch.nn.functional as F
 import neuralnet_pytorch as nnt
 
+
 class AutoencoderModel:
     """ Class for training Model weights
 
@@ -20,6 +21,7 @@ class AutoencoderModel:
     --dataset_mode -> generative
     --arch -> network type (meshunet)
     """
+
     def __init__(self, opt):
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
@@ -43,12 +45,15 @@ class AutoencoderModel:
         # up_convs = opt.ncf[::-1] + [3]
         pool_res = [opt.ninput_features] + opt.pool_res
         if self.opt.vae:
-            self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, opt.ninput_features*2, blocks=0, transfer_data=opt.skip_connections,
-                                                symm_oper=opt.symm_oper, opt=opt), opt.init_type, opt.init_gain, self.gpu_ids, generative=False)
-        else:
-            self.net = init_net(MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
-                                        symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids,
+            self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, opt.ninput_features * 2, blocks=0,
+                                        transfer_data=opt.skip_connections,
+                                        symm_oper=opt.symm_oper, opt=opt), opt.init_type, opt.init_gain, self.gpu_ids,
                                 generative=False)
+        else:
+            self.net = init_net(
+                MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
+                                symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids,
+                generative=False)
 
         self.net.train(self.is_train)
         self.criterion = networks.define_loss(opt).to(self.device)
@@ -76,8 +81,12 @@ class AutoencoderModel:
 
     def loss_vae(self, recon_x, x, mu, logvar):
         # BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
-        # BCE = self.criterion(recon_x, x)
-        BCE = nnt.metrics.chamfer_loss(recon_x, x, reduce='mean')
+        if self.opt.loss == 'mse':
+            BCE = self.criterion(recon_x, x)
+        elif self.opt.loss == 'chamfer':
+            BCE = nnt.metrics.chamfer_loss(recon_x, x, reduce='mean')
+        else:
+            raise ValueError(self.opt.loss, 'Wrong parameter value in --loss')
         # BCE = chamfer_distance(recon_x, x)
 
         # see Appendix B from VAE paper:
@@ -96,7 +105,6 @@ class AutoencoderModel:
         self.mesh = data['mesh']
         if self.opt.dataset_mode == 'segmentation' and not self.is_train:
             self.soft_label = torch.from_numpy(data['soft_label'])
-
 
     def forward(self):
         out = self.net(self.features, self.mesh)
@@ -120,10 +128,11 @@ class AutoencoderModel:
         else:
             vs_out = out.cpu().data.numpy()
         for i in range(self.gen_models.shape[0]):
-            self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]), export_folder='',
-                             opt=self.opt)
+            self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
+                                      export_folder='',
+                                      opt=self.opt)
 
-##################
+    ##################
 
     def load_network(self, which_epoch):
         """load model from disk"""
@@ -139,7 +148,6 @@ class AutoencoderModel:
         if hasattr(state_dict, '_metadata'):
             del state_dict._metadata
         net.load_state_dict(state_dict)
-
 
     def save_network(self, which_epoch, wandb_save=False, dataset_mode=None):
         """save model to disk"""
@@ -164,7 +172,8 @@ class AutoencoderModel:
         with torch.no_grad():
             latent_mesh = Mesh(self.opt.latent_path, opt=self.opt)
             out = self.net(z, [latent_mesh], mode='decode')
-            return Mesh(faces=latent_mesh.faces, vertices=np.transpose(out[0].cpu().data.numpy()), export_folder='', opt=self.opt)
+            return Mesh(faces=latent_mesh.faces, vertices=np.transpose(out[0].cpu().data.numpy()), export_folder='',
+                        opt=self.opt)
 
     def encode(self, mesh):
         with torch.no_grad():
@@ -189,7 +198,6 @@ class AutoencoderModel:
                                           opt=self.opt)
                 export_file = os.path.join(self.results_folder, self.mesh[i].filename)
                 self.gen_models[i].export(file=export_file)
-
 
     def get_accuracy(self, pred, labels):
         """computes accuracy for classification / segmentation """
