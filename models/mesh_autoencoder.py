@@ -40,12 +40,11 @@ class AutoencoderModel:
 
         # load/define networks
         down_convs = [5] + opt.ncf
-        up_convs = [2] + opt.ncf[::-1] + [3]
-        # down_convs = [3] + opt.ncf
-        # up_convs = opt.ncf[::-1] + [3]
+        up_convs = [1] + opt.ncf[::-1] + [3]
+
         pool_res = [opt.ninput_features] + opt.pool_res
         if self.opt.vae:
-            self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, opt.ninput_features * 2, blocks=0,
+            self.net = init_net(MeshVAE(pool_res, down_convs, up_convs, opt.ninput_features, blocks=0,
                                         transfer_data=opt.skip_connections,
                                         symm_oper=opt.symm_oper, opt=opt), opt.init_type, opt.init_gain, self.gpu_ids,
                                 generative=False)
