@@ -3,6 +3,7 @@ import torch
 from data.base_dataset import BaseDataset
 from util.util import is_mesh_file, pad
 from models.layers.mesh import Mesh
+import numpy as np
 
 # Dataset for Generative Learning.
 class GenearativeData(BaseDataset):
@@ -38,6 +39,7 @@ class GenearativeData(BaseDataset):
             meta['features'] = (features - self.mean) / self.std
         else:
             meta['features'] = features
+        meta['coordinates'] = np.transpose(mesh.vs)
         return meta
 
     def __len__(self):

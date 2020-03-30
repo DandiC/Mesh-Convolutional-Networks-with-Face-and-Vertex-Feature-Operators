@@ -98,10 +98,10 @@ class AutoencoderModel:
 
     def set_input(self, data):
         input_features = torch.from_numpy(data['features']).float()
-        labels = torch.from_numpy(data['label']).long()
+        labels = torch.from_numpy(data['coordinates']).float()
         # set inputs
         self.features = input_features.to(self.device).requires_grad_(self.is_train)
-        self.labels = input_features.to(self.device)
+        self.labels = labels.to(self.device)
         self.mesh = data['mesh']
         if self.opt.dataset_mode == 'segmentation' and not self.is_train:
             self.soft_label = torch.from_numpy(data['soft_label'])
