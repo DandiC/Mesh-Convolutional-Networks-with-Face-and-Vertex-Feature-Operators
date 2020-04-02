@@ -39,7 +39,7 @@ class AutoencoderModel:
         self.nclasses = opt.nclasses
 
         # load/define networks
-        down_convs = [3] + opt.ncf
+        down_convs = [5] + opt.ncf
         up_convs = [2] + opt.ncf[::-1] + [3]
 
         pool_res = [opt.ninput_features] + opt.pool_res
