@@ -49,6 +49,7 @@ class BaseOptions:
         #                   help="lower and upper clip value for disc. weights")
         # self.parser.add_argument('--neighbor_order', type=str, default='mean_c',
         #                          help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c')
+        # self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='face', help='Primitive to extract features from. One of: edge, face, point')
         # self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
@@ -99,6 +100,7 @@ class BaseOptions:
         #                   help="lower and upper clip value for disc. weights")
         # self.parser.add_argument('--neighbor_order', type=str, default='mean_c',
         #                          help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c')
+        # self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='edge',
         #                          help='Primitive to extract features from. One of: edge, face')
@@ -161,6 +163,7 @@ class BaseOptions:
         #                   help="lower and upper clip value for disc. weights")
         # self.parser.add_argument('--neighbor_order', type=str, default='mean_c',
         #                          help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c')
+        # self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='face',
         #                          help='Primitive to extract features from. One of: edge, face')
@@ -228,6 +231,7 @@ class BaseOptions:
         #                   help="lower and upper clip value for disc. weights")
         # self.parser.add_argument('--neighbor_order', type=str, default='mean_c',
         #                          help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c')
+        # self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
         # # general params
         # self.parser.add_argument('--feat_from', type=str, default='point',
         #                          help='Primitive to extract features from. One of: edge, face, point')
@@ -249,12 +253,12 @@ class BaseOptions:
 
         # PARAMETERS FOR GENERATIVE LEARNING USING AUTOENCODER
         # data params
-        self.parser.add_argument('--dataroot', default='datasets/cuboids_8v',
+        self.parser.add_argument('--dataroot', default='datasets/cuboids_26v',
                                  help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"}, default='generative')
-        self.parser.add_argument('--ninput_features', type=int, default=8,
+        self.parser.add_argument('--ninput_features', type=int, default=26,
                                  help='# of input features (will include dummy features)')
-        self.parser.add_argument('--latent_path', default='datasets/latent/simplest_cube.obj',
+        self.parser.add_argument('--latent_path', default='datasets/latent/simple_cube.obj',
                                                           help='Path to the OBJ containing the latent for connectivity')
         # network params
         self.parser.add_argument('--batch_size', type=int, default=128, help='input batch size')
@@ -263,7 +267,7 @@ class BaseOptions:
                                  help='selects network to use')
         self.parser.add_argument('--resblocks', type=int, default=3, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
-        self.parser.add_argument('--ncf', nargs='+', default=[8, 16, 32], type=int, help='conv filters')
+        self.parser.add_argument('--ncf', nargs='+', default=[8, 16, 32, 64], type=int, help='conv filters')
         self.parser.add_argument('--pool_res', nargs='+', default=[], type=int, help='pooling res')
         self.parser.add_argument('--norm', type=str, default='batch',
                                  help='instance normalization or batch normalization or group normalization')
@@ -285,8 +289,9 @@ class BaseOptions:
                                  help='If true, the autoencoder is a variational autoencoder')
         self.parser.add_argument("--clip_value", type=float, default=0.01,
                             help="lower and upper clip value for disc. weights")
-        self.parser.add_argument('--neighbor_order', type=str, default='mean_c',
+        self.parser.add_argument('--neighbor_order', type=str, default='random',
                                  help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c')
+        self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point',
                                  help='Primitive to extract features from. One of: edge, face')
