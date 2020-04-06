@@ -126,3 +126,4 @@ if __name__ == '__main__':
 
         writer.close()
     wandb.log({"Training Time": time.time() - startT})
+    run_test()
