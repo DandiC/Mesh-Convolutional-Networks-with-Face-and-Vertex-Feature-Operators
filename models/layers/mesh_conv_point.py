@@ -138,7 +138,6 @@ class MeshConvPoint(nn.Module):
         add the edge_id itself to make #edges x 4
         then pad to desired size e.g., xsz x 4
         """
-        # TODO: Select neighbors here
         rand_gemm = -np.ones((m.vs.shape[0], self.n_neighbors), dtype=int)
         for i, gemm in enumerate(m.gemm_vs):
             if self.n_neighbors>len(gemm):
