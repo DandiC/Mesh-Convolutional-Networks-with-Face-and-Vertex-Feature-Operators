@@ -39,7 +39,8 @@ class GenearativeData(BaseDataset):
             meta['features'] = (features - self.mean) / self.std
         else:
             meta['features'] = features
-        meta['coordinates'] = np.transpose(mesh.vs)
+        coordinates = pad(np.transpose(mesh.vs), self.opt.ninput_features)
+        meta['coordinates'] = coordinates
         return meta
 
     def __len__(self):

@@ -80,6 +80,7 @@ class AutoencoderModel:
 
     def loss_vae(self, recon_x, x, mu, logvar):
         # BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
+        # TODO: Avoid comparing dummy features when computing loss
         if self.opt.loss == 'mse':
             BCE = self.criterion(recon_x, x)
         elif self.opt.loss == 'chamfer':
