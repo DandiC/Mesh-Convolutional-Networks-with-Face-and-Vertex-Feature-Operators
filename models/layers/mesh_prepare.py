@@ -484,30 +484,38 @@ def gaussian_curvature(mesh):
     gaussian_curv = np.zeros((1,mesh.vs.shape[0]))
     for v_i, vt in enumerate(mesh.vs):
         Ai = np.sum(mesh.face_areas[mesh.vf[v_i]]) / 3
-        for j, f_j in enumerate(mesh.vf[v_i]):
-            neighbors = mesh.faces[f_j,mesh.faces[f_j]!=v_i]
-            edge_a = mesh.vs[neighbors[0]] - vt
-            edge_b = mesh.vs[neighbors[1]] - vt
+        if Ai == 0:
+            # TODO: This is a quick fix to avoid dividing by 0. Consider alternatives
+            gaussian_curv[0, v_i] = 0
+        else:
+            for j, f_j in enumerate(mesh.vf[v_i]):
+                neighbors = mesh.faces[f_j,mesh.faces[f_j]!=v_i]
+                edge_a = mesh.vs[neighbors[0]] - vt
+                edge_b = mesh.vs[neighbors[1]] - vt
 
-            edge_a /= fixed_division(np.linalg.norm(edge_a, ord=2), epsilon=0.0001)
-            edge_b /= fixed_division(np.linalg.norm(edge_b, ord=2), epsilon=0.0001)
-            dot = np.sum(edge_a * edge_b).clip(-1, 1)
-            gaussian_curv[0,v_i] += np.arccos(dot)
-        gaussian_curv[0,v_i] = (2*np.pi - gaussian_curv[0,v_i])/Ai
+                edge_a /= fixed_division(np.linalg.norm(edge_a, ord=2), epsilon=0.0001)
+                edge_b /= fixed_division(np.linalg.norm(edge_b, ord=2), epsilon=0.0001)
+                dot = np.sum(edge_a * edge_b).clip(-1, 1)
+                gaussian_curv[0,v_i] += np.arccos(dot)
+            gaussian_curv[0,v_i] = (2*np.pi - gaussian_curv[0,v_i])/Ai
     return gaussian_curv
 
 def get_cotangent_laplacian_beltrami(mesh, edge_features):
     laplacian = np.zeros(mesh.vs.shape)
     for v_i, vt in enumerate(mesh.vs):
         Ai=np.sum(mesh.face_areas[mesh.vf[v_i]])/3
-        for j, v_j in enumerate(mesh.gemm_vs[v_i]):
-            #Get edge between two vertices
-            # TODO: Optimize this
-            edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == v_i, mesh.edges[:, 1] == v_j),
-                                              np.logical_and(mesh.edges[:, 0] == v_j, mesh.edges[:, 1] == v_i)))
-            angles = edge_features[1:3,edge_id]
-            laplacian[v_i,:] += (1/math.tan(angles[0])+1/math.tan(angles[1]))*(mesh.vs[v_j] - vt)
-        laplacian[v_i,:] = laplacian[v_i]/(2*Ai)
+        if Ai == 0:
+            # TODO: This is a quick fix to avoid dividing by 0. Consider alternatives
+            laplacian[v_i,:] = 0
+        else:
+            for j, v_j in enumerate(mesh.gemm_vs[v_i]):
+                #Get edge between two vertices
+                # TODO: Optimize this
+                edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == v_i, mesh.edges[:, 1] == v_j),
+                                                  np.logical_and(mesh.edges[:, 0] == v_j, mesh.edges[:, 1] == v_i)))
+                angles = edge_features[1:3,edge_id]
+                laplacian[v_i,:] += (1/math.tan(angles[0])+1/math.tan(angles[1]))*(mesh.vs[v_j] - vt)
+            laplacian[v_i,:] = laplacian[v_i]/(2*Ai)
     return laplacian
 
 def mean_curvature(mesh, edge_features):
