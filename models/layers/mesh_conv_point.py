@@ -163,12 +163,13 @@ class MeshConvPoint(nn.Module):
         ord_gemm = -np.ones((m.vs.shape[0], 3), dtype=int)
         for i, gemm in enumerate(m.gemm_vs):
             # TODO: This code assumes that features are [x, y, z, mean_c, gaussian_c]. Make this generic in the future
+            l_gemm = list(gemm)
             if self.neighbor_order == 'mean_c':
-                curv = m.features[3,list(gemm)]
+                curv = m.features[3,l_gemm]
             elif self.neighbor_order == 'gaussian_c':
-                curv = m.features[4, list(gemm)]
+                curv = m.features[4, l_gemm]
             order = np.argsort(curv)
-            ord_gemm[i,:] = [order[-1], order[order.size//2], order[0]]
+            ord_gemm[i,:] = [l_gemm[order[-1]], l_gemm[order[order.size//2]], l_gemm[order[0]]]
         padded_gemm = torch.tensor(ord_gemm, device=device).float()
         padded_gemm = padded_gemm.requires_grad_()
         padded_gemm = torch.cat((torch.arange(m.vs.shape[0], device=device).float().unsqueeze(1), padded_gemm), dim=1)
