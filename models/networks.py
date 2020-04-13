@@ -1316,7 +1316,7 @@ class MeshDecoderPoint(nn.Module):
 
     def forward(self, x, encoder_outs=None):
         fe, meshes = x
-        fe = fe.reshape((fe.shape[0], 2, -1))
+        fe = fe.reshape((fe.shape[0], 3, -1))
         for i, up_conv in enumerate(self.up_convs):
             before_pool = None
             if self.transfer_data and encoder_outs is not None:
