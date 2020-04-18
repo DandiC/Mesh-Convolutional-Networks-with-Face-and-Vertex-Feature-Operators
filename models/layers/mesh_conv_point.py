@@ -165,10 +165,25 @@ class MeshConvPoint(nn.Module):
             l_gemm = list(gemm)
             if self.neighbor_order == 'mean_c':
                 curv = m.features[3,l_gemm]
+                order = np.argsort(curv)
+                ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[order.size // 2]], l_gemm[order[0]]]
             elif self.neighbor_order == 'gaussian_c':
                 curv = m.features[4, l_gemm]
-            order = np.argsort(curv)
-            ord_gemm[i,:] = [l_gemm[order[-1]], l_gemm[order[order.size//2]], l_gemm[order[0]]]
+                order = np.argsort(curv)
+                ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[order.size // 2]], l_gemm[order[0]]]
+            elif self.neighbor_order == 'closest_d':
+                dist = np.linalg.norm(m.vs[l_gemm]-m.vs[i],axis=1)
+                order = np.argsort(dist)
+                ord_gemm[i, :] = [l_gemm[order[0]], l_gemm[order[1]], l_gemm[order[2]]]
+            elif self.neighbor_order == 'farthest_d':
+                dist = np.linalg.norm(m.vs[l_gemm] - m.vs[i], axis=1)
+                order = np.argsort(dist)
+                ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[-2]], l_gemm[order[-3]]]
+            elif self.neighbor_order == 'median_d':
+                dist = np.linalg.norm(m.vs[l_gemm] - m.vs[i], axis=1)
+                order = np.argsort(dist)
+                ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[order.size // 2]], l_gemm[order[0]]]
+
         padded_gemm = torch.tensor(ord_gemm, device=device).float()
         padded_gemm = padded_gemm.requires_grad_()
         padded_gemm = torch.cat((torch.arange(m.vs.shape[0], device=device).float().unsqueeze(1), padded_gemm), dim=1)

@@ -289,8 +289,8 @@ class BaseOptions:
                                  help='If true, the autoencoder is a variational autoencoder')
         self.parser.add_argument("--clip_value", type=float, default=0.01,
                             help="lower and upper clip value for disc. weights")
-        self.parser.add_argument('--neighbor_order', type=str, default='random',
-                                 help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c')
+        self.parser.add_argument('--neighbor_order', type=str, default='median_d',
+                                 help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c, closest_d, farthest_d, median_d')
         self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point',
