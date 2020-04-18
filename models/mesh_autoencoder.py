@@ -98,7 +98,7 @@ class AutoencoderModel:
 
     def set_input(self, data):
         input_features = torch.from_numpy(data['features']).float()
-        labels = torch.from_numpy(data['features']).float()
+        labels = torch.from_numpy(data['coordinates']).float()
         # set inputs
         self.features = input_features.to(self.device).requires_grad_(self.is_train)
         self.labels = labels.to(self.device)
@@ -111,9 +111,6 @@ class AutoencoderModel:
         return out
 
     def backward(self, out):
-        # if self.opt.vae:
-        #     self.loss, bce, kld = self.loss_vae(out[0], self.labels, out[1], out[2])
-        # else:
         self.loss = self.criterion(out, self.labels)
         self.loss.backward()
 
@@ -126,17 +123,15 @@ class AutoencoderModel:
         # TODO: out_features assumes that the vertex features are 5. Make generic
         if self.opt.vae:
             vs_out = out[0].cpu().data.numpy()
-            out_features = torch.cat([out[0], torch.zeros(out[0].shape[0],2,out[0].shape[2]).to(self.device)],1)
+            self.backward(out[0])
         else:
             vs_out = out.cpu().data.numpy()
-            out_features = torch.cat([out, torch.zeros(out.shape[0],2,out.shape[2]).to(self.device)],1)
 
         for i in range(self.gen_models.shape[0]):
             self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                       export_folder='',
                                       opt=self.opt)
-            out_features[i] = torch.from_numpy(self.gen_models[i].features)
-        self.backward(out_features)
+
         self.optimizer.step()
 
     ##################
