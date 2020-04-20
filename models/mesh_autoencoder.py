@@ -111,28 +111,29 @@ class AutoencoderModel:
         return out
 
     def backward(self, out):
-        self.loss = self.criterion(out, self.labels)
+        if self.opt.vae:
+            self.loss, bce, kld = self.loss_vae(out[0], self.labels, out[1], out[2])
+        else:
+            self.loss = self.criterion(out, self.labels)
         self.loss.backward()
 
     def optimize_parameters(self, epoch=0):
+        # Compute loss and backpropagate
         self.optimizer.zero_grad()
         out = self.forward()
+        self.backward(out)
+        self.optimizer.step()
 
+        # Generate models
         self.gen_models = copy.deepcopy(self.mesh)
-
-        # TODO: out_features assumes that the vertex features are 5. Make generic
         if self.opt.vae:
             vs_out = out[0].cpu().data.numpy()
-            self.backward(out[0])
         else:
             vs_out = out.cpu().data.numpy()
-
         for i in range(self.gen_models.shape[0]):
             self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                       export_folder='',
                                       opt=self.opt)
-
-        self.optimizer.step()
 
     ##################
 
