@@ -212,6 +212,26 @@ class Mesh:
             for edge in self.edges:
                 f.write("\ne %d %d" % (new_indices[edge[0]] + 1, new_indices[edge[1]] + 1))
 
+    def export_raw(self, file=None, vcolor=None, extension='.obj'):
+        if file is None:
+            if self.export_folder:
+                filename, file_extension = os.path.splitext(self.filename)
+                if(file_extension==''):
+                    file_extension=extension
+                file = '%s/%s_%d%s' % (self.export_folder, filename, self.pool_count, file_extension)
+            else:
+                return
+
+        with open(file, 'w+') as f:
+            for vi, v in enumerate(self.vs):
+                vcol = ' %f %f %f' % (vcolor[vi, 0], vcolor[vi, 1], vcolor[vi, 2]) if vcolor is not None else ''
+                f.write("v %f %f %f%s\n" % (v[0], v[1], v[2], vcol))
+            for face_id in range(len(self.faces) - 1):
+                f.write("f %d %d %d\n" % (self.faces[face_id][0] + 1, self.faces[face_id][1] + 1, self.faces[face_id][2] + 1))
+            f.write("f %d %d %d" % (self.faces[-1][0] + 1, self.faces[-1][1] + 1, self.faces[-1][2] + 1))
+            # for edge in self.edges:
+            #     f.write("\ne %d %d" % (new_indices[edge[0]] + 1, new_indices[edge[1]] + 1))
+
     def export_segments(self, segments):
         if not self.export_folder:
             return
