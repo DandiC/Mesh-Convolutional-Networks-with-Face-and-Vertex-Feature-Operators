@@ -5,7 +5,7 @@ import copy
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()
-    latent_mesh = Mesh('datasets/latent/simple_cube.obj', opt=opt)
+    latent_mesh = Mesh('datasets/latent/cube_98v.obj', opt=opt)
     mesh = copy.deepcopy(latent_mesh)
     print_id = 0
     for i in range(1000):
@@ -23,6 +23,6 @@ if __name__ == '__main__':
         # mesh.edges[mesh.edges == 0] = mesh.vs.shape[0]
         # mesh.edges -= 1
         # if i%2==0:
-        mesh.export_raw(file='datasets/cuboids_26v/cuboids/cuboid_'+str(print_id)+'.obj')
+        mesh.export_raw(file='datasets/cuboids_98v/cuboids/cuboid_'+str(print_id)+'.obj')
         print_id+=1
     a=1
