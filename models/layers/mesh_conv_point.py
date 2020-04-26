@@ -162,6 +162,7 @@ class MeshConvPoint(nn.Module):
         ord_gemm = -np.ones((m.vs.shape[0], 3), dtype=int)
         for i, gemm in enumerate(m.gemm_vs):
             # TODO: This code assumes that features are [x, y, z, mean_c, gaussian_c]. Make this generic in the future
+            # TODO: Only closest_d is prepared to handle vertices with less than 2 neighbors
             l_gemm = list(gemm)
             if self.neighbor_order == 'mean_c':
                 curv = m.features[3,l_gemm]
@@ -174,7 +175,7 @@ class MeshConvPoint(nn.Module):
             elif self.neighbor_order == 'closest_d':
                 dist = np.linalg.norm(m.vs[l_gemm]-m.vs[i],axis=1)
                 order = np.argsort(dist)
-                ord_gemm[i, :] = [l_gemm[order[0]], l_gemm[order[1]], l_gemm[order[2]]]
+                ord_gemm[i, :min(3,len(gemm))] = np.asarray(l_gemm)[order[:min(3,len(gemm))]]
             elif self.neighbor_order == 'farthest_d':
                 dist = np.linalg.norm(m.vs[l_gemm] - m.vs[i], axis=1)
                 order = np.argsort(dist)

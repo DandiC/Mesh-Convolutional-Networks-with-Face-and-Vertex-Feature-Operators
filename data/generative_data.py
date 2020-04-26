@@ -36,7 +36,8 @@ class GenearativeData(BaseDataset):
         features = mesh.extract_features()
         features = pad(features, self.opt.ninput_features)
         if 'simplest' not in mesh.filename:
-            meta['features'] = (features - self.mean) / self.std
+            meta['features'] = (features - self.mean)
+            meta['features'] = np.divide(meta['features'], self.std, out=np.zeros_like(meta['features']), where=self.std!=0)
         else:
             meta['features'] = features
         coordinates = pad(np.transpose(mesh.vs), self.opt.ninput_features)
