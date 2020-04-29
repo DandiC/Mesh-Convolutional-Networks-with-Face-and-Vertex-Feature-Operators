@@ -40,7 +40,7 @@ if __name__ == '__main__':
     #         os.remove(file)
     #
     # #Load dataset ready for training (with extracted features)
-    # dataset = DataLoader(opt)
+    dataset = DataLoader(opt)
     # dataset_size = len(dataset)
     # print('#training meshes = %d' % dataset_size)
     # wandb.config.update({"training_samples": dataset_size})
@@ -129,4 +129,4 @@ if __name__ == '__main__':
     #
     #     writer.close()
     # wandb.log({"Training Time": time.time() - startT})
-    # run_test()
+    run_test()

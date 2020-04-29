@@ -19,7 +19,7 @@ def run_test(epoch=-1):
 
     test_opt = TestOptions().parse()
     expr_dir = os.path.join(test_opt.checkpoints_dir, test_opt.name)
-    opt = ArgumentParser().parse_args()
+    opt = TestOptions().parse()
     with open(os.path.join(expr_dir, 'opt.json'), 'r') as f:
         opt.__dict__ = json.load(f)
 
