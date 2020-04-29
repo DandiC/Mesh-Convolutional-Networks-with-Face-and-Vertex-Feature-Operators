@@ -2,7 +2,7 @@ import argparse
 import os
 from util import util
 import torch
-
+import json
 
 class BaseOptions:
     def __init__(self):
@@ -253,12 +253,12 @@ class BaseOptions:
 
         # PARAMETERS FOR GENERATIVE LEARNING USING AUTOENCODER
         # data params
-        self.parser.add_argument('--dataroot', default='datasets/cuboids_26v',
+        self.parser.add_argument('--dataroot', default='datasets/rectangles_25v',
                                  help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"}, default='generative')
-        self.parser.add_argument('--ninput_features', type=int, default=26,
+        self.parser.add_argument('--ninput_features', type=int, default=25,
                                  help='# of input features (will include dummy features)')
-        self.parser.add_argument('--latent_path', default='datasets/latent/simple_cube.obj',
+        self.parser.add_argument('--latent_path', default='datasets/latent/square_25v.obj',
                                                           help='Path to the OBJ containing the latent for connectivity')
         # network params
         self.parser.add_argument('--batch_size', type=int, default=128, help='input batch size')
@@ -267,7 +267,7 @@ class BaseOptions:
                                  help='selects network to use')
         self.parser.add_argument('--resblocks', type=int, default=3, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')  # todo make generic
-        self.parser.add_argument('--ncf', nargs='+', default=[8, 16, 32, 64], type=int, help='conv filters')
+        self.parser.add_argument('--ncf', nargs='+', default=[8, 16], type=int, help='conv filters')
         self.parser.add_argument('--pool_res', nargs='+', default=[], type=int, help='pooling res')
         self.parser.add_argument('--norm', type=str, default='batch',
                                  help='instance normalization or batch normalization or group normalization')
@@ -289,7 +289,7 @@ class BaseOptions:
                                  help='If true, the autoencoder is a variational autoencoder')
         self.parser.add_argument("--clip_value", type=float, default=0.01,
                             help="lower and upper clip value for disc. weights")
-        self.parser.add_argument('--neighbor_order', type=str, default='median_d',
+        self.parser.add_argument('--neighbor_order', type=str, default='closest_d',
                                  help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c, closest_d, farthest_d, median_d')
         self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
         # general params
@@ -297,7 +297,7 @@ class BaseOptions:
                                  help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        self.parser.add_argument('--name', type=str, default='test',
+        self.parser.add_argument('--name', type=str, default='test_parser',
                                  help='name of the experiment. It decides where to store samples and models')
         self.parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         self.parser.add_argument('--serial_batches', action='store_true',
@@ -355,4 +355,8 @@ class BaseOptions:
                 for k, v in sorted(args.items()):
                     opt_file.write('%s: %s\n' % (str(k), str(v)))
                 opt_file.write('-------------- End ----------------\n')
+
+        #     Save JSON
+            with open(file_name.replace('.txt','.json'), 'w') as f:
+                json.dump(self.opt.__dict__, f, indent=2)
         return self.opt

@@ -11,11 +11,25 @@ from models.layers.mesh import Mesh
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
+import json
+from argparse import ArgumentParser
 
 def run_test(epoch=-1):
     print('Running Test')
-    opt = TestOptions().parse()
+
+    test_opt = TestOptions().parse()
+    expr_dir = os.path.join(test_opt.checkpoints_dir, test_opt.name)
+    opt = ArgumentParser().parse_args()
+    with open(os.path.join(expr_dir, 'opt.json'), 'r') as f:
+        opt.__dict__ = json.load(f)
+
+    opt.results_dir ='./results/'
+    opt.phase = 'test'
+    opt.which_epoch='latest'
+    opt.num_aug=1
     opt.serial_batches = True  # no shuffle
+    opt.gpu_ids = test_opt.gpu_ids
+    opt.clean_data = test_opt.clean_data
 
     if opt.name == 'sweep':
         if wandb.run.id != None:
@@ -53,8 +67,8 @@ def run_test(epoch=-1):
         # Generate mesh for each input mesh
         for i, data in enumerate(dataset):
             model.set_input(data)
-            model.test()
-
+            rmse = model.test()
+            np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/rmse.csv', rmse)
             for j, mesh in enumerate(data['mesh']):
                 latent = model.encode(mesh).squeeze().data.cpu().numpy()
                 title = mesh.filename

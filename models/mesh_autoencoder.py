@@ -25,7 +25,7 @@ class AutoencoderModel:
     def __init__(self, opt):
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
-        self.is_train = opt.is_train
+        self.is_train = opt.phase == 'train'
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         self.save_dir = join(opt.checkpoints_dir, opt.name)
         self.optimizer = None
@@ -186,7 +186,7 @@ class AutoencoderModel:
 
     def test(self):
         """tests model
-        returns: number correct and total number
+        returns: MSE of each reconstructed mesh
         """
         with torch.no_grad():
             out = self.forward()
@@ -195,12 +195,14 @@ class AutoencoderModel:
                 vs_out = out[0].cpu().data.numpy()
             else:
                 vs_out = out.cpu().data.numpy()
+            rmse = np.sqrt(np.mean((np.reshape(vs_out,(vs_out.shape[0],-1))-np.reshape(self.labels.data.cpu().numpy(),(vs_out.shape[0],-1)))**2, axis=1))
             for i in range(self.gen_models.shape[0]):
                 self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                           export_folder='',
                                           opt=self.opt)
                 export_file = os.path.join(self.results_folder, self.mesh[i].filename)
                 self.gen_models[i].export(file=export_file)
+            return rmse
 
     def get_accuracy(self, pred, labels):
         """computes accuracy for classification / segmentation """
