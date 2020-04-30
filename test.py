@@ -14,22 +14,25 @@ import numpy as np
 import json
 from argparse import ArgumentParser
 
-def run_test(epoch=-1):
+def run_test(epoch=-1, import_opt=False):
     print('Running Test')
+    if import_opt:
+        test_opt = TestOptions().parse()
+        expr_dir = os.path.join(test_opt.checkpoints_dir, test_opt.name)
+        opt = TestOptions().parse()
+        with open(os.path.join(expr_dir, 'opt.json'), 'r') as f:
+            opt.__dict__ = json.load(f)
 
-    test_opt = TestOptions().parse()
-    expr_dir = os.path.join(test_opt.checkpoints_dir, test_opt.name)
-    opt = TestOptions().parse()
-    with open(os.path.join(expr_dir, 'opt.json'), 'r') as f:
-        opt.__dict__ = json.load(f)
+        opt.results_dir ='./results/'
+        opt.phase = 'test'
+        opt.which_epoch='latest'
+        opt.num_aug=1
+        opt.gpu_ids = test_opt.gpu_ids
+        opt.clean_data = test_opt.clean_data
+    else:
+        opt = TestOptions().parse()
 
-    opt.results_dir ='./results/'
-    opt.phase = 'test'
-    opt.which_epoch='latest'
-    opt.num_aug=1
     opt.serial_batches = True  # no shuffle
-    opt.gpu_ids = test_opt.gpu_ids
-    opt.clean_data = test_opt.clean_data
 
     if opt.name == 'sweep':
         if wandb.run.id != None:
@@ -51,6 +54,12 @@ def run_test(epoch=-1):
     # test
     writer.reset_counter()
     if opt.dataset_mode == 'generative':
+        if epoch!=-1:
+            rmse = []
+            for i, data in enumerate(dataset):
+                model.set_input(data)
+                rmse.append(model.test())
+            return np.mean(np.asarray(rmse))
         #Interpolate in latent space
         mesh = Mesh(opt.latent_path, opt=opt)
         latent = model.encode(mesh)
@@ -96,4 +105,4 @@ def run_test(epoch=-1):
 
 
 if __name__ == '__main__':
-    run_test()
+    run_test(import_opt=True)
