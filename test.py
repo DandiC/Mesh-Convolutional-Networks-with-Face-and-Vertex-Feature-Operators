@@ -28,10 +28,9 @@ def run_test(epoch=-1, import_opt=False):
         opt.which_epoch='latest'
         opt.num_aug=1
         opt.gpu_ids = test_opt.gpu_ids
-        opt.clean_data = test_opt.clean_data
     else:
         opt = TestOptions().parse()
-
+    opt.clean_data = False
     opt.serial_batches = True  # no shuffle
 
     if opt.name == 'sweep':
