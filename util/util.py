@@ -7,12 +7,14 @@ import glob
 import shutil
 
 def clean_data(opt):
-    dirs = glob.glob(opt.dataroot + '/*/*/cache') + glob.glob(opt.dataroot + '/*/cache') + glob.glob(
-        'datasets/latent/cache')
+    dirs = glob.glob(opt.dataroot + '/*/*/cache') + glob.glob(opt.dataroot + '/*/cache')
     for dir in dirs:
         shutil.rmtree(dir)
     mean_files = glob.glob(opt.dataroot + '/*.p')
     for file in mean_files:
+        os.remove(file)
+    latent_files = glob.glob('datasets/latent/cache/'+opt.latent_path.replace('datasets/latent/','').replace('.obj','*npz'))
+    for file in latent_files:
         os.remove(file)
 
 def mkdir(path):
