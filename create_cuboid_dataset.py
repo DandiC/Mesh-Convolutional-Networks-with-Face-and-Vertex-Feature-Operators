@@ -6,8 +6,8 @@ import os
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()
-    dataset_folder = 'datasets/sphere_382v/'
-    latent_mesh = Mesh('datasets/latent/spheroids_382v.obj', opt=opt)
+    dataset_folder = 'datasets/spheroids_182v/'
+    latent_mesh = Mesh('datasets/latent/sphere_182v.obj', opt=opt)
 
     mesh = copy.deepcopy(latent_mesh)
 
@@ -19,17 +19,17 @@ if __name__ == '__main__':
         os.makedirs(dataset_folder+'test/')
 
 
-    print('Creating training data')
-    print_id = 0
-    for i in range(1000):
-        rnd_ids = np.random.permutation(mesh.vs.shape[0])
-        mesh.vs = latent_mesh.vs[rnd_ids]
-        for v_id in range(mesh.vs.shape[0]):
-            mesh.faces[latent_mesh.faces==rnd_ids[v_id]] = v_id
-        rnd = np.random.uniform(low=0.1, high=2, size=3)
-        mesh.vs = latent_mesh.vs[rnd_ids] * rnd
-        mesh.export_raw(file=dataset_folder+'train/mesh_'+str(print_id)+'.obj')
-        print_id+=1
+    # print('Creating training data')
+    # print_id = 0
+    # for i in range(1000):
+    #     rnd_ids = np.random.permutation(mesh.vs.shape[0])
+    #     mesh.vs = latent_mesh.vs[rnd_ids]
+    #     for v_id in range(mesh.vs.shape[0]):
+    #         mesh.faces[latent_mesh.faces==rnd_ids[v_id]] = v_id
+    #     rnd = np.random.uniform(low=0.1, high=2, size=3)
+    #     mesh.vs = latent_mesh.vs[rnd_ids] * rnd
+    #     mesh.export_raw(file=dataset_folder+'train/mesh_'+str(print_id)+'.obj')
+    #     print_id+=1
 
     print('Creating testing data')
     print_id = 0
