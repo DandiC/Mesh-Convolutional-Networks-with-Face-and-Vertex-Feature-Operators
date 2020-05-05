@@ -39,7 +39,8 @@ class AutoencoderModel:
         self.nclasses = opt.nclasses
 
         # load/define networks
-        down_convs = [5] + opt.ncf
+        # TODO: make size of the input generic (number of features)
+        down_convs = [3] + opt.ncf
         up_convs = [3] + opt.ncf[::-1] + [3]
 
         pool_res = [opt.ninput_features] + opt.pool_res
