@@ -6,6 +6,7 @@ from util.writer import Writer
 from test import run_test
 import os
 from random import randrange
+from util.util import clean_data
 # from memory_profiler import profile
 import torch
 import glob
@@ -32,12 +33,7 @@ if __name__ == '__main__':
     wandb.config.update(opt, allow_val_change=True)
 
     if opt.clean_data:
-        dirs = glob.glob(opt.dataroot+'/*/*/cache') + glob.glob(opt.dataroot+'/*/cache')
-        for dir in dirs:
-            shutil.rmtree(dir)
-        mean_files = glob.glob(opt.dataroot+'/*.p')
-        for file in mean_files:
-            os.remove(file)
+        clean_data(opt)
 
     #Load dataset ready for training (with extracted features)
     dataset = DataLoader(opt)
@@ -58,7 +54,7 @@ if __name__ == '__main__':
     gen_model_id = 0
 
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
-    # for epoch in range(2):
+    # for epoch in range(1):
         epoch_start_time = time.time()
         iter_data_time = time.time()
         epoch_iter = 0

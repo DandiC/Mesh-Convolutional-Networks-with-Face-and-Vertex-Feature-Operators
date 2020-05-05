@@ -2,6 +2,7 @@ from options.test_options import TestOptions
 from data import DataLoader
 from models import create_model
 from util.writer import Writer
+from util.util import clean_data
 import glob
 import shutil
 import os
@@ -40,12 +41,7 @@ def run_test(epoch=-1, import_opt=False):
             raise ValueError(wandb.run.id, 'Wrong value value in wandb.run.name')
 
     if opt.clean_data:
-        dirs = glob.glob(opt.dataroot+'/*/*/cache') + glob.glob(opt.dataroot+'/*/cache')
-        for dir in dirs:
-            shutil.rmtree(dir)
-        mean_files = glob.glob(opt.dataroot+'/*.p')
-        for file in mean_files:
-            os.remove(file)
+        clean_data(opt)
 
     dataset = DataLoader(opt)
     model = create_model(opt)

@@ -3,7 +3,17 @@ import torch
 import numpy as np
 import os
 import wandb
+import glob
+import shutil
 
+def clean_data(opt):
+    dirs = glob.glob(opt.dataroot + '/*/*/cache') + glob.glob(opt.dataroot + '/*/cache') + glob.glob(
+        'datasets/latent/cache')
+    for dir in dirs:
+        shutil.rmtree(dir)
+    mean_files = glob.glob(opt.dataroot + '/*.p')
+    for file in mean_files:
+        os.remove(file)
 
 def mkdir(path):
     if not os.path.exists(path):
