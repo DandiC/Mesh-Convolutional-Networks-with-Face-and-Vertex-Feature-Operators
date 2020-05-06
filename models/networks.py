@@ -1189,22 +1189,44 @@ class MeshAutoencoder(nn.Module):
     """Autoencoder Network for generative learning
     """
 
-    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=1):
+    def __init__(self, pools, down_convs, up_convs, z_dim, blocks=0, transfer_data=True, symm_oper=1, opt=None):
         super(MeshAutoencoder, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
+        self.encoder = MeshEncoderPoint(pools, down_convs, z_dim, blocks=blocks, symm_oper=symm_oper, opt=opt)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
         self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data,
-                                        symm_oper=symm_oper)
+                                        symm_oper=symm_oper, opt=opt)
+        self.opt = opt
 
     def forward(self, x, meshes):
         fe, before_pool = self.encoder((x, meshes))
         fe = self.decoder((fe, meshes), before_pool)
         return fe
 
-    def __call__(self, x, meshes):
-        return self.forward(x, meshes)
+    def encode(self, x, meshes):
+        fe, before_pool = self.encoder((x, meshes))
+        if self.opt.pool_res != []:
+            for i, m in enumerate(meshes):
+                # TODO: Optimize current process (mesh -> pool with edges and verts -> mesh with faces -> mesh with gemm)
+                m.build_faces()
+                meshes[i] = Mesh(faces=m.faces, vertices=m.vs, export_folder='', opt=self.opt)
+        return fe
+
+    def decode(self, z, meshes):
+        return self.decoder((z, meshes))
+
+    # Mode is one of 'encode', 'decode', 'autoencode'
+    def __call__(self, x, meshes, mode='autoencode'):
+
+        if mode == 'autoencode':
+            return self.forward(x, meshes)
+        elif mode == 'decode':
+            return self.decode(x, meshes)
+        elif mode == 'encode':
+            return self.encode(x, meshes)
+        else:
+            raise ValueError(mode, 'Wrong value in vae mode')
 
 
 class MeshEncoderPoint(nn.Module):

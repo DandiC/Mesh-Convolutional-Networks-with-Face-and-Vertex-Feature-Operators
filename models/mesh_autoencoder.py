@@ -51,8 +51,8 @@ class AutoencoderModel:
                                 generative=False)
         else:
             self.net = init_net(
-                MeshAutoencoder(pool_res, down_convs, up_convs, blocks=0, transfer_data=opt.skip_connections,
-                                symm_oper=opt.symm_oper), opt.init_type, opt.init_gain, self.gpu_ids,
+                MeshAutoencoder(pool_res, down_convs, up_convs, opt.ninput_features*3, blocks=0, transfer_data=opt.skip_connections,
+                                symm_oper=opt.symm_oper, opt=opt), opt.init_type, opt.init_gain, self.gpu_ids,
                 generative=False)
 
         self.net.train(self.is_train)
@@ -182,7 +182,10 @@ class AutoencoderModel:
     def encode(self, mesh):
         with torch.no_grad():
             x = torch.tensor(mesh.features).to(self.device).float()
-            fe, mu, lvar = self.net(x.unsqueeze(0), [mesh], mode='encode')
+            if self.opt.vae:
+                fe, mu, lvar = self.net(x.unsqueeze(0), [mesh], mode='encode')
+            else:
+                fe = self.net(x.unsqueeze(0), [mesh], mode='encode')
             return fe
 
     def test(self):
