@@ -1,7 +1,7 @@
 import torch
 from . import networks
 from os.path import join
-from util.util import seg_accuracy, print_network, batch_point_to_point
+from util.util import seg_accuracy, print_network, batch_point_to_point, batch_sample, sample
 import wandb
 from .networks import MeshAutoencoder, MeshVAE
 import copy
@@ -86,7 +86,14 @@ class AutoencoderModel:
         elif self.opt.loss == 'chamfer':
             BCE = nnt.metrics.chamfer_loss(recon_x.permute(0,2,1), x.permute(0,2,1), reduce='mean')
         elif self.opt.loss == 'ptp':
-            BCE = batch_point_to_point(recon_x,self.mesh, x)
+            original_samples = []
+            generated_samples = []
+            for i in range(self.gen_models.shape[0]):
+                original_samples.append(sample(x[i].permute(1,0), self.mesh[i], num_samples=self.opt.sample_points).unsqueeze(0))
+                generated_samples.append(sample(recon_x[i].permute(1,0), self.gen_models[i], num_samples=self.opt.sample_points).unsqueeze(0))
+            generated_samples = torch.cat(generated_samples)
+            original_samples = torch.cat(original_samples)
+            BCE = nnt.metrics.chamfer_loss(original_samples, generated_samples, reduce='mean')
         else:
             raise ValueError(self.opt.loss, 'Wrong parameter value in --loss')
         # BCE = chamfer_distance(recon_x, x)
@@ -120,12 +127,9 @@ class AutoencoderModel:
         self.loss.backward()
 
     def optimize_parameters(self, epoch=0):
-        # Compute loss and backpropagate
+        # Get output
         self.optimizer.zero_grad()
         out = self.forward()
-        self.backward(out)
-        self.optimizer.step()
-
         # Generate models
         self.gen_models = copy.deepcopy(self.mesh)
         if self.opt.vae:
@@ -136,6 +140,9 @@ class AutoencoderModel:
             self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                       export_folder='',
                                       opt=self.opt)
+        # Compute loss and backpropagate
+        self.backward(out)
+        self.optimizer.step()
 
     ##################
 

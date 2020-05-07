@@ -140,6 +140,61 @@ def chamfer_distance(p1, p2, debug=False):
 
     return dist
 
+def sample(vertices, mesh, num_samples: int, eps: float = 1e-10):
+        r""" Uniformly samples the surface of a mesh.
+            Args:
+                num_samples (int): number of points to sample
+                eps (float): a small number to prevent division by zero
+                             for small surface areas.
+            Returns:
+                (torch.Tensor, torch.Tensor) uniformly sampled points and
+                    the face idexes which each point corresponds to.
+            Example:
+                points, chosen_faces = mesh.sample(10)
+                points
+                tensor([[ 0.0293,  0.2179,  0.2168],
+                        [ 0.2003, -0.3367,  0.2187],
+                        [ 0.2152, -0.0943,  0.1907],
+                        [-0.1852,  0.1686, -0.0522],
+                        [-0.2167,  0.3171,  0.0737],
+                        [ 0.2219, -0.0289,  0.1531],
+                        [ 0.2217, -0.0115,  0.1247],
+                        [-0.1400,  0.0364, -0.1618],
+                        [ 0.0658, -0.0310, -0.2198],
+                        [ 0.1926, -0.1867, -0.2153]])
+                chosen_faces
+                tensor([ 953,  38,  6, 3480,  563,  393,  395, 3309, 373, 271])
+        """
+
+        # vertices = torch.Tensor(self.vs)
+        faces = torch.Tensor(mesh.faces).long().to(vertices.device)
+
+        if vertices.is_cuda:
+            dist_uni = torch.distributions.Uniform(
+                torch.tensor([0.0]).cuda(), torch.tensor([1.0]).cuda())
+        else:
+            dist_uni = torch.distributions.Uniform(
+                torch.tensor([0.0]), torch.tensor([1.0]))
+
+        # calculate area of each face
+        Areas = torch.tensor(mesh.face_areas).unsqueeze(1)
+        # percentage of each face w.r.t. full surface area
+        Areas = Areas / (torch.sum(Areas) + eps)
+
+        # define descrete distribution w.r.t. face area ratios caluclated
+        cat_dist = torch.distributions.Categorical(Areas.view(-1))
+        face_choices = cat_dist.sample([num_samples])
+
+        # from each face sample a point
+        select_faces = faces[face_choices]
+        v0 = torch.index_select(vertices, 0, select_faces[:, 0])
+        v1 = torch.index_select(vertices, 0, select_faces[:, 1])
+        v2 = torch.index_select(vertices, 0, select_faces[:, 2])
+        u = torch.sqrt(dist_uni.sample([num_samples]))
+        v = dist_uni.sample([num_samples])
+        points = (1 - u) * v0 + (u * (1 - v)) * v1 + u * v * v2
+
+        return points
 
 def batch_sample(verts, mesh, num=10000):
     dist_uni = torch.distributions.Uniform(torch.tensor([0.0]).cuda(), torch.tensor([1.0]).cuda())
