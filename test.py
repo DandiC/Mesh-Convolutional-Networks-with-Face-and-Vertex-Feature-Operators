@@ -52,12 +52,14 @@ def run_test(epoch=-1, import_opt=False):
         if epoch!=-1:
             rmses = []
             chamfers = []
+            emds = []
             for i, data in enumerate(dataset):
                 model.set_input(data)
-                rmse, chamfer = model.test()
+                rmse, chamfer, emd = model.test()
                 rmses.append(rmse)
                 chamfers.append(chamfer)
-            return np.mean(np.asarray(rmses)), np.mean(np.asarray(chamfers))
+                emds.append(emd)
+            return np.mean(np.asarray(rmses)), np.mean(np.asarray(chamfers)), np.mean(np.asarray(emd))
         #Interpolate in latent space
         mesh = Mesh(opt.latent_path, opt=opt)
         latent = model.encode(mesh)
@@ -74,8 +76,10 @@ def run_test(epoch=-1, import_opt=False):
         # Generate mesh for each input mesh
         for i, data in enumerate(dataset):
             model.set_input(data)
-            rmse, chamfer = model.test()
+            rmse, chamfer, emd = model.test()
             np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/rmse.csv', rmse)
+            np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/chamfer.csv', chamfer)
+            np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/emd.csv', emd)
             for j, mesh in enumerate(data['mesh']):
                 latent = model.encode(mesh).squeeze().data.cpu().numpy()
                 title = mesh.filename

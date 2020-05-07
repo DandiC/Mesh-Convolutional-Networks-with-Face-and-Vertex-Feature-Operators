@@ -202,6 +202,7 @@ class AutoencoderModel:
                 vs_out = out.cpu().data.numpy()
             rmse = np.sqrt(np.mean((np.reshape(vs_out,(vs_out.shape[0],-1))-np.reshape(self.labels.data.cpu().numpy(),(vs_out.shape[0],-1)))**2, axis=1))
             chamfer = []
+            emd = []
             for i in range(self.gen_models.shape[0]):
                 self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                           export_folder='',
@@ -211,7 +212,9 @@ class AutoencoderModel:
                 original_samples, _ = self.mesh[i].sample(self.opt.sample_points)
                 generated_samples, _ = self.gen_models[i].sample(self.opt.sample_points)
                 chamfer.append(nnt.metrics.chamfer_loss(original_samples, generated_samples, reduce='mean').data.cpu().numpy())
-            return rmse, np.asarray(chamfer)
+                emd.append(nnt.metrics.emd_loss(original_samples, generated_samples, reduce='mean').data.cpu().numpy())
+
+            return rmse, np.asarray(chamfer), np.asarray(emd)
 
     def get_accuracy(self, pred, labels):
         """computes accuracy for classification / segmentation """
