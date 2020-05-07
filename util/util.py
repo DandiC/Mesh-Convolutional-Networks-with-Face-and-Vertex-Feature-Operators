@@ -6,6 +6,7 @@ import wandb
 import glob
 import shutil
 import neuralnet_pytorch as nnt
+from neuralnet_pytorch.utils.tensor_utils import batch_pairwise_dist
 
 def clean_data(opt):
     dirs = glob.glob(opt.dataroot + '/*/*/cache') + glob.glob(opt.dataroot + '/*/cache')
@@ -238,6 +239,30 @@ def batch_sample(verts, mesh, num=10000):
 
     return points
 
+def f1_score(generated, gt, reduce='mean'):
+    assert len(generated.shape) in (2, 3) and len(gt.shape) in (2, 3), 'Unknown shape of tensors'
+
+    if generated.dim() == 2:
+        generated = generated.unsqueeze(0)
+
+    if gt.dim() == 2:
+        gt = gt.unsqueeze(0)
+
+    batch_size = generated.shape[0]
+    num_points= generated.shape[1]
+
+    P = batch_pairwise_dist(generated, gt)
+    dist_to_pred, _ = torch.min(P, 1)
+    dist_to_gt, _ = torch.min(P, 2)
+
+    f_score = 0
+    for i in range(dist_to_pred.shape[0]):
+        recall = float(torch.where(dist_to_pred[i] <= 1e-2)[0].shape[0]) / float(num_points)
+        precision = float(torch.where(dist_to_gt[i] <= 1e-2)[0].shape[0]) / float(num_points)
+
+        f_score += 2 * (precision * recall) / (precision + recall + 1e-8)
+    f_score = f_score / (batch_size)
+    return f_score
 
 def batch_point_to_point(pred_vert, mesh, gt_points, num=1000, f1=False):
 

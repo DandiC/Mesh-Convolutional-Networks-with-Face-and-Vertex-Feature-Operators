@@ -53,13 +53,15 @@ def run_test(epoch=-1, import_opt=False):
             rmses = []
             chamfers = []
             emds = []
+            f_scores = []
             for i, data in enumerate(dataset):
                 model.set_input(data)
-                rmse, chamfer, emd = model.test()
+                rmse, chamfer, emd, f_score = model.test()
                 rmses.append(rmse)
                 chamfers.append(chamfer)
                 emds.append(emd)
-            return np.mean(np.asarray(rmses)), np.mean(np.asarray(chamfers)), np.mean(np.asarray(emd))
+                f_scores.append(f_score)
+            return np.mean(np.asarray(rmses)), np.mean(np.asarray(chamfers)), np.mean(np.asarray(emd)), np.mean(np.asarray(f_score))
         #Interpolate in latent space
         mesh = Mesh(opt.latent_path, opt=opt)
         latent = model.encode(mesh)
@@ -77,9 +79,9 @@ def run_test(epoch=-1, import_opt=False):
         for i, data in enumerate(dataset):
             model.set_input(data)
             rmse, chamfer, emd = model.test()
-            np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/rmse.csv', rmse)
-            np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/chamfer.csv', chamfer)
-            np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/emd.csv', emd)
+            # np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/rmse.csv', rmse)
+            # np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/chamfer.csv', chamfer)
+            # np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/emd.csv', emd)
             for j, mesh in enumerate(data['mesh']):
                 latent = model.encode(mesh).squeeze().data.cpu().numpy()
                 title = mesh.filename

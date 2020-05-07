@@ -123,8 +123,8 @@ if __name__ == '__main__':
                 writer.plot_acc(acc, epoch)
                 wandb.log({"Test Accuracy": acc})
         else:
-            rmse, chamfer, emd = run_test(epoch)
-            wandb.log({"Test RMSE":rmse, "Test CD":chamfer, "Test EMD":emd})
+            rmse, chamfer, emd, f_score = run_test(epoch)
+            wandb.log({"Test RMSE":rmse, "Test CD":chamfer, "Test EMD":emd, "F-Score": f_score})
 
         writer.close()
     wandb.log({"Training Time": time.time() - startT})

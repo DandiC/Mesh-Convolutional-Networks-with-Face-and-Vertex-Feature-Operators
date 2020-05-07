@@ -1,7 +1,7 @@
 import torch
 from . import networks
 from os.path import join
-from util.util import seg_accuracy, print_network, batch_point_to_point, batch_sample, sample
+from util.util import seg_accuracy, print_network, batch_point_to_point, batch_sample, sample, f1_score
 import wandb
 from .networks import MeshAutoencoder, MeshVAE
 import copy
@@ -198,7 +198,7 @@ class AutoencoderModel:
 
     def test(self):
         """tests model
-        returns: MSE of each reconstructed mesh
+        returns: MSE, Chamfer Distance, Earth Movers Distance and F1 Score of each reconstructed mesh
         """
         with torch.no_grad():
             out = self.forward()
@@ -208,20 +208,25 @@ class AutoencoderModel:
             else:
                 vs_out = out.cpu().data.numpy()
             rmse = np.sqrt(np.mean((np.reshape(vs_out,(vs_out.shape[0],-1))-np.reshape(self.labels.data.cpu().numpy(),(vs_out.shape[0],-1)))**2, axis=1))
-            chamfer = []
+            original_samples = []
+            generated_samples = []
             emd = []
+            chamfer = []
             for i in range(self.gen_models.shape[0]):
                 self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                           export_folder='',
                                           opt=self.opt)
                 export_file = os.path.join(self.results_folder, self.mesh[i].filename)
                 self.gen_models[i].export(file=export_file)
-                original_samples, _ = self.mesh[i].sample(self.opt.sample_points)
-                generated_samples, _ = self.gen_models[i].sample(self.opt.sample_points)
-                chamfer.append(nnt.metrics.chamfer_loss(original_samples, generated_samples, reduce='mean').data.cpu().numpy())
-                emd.append(nnt.metrics.emd_loss(original_samples, generated_samples, reduce='mean').data.cpu().numpy())
+                original_samples.append(self.mesh[i].sample(self.opt.sample_points)[0].unsqueeze(0))
+                generated_samples.append(self.gen_models[i].sample(self.opt.sample_points)[0].unsqueeze(0))
+                emd.append(nnt.metrics.emd_loss(original_samples[i], generated_samples[i], reduce='mean').data.cpu().numpy())
 
-            return rmse, np.asarray(chamfer), np.asarray(emd)
+            original_samples = torch.cat(original_samples)
+            generated_samples = torch.cat(generated_samples)
+            chamfer = nnt.metrics.chamfer_loss(original_samples, generated_samples, reduce='mean').data.cpu().numpy()
+            f_score = f1_score(generated_samples, original_samples)
+            return rmse, np.asarray(chamfer), np.asarray(emd), f_score
 
     def get_accuracy(self, pred, labels):
         """computes accuracy for classification / segmentation """
