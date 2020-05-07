@@ -1,7 +1,7 @@
 import torch
 from . import networks
 from os.path import join
-from util.util import seg_accuracy, print_network, chamfer_distance
+from util.util import seg_accuracy, print_network, batch_point_to_point
 import wandb
 from .networks import MeshAutoencoder, MeshVAE
 import copy
@@ -84,7 +84,9 @@ class AutoencoderModel:
         if self.opt.loss == 'mse':
             BCE = self.criterion(recon_x, x)
         elif self.opt.loss == 'chamfer':
-            BCE = nnt.metrics.chamfer_loss(recon_x, x, reduce='mean')
+            BCE = nnt.metrics.chamfer_loss(recon_x.permute(0,2,1), x.permute(0,2,1), reduce='mean')
+        elif self.opt.loss == 'ptp':
+            BCE = batch_point_to_point(recon_x,self.mesh, x)
         else:
             raise ValueError(self.opt.loss, 'Wrong parameter value in --loss')
         # BCE = chamfer_distance(recon_x, x)
@@ -199,13 +201,17 @@ class AutoencoderModel:
             else:
                 vs_out = out.cpu().data.numpy()
             rmse = np.sqrt(np.mean((np.reshape(vs_out,(vs_out.shape[0],-1))-np.reshape(self.labels.data.cpu().numpy(),(vs_out.shape[0],-1)))**2, axis=1))
+            chamfer = []
             for i in range(self.gen_models.shape[0]):
                 self.gen_models[i] = Mesh(faces=self.gen_models[i].faces, vertices=np.transpose(vs_out[i]),
                                           export_folder='',
                                           opt=self.opt)
                 export_file = os.path.join(self.results_folder, self.mesh[i].filename)
                 self.gen_models[i].export(file=export_file)
-            return rmse
+                original_samples, _ = self.mesh[i].sample(self.opt.sample_points)
+                generated_samples, _ = self.gen_models[i].sample(self.opt.sample_points)
+                chamfer.append(nnt.metrics.chamfer_loss(original_samples, generated_samples, reduce='mean').data.cpu().numpy())
+            return rmse, np.asarray(chamfer)
 
     def get_accuracy(self, pred, labels):
         """computes accuracy for classification / segmentation """

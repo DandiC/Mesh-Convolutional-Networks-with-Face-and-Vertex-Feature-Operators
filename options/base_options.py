@@ -17,6 +17,9 @@ class BaseOptions:
         # self.parser.add_argument('--ninput_features', type=int, default=500, help='# of input features (will include dummy features)')
         # self.parser.add_argument('--latent_path', default='datasets/latent/simple_cube.obj',
         #                          help='Path to the OBJ containing the latent for connectivity')
+        # self.parser.add_argument('--sample_points', type=int, default=1000,
+        #                          help='Number of point samples to do Chamfer Distance')
+
         # # network params
         # self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
         # self.parser.add_argument('--arch', type=str, default='mconvnet',
@@ -70,6 +73,11 @@ class BaseOptions:
         # self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation", "generative"}, default='segmentation')
         # self.parser.add_argument('--ninput_features', type=int, default=2280,
         #                          help='# of input features (will include dummy features)')
+        # self.parser.add_argument('--latent_path', default='datasets/latent/simple_cube.obj',
+        #                          help='Path to the OBJ containing the latent for connectivity')
+        # self.parser.add_argument('--sample_points', type=int, default=1000,
+        #                          help='Number of point samples to do Chamfer Distance')
+
         # # network params
         # self.parser.add_argument('--batch_size', type=int, default=12, help='input batch size')
         # self.parser.add_argument('--arch', type=str, default='meshunet',  choices={"mconvnet", "meshunet", "meshGAN", "meshPointGAN"},
@@ -128,6 +136,9 @@ class BaseOptions:
         # self.parser.add_argument('--ninput_features', type=int, default=500,
         #                          help='# of input features (will include dummy features)')
         # self.parser.add_argument('--latent_path', default='datasets/latent/sphere.obj', help='Path to the OBJ containing the latent for connectivity')
+        # self.parser.add_argument('--sample_points', type=int, default=1000,
+        #                          help='Number of point samples to do Chamfer Distance')
+
         # # network params
         # self.parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
         # self.parser.add_argument('--arch', type=str, default='meshPointGAN',
@@ -193,6 +204,9 @@ class BaseOptions:
         #                          help='# of input features (will include dummy features)')
         # self.parser.add_argument('--latent_path', default='datasets/latent/simplest_cube.obj',
         #                          help='Path to the OBJ containing the latent for connectivity')
+        # self.parser.add_argument('--sample_points', type=int, default=1000,
+        #                          help='Number of point samples to do Chamfer Distance')
+
         # # network params
         # self.parser.add_argument('--batch_size', type=int, default=8, help='input batch size')
         # self.parser.add_argument('--arch', type=str, default='meshPointGAN',
@@ -260,6 +274,8 @@ class BaseOptions:
                                  help='# of input features (will include dummy features)')
         self.parser.add_argument('--latent_path', default='datasets/latent/square_25v.obj',
                                                           help='Path to the OBJ containing the latent for connectivity')
+        self.parser.add_argument('--sample_points', type=int, default=1000, help='Number of point samples to do Chamfer Distance')
+
         # network params
         self.parser.add_argument('--batch_size', type=int, default=128, help='input batch size')
         self.parser.add_argument('--arch', type=str, default='meshunet',
@@ -291,12 +307,12 @@ class BaseOptions:
                             help="lower and upper clip value for disc. weights")
         self.parser.add_argument('--neighbor_order', type=str, default='closest_d',
                                  help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c, closest_d, farthest_d, median_d')
-        self.parser.add_argument('--n_neighbors', type=int, default=6, help='# of neighbors in conv layer')
+        self.parser.add_argument('--n_neighbors', type=int, default=3, help='# of neighbors in conv layer')
         # general params
         self.parser.add_argument('--feat_from', type=str, default='point',
                                  help='Primitive to extract features from. One of: edge, face')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
-        self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+        self.parser.add_argument('--gpu_ids', type=str, default='-1', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         self.parser.add_argument('--name', type=str, default='test_parser',
                                  help='name of the experiment. It decides where to store samples and models')
         self.parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')

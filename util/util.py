@@ -5,6 +5,7 @@ import os
 import wandb
 import glob
 import shutil
+import neuralnet_pytorch as nnt
 
 def clean_data(opt):
     dirs = glob.glob(opt.dataroot + '/*/*/cache') + glob.glob(opt.dataroot + '/*/cache')
@@ -138,3 +139,91 @@ def chamfer_distance(p1, p2, debug=False):
         print(dist)
 
     return dist
+
+
+def batch_sample(verts, mesh, num=10000):
+    dist_uni = torch.distributions.Uniform(torch.tensor([0.0]).cuda(), torch.tensor([1.0]).cuda())
+    batch_size = verts.shape[0]
+    # calculate area of each face
+    faces = torch.Tensor(mesh[0].faces).to(verts.device).long()
+    x1, x2, x3 = torch.split(torch.index_select(verts, 1, faces[:, 0]) - torch.index_select(verts, 1, faces[:, 1]), 1, dim=-1)
+    y1, y2, y3 = torch.split(torch.index_select(verts, 1, faces[:, 1]) - torch.index_select(verts, 1, faces[:, 2]), 1, dim=-1)
+    a = (x2 * y3 - x3 * y2) ** 2
+    b = (x3 * y1 - x1 * y3) ** 2
+    c = (x1 * y2 - x2 * y1) ** 2
+    Areas = torch.sqrt(a + b + c) / 2
+    Areas = Areas.squeeze(-1) / torch.sum(Areas, dim=1)  # percentage of each face w.r.t. full surface area
+
+    # define descrete distribution w.r.t. face area ratios caluclated
+    choices = None
+    for A in Areas:
+
+        if choices is None:
+            choices = torch.multinomial(A, num, True)  # list of faces to be sampled from
+        else:
+            choices = torch.cat((choices, torch.multinomial(A, num, True)))
+
+    # from each face sample a point
+    select_faces = faces[choices].view(verts.shape[0], 3, num)
+
+    face_arange = verts.shape[1] * torch.arange(0, batch_size).cuda().unsqueeze(-1).expand(batch_size, num)
+    select_faces = select_faces + face_arange.unsqueeze(1)
+
+    select_faces = select_faces.view(-1, 3)
+    flat_verts = verts.view(-1, 3)
+
+    xs = torch.index_select(flat_verts, 0, select_faces[:, 0])
+    ys = torch.index_select(flat_verts, 0, select_faces[:, 1])
+    zs = torch.index_select(flat_verts, 0, select_faces[:, 2])
+    u = torch.sqrt(dist_uni.sample_n(batch_size * num))
+    v = dist_uni.sample_n(batch_size * num)
+
+    points = (1 - u) * xs + (u * (1 - v)) * ys + u * v * zs
+    points = points.view(batch_size, num, 3)
+
+    return points
+
+
+def batch_point_to_point(pred_vert, mesh, gt_points, num=1000, f1=False):
+
+
+    # grab the faces still in use
+    batch_size = pred_vert.shape[0]
+
+    # sample from faces and calculate pairs
+
+    pred_points = batch_sample(pred_vert, mesh, num=num)
+
+    id_p, id_g = nnt.chamfer_loss(gt_points, pred_points)
+
+    # select pairs and calculate chamfer distance
+
+    pred_points = pred_points.view(-1, 3)
+    gt_points = gt_points.contiguous().view(-1, 3)
+
+    points_range = num * torch.arange(0, batch_size).cuda().unsqueeze(-1).expand(batch_size, num)
+    id_p = (id_p.long() + points_range).view(-1)
+    id_g = (id_g.long() + points_range).view(-1)
+
+    pred_counters = torch.index_select(pred_points, 0, id_p)
+    gt_counters = torch.index_select(gt_points, 0, id_g)
+
+    dist_1 = torch.mean(torch.sum((gt_counters - pred_points) ** 2, dim=1))
+    dist_2 = torch.mean(torch.sum((pred_counters - gt_points) ** 2, dim=1))
+
+    loss = (dist_1 + dist_2) * 3000
+
+    if f1:
+        dist_to_pred = torch.sqrt(torch.sum((.57 * pred_counters - .57 * gt_points) ** 2, dim=1)).view(batch_size, -1)
+        dist_to_gt = torch.sqrt(torch.sum((.57 * gt_counters - .57 * pred_points) ** 2, dim=1)).view(batch_size, -1)
+
+        f_score = 0
+        for i in range(dist_to_pred.shape[0]):
+            recall = float(torch.where(dist_to_pred[i] <= 1e-2)[0].shape[0]) / float(num)
+            precision = float(torch.where(dist_to_gt[i] <= 1e-2)[0].shape[0]) / float(num)
+
+            f_score += 2 * (precision * recall) / (precision + recall + 1e-8)
+        f_score = f_score / (batch_size)
+        return loss, f_score
+    else:
+        return loss

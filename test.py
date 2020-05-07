@@ -50,11 +50,14 @@ def run_test(epoch=-1, import_opt=False):
     writer.reset_counter()
     if opt.dataset_mode == 'generative':
         if epoch!=-1:
-            rmse = []
+            rmses = []
+            chamfers = []
             for i, data in enumerate(dataset):
                 model.set_input(data)
-                rmse.append(model.test())
-            return np.mean(np.asarray(rmse))
+                rmse, chamfer = model.test()
+                rmses.append(rmse)
+                chamfers.append(chamfer)
+            return np.mean(np.asarray(rmses)), np.mean(np.asarray(chamfers))
         #Interpolate in latent space
         mesh = Mesh(opt.latent_path, opt=opt)
         latent = model.encode(mesh)
@@ -71,7 +74,7 @@ def run_test(epoch=-1, import_opt=False):
         # Generate mesh for each input mesh
         for i, data in enumerate(dataset):
             model.set_input(data)
-            rmse = model.test()
+            rmse, chamfer = model.test()
             np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/rmse.csv', rmse)
             for j, mesh in enumerate(data['mesh']):
                 latent = model.encode(mesh).squeeze().data.cpu().numpy()
