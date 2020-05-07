@@ -210,7 +210,7 @@ class AutoencoderModel:
                 self.gen_models[i].export(file=export_file)
                 original_samples, _ = self.mesh[i].sample(self.opt.sample_points)
                 generated_samples, _ = self.gen_models[i].sample(self.opt.sample_points)
-                chamfer.append(nnt.metrics.chamfer_loss(original_samples.unsqueeze(0), generated_samples.unsqueeze(0), reduce='mean').data.cpu().numpy())
+                chamfer.append(nnt.metrics.chamfer_loss(original_samples, generated_samples, reduce='mean').data.cpu().numpy())
             return rmse, np.asarray(chamfer)
 
     def get_accuracy(self, pred, labels):
