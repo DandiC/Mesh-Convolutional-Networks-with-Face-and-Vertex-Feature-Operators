@@ -78,7 +78,7 @@ def run_test(epoch=-1, import_opt=False):
         # Generate mesh for each input mesh
         for i, data in enumerate(dataset):
             model.set_input(data)
-            rmse, chamfer, emd = model.test()
+            rmse, chamfer, emd, f_score = model.test()
             # np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/rmse.csv', rmse)
             # np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/chamfer.csv', chamfer)
             # np.savetxt(opt.checkpoints_dir + '/' + opt.name + '/emd.csv', emd)
