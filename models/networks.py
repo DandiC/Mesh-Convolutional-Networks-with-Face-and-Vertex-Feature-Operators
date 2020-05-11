@@ -19,7 +19,7 @@ import numpy as np
 from util.util import pad
 import os
 import wandb
-import copy
+
 
 # from memory_profiler import profile
 
@@ -1141,7 +1141,6 @@ class MeshVAE(nn.Module):
                                         symm_oper=symm_oper, opt=opt)
         self.fc = nn.Linear(z_dim, z_dim)
         self.opt = opt
-        self.latent_mesh = Mesh(self.opt.latent_path, self.opt)
 
     def reparameterize(self, mu, logvar):
         if self.opt.is_train:
@@ -1155,8 +1154,6 @@ class MeshVAE(nn.Module):
 
     def forward(self, x, meshes):
         fe, mu, lvar = self.encode(x, meshes)
-        for i in range(meshes.shape[0]):
-            meshes[i] = copy.deepcopy(self.latent_mesh)
         fe = self.decode(fe, meshes)
         return fe, mu, lvar
 
