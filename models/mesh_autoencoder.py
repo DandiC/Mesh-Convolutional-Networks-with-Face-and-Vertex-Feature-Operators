@@ -84,7 +84,7 @@ class AutoencoderModel:
         if self.opt.loss == 'mse':
             BCE = self.criterion(recon_x, x)
         elif self.opt.loss == 'chamfer':
-            BCE = nnt.metrics.chamfer_loss(recon_x.permute(0,2,1), x.permute(0,2,1), reduce='mean')
+            BCE = nnt.metrics.chamfer_loss(recon_x, x, reduce='mean')
         elif self.opt.loss == 'ptp':
             original_samples = []
             generated_samples = []
