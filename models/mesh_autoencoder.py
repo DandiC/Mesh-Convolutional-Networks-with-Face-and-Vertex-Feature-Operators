@@ -93,7 +93,7 @@ class AutoencoderModel:
                 generated_samples.append(sample(recon_x[i].permute(1,0), self.gen_models[i], num_samples=self.opt.sample_points).unsqueeze(0))
             generated_samples = torch.cat(generated_samples)
             original_samples = torch.cat(original_samples)
-            BCE = nnt.metrics.chamfer_loss(original_samples, generated_samples, reduce='mean')
+            BCE = nnt.metrics.chamfer_loss(original_samples.permute(0,2,1), generated_samples.permute(0,2,1), reduce='mean')
         else:
             raise ValueError(self.opt.loss, 'Wrong parameter value in --loss')
         # BCE = chamfer_distance(recon_x, x)
