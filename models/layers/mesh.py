@@ -108,8 +108,8 @@ class Mesh:
     def remove_vertex(self, v):
         self.v_mask[v] = False
         self.vs_count -= 1
-        for index, vt in enumerate(self.gemm_vs[v]):
-            self.gemm_vs[vt].remove(v)
+        # for index, vt in enumerate(self.gemm_vs[v]):
+        #     self.gemm_vs[vt].remove(v)
 
     def remove_edge(self, edge_id):
         vs = self.edges[edge_id]
