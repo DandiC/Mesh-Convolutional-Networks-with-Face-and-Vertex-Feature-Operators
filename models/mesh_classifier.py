@@ -45,7 +45,8 @@ class ClassifierModel:
 
     def set_input(self, data):
         input_features = torch.from_numpy(data['features']).float()
-        labels = torch.from_numpy(data['label']).long()
+        # labels = torch.from_numpy(data['label']).long()
+        labels = torch.zeros(input_features.shape[0], self.nclasses).to(input_features.device)
         # set inputs
         self.features = input_features.to(self.device).requires_grad_(self.is_train)
         self.labels = labels.to(self.device)
