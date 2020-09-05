@@ -36,14 +36,22 @@ def pad(input_arr, target_length, val=0, dim=1):
     npad[dim] = (0, target_length - shp[dim])
     return np.pad(input_arr, pad_width=npad, mode='constant', constant_values=val)
 
-def seg_accuracy(predicted, ssegs, meshes):
+def seg_accuracy(predicted, ssegs, meshes, feature_type='edge'):
     correct = 0
     ssegs = ssegs.squeeze(-1)
     correct_mat = ssegs.gather(2, predicted.cpu().unsqueeze(dim=2))
     for mesh_id, mesh in enumerate(meshes):
-        correct_vec = correct_mat[mesh_id, :mesh.edges_count, 0]
-        edge_areas = torch.from_numpy(mesh.get_edge_areas())
-        correct += (correct_vec.float() * edge_areas).sum()
+        if feature_type == 'edge':
+            correct_vec = correct_mat[mesh_id, :mesh.edges_count, 0]
+            edge_areas = torch.from_numpy(mesh.get_edge_areas())
+            correct += (correct_vec.float() * edge_areas).sum()
+        elif feature_type == 'face':
+            correct_vec = correct_mat[mesh_id, :mesh.face_count, 0]
+            face_areas = torch.from_numpy(mesh.face_areas / np.sum(mesh.face_areas))
+            correct += (correct_vec.float() * face_areas).sum()
+        elif feature_type == 'point':
+            correct_vec = correct_mat[mesh_id, :mesh.vs_count, 0]
+            correct += (correct_vec.float()).sum()
     return correct
 
 def print_network(net):

@@ -124,7 +124,7 @@ class ClassifierModel:
         if self.opt.dataset_mode == 'classification':
             correct = pred.eq(labels).sum()
         elif self.opt.dataset_mode == 'segmentation':
-            correct = seg_accuracy(pred, self.soft_label, self.mesh)
+            correct = seg_accuracy(pred, self.soft_label, self.mesh, feature_type=self.opt.feat_from)
         return correct
 
     def export_segmentation(self, pred_seg):

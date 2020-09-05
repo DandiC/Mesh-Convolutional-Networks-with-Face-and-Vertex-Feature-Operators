@@ -14,8 +14,16 @@ class SegmentationData(BaseDataset):
         self.root = opt.dataroot
         self.dir = os.path.join(opt.dataroot, opt.phase)
         self.paths = self.make_dataset(self.dir)
-        self.seg_paths = self.get_seg_files(self.paths, os.path.join(self.root, 'seg'), seg_ext='.eseg')
-        self.sseg_paths = self.get_seg_files(self.paths, os.path.join(self.root, 'sseg'), seg_ext='.seseg')
+        seg_folder = 'seg'
+        sseg_folder = 'sseg'
+        if opt.feat_from == 'point':
+            seg_folder += '_vt'
+            sseg_folder += '_vt'
+        elif opt.feat_from == 'face':
+            seg_folder += '_face'
+            sseg_folder += '_face'
+        self.seg_paths = self.get_seg_files(self.paths, os.path.join(self.root, seg_folder), seg_ext='.eseg')
+        self.sseg_paths = self.get_seg_files(self.paths, os.path.join(self.root, sseg_folder), seg_ext='.seseg')
         self.classes, self.offset = self.get_n_segs(os.path.join(self.root, 'classes.txt'), self.seg_paths)
         self.nclasses = len(self.classes)
         self.size = len(self.paths)

@@ -148,8 +148,12 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
         down_convs = [input_nc] + ncf
         up_convs = ncf[::-1] + [nclasses]
         pool_res = [ninput_features] + opt.pool_res
-        net = MeshEncoderDecoder(pool_res, down_convs, up_convs, blocks=opt.resblocks,
-                                 transfer_data=True)
+        if feat_from == 'edge':
+            net = MeshEncoderDecoder(pool_res, down_convs, up_convs, blocks=opt.resblocks,
+                                     transfer_data=True)
+        elif feat_from == 'face':
+            net = MeshEncoderDecoderFace(pool_res, down_convs, up_convs, blocks=opt.resblocks,
+                                     transfer_data=True, symm_oper=opt.symm_oper)
     elif arch == 'meshGAN':
         down_convs = [input_nc] + ncf
         up_convs = [1] + ncf[::-1] + [9]
@@ -408,6 +412,26 @@ class MeshEncoderDecoder(nn.Module):
     def __call__(self, x, meshes):
         return self.forward(x, meshes)
 
+class MeshEncoderDecoderFace(nn.Module):
+    """Network for fully-convolutional tasks (segmentation) using face-based features
+    """
+
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=None):
+        super(MeshEncoderDecoderFace, self).__init__()
+        self.transfer_data = transfer_data
+        self.encoder = MeshEncoderFace(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
+        unrolls = pools[:-1].copy()
+        unrolls.reverse()
+        self.decoder = MeshDecoderFace(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
+
+    def forward(self, x, meshes):
+        fe, before_pool = self.encoder((x, meshes))
+        fe = self.decoder((fe, meshes), before_pool)
+        return fe
+
+    def __call__(self, x, meshes):
+        return self.forward(x, meshes)
+
 
 class DownConv(nn.Module):
     def __init__(self, in_channels, out_channels, blocks=0, pool=0):
@@ -443,9 +467,8 @@ class DownConv(nn.Module):
             x2 = F.relu(x2)
             x1 = x2
         x2 = x2.squeeze(3)
-        before_pool = None
+        before_pool = x2
         if self.pool:
-            before_pool = x2
             x2 = self.pool(x2, meshes)
         return x2, before_pool
 
@@ -589,6 +612,93 @@ class MeshDecoder(nn.Module):
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
 
+class MeshEncoderFace(nn.Module):
+    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None):
+        super(MeshEncoderFace, self).__init__()
+        self.fcs = None
+        self.convs = []
+        for i in range(len(convs) - 1):
+            if i + 1 < len(pools):
+                pool = pools[i + 1]
+            else:
+                pool = 0
+            self.convs.append(DownConvFace(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper))
+        self.global_pool = None
+        if fcs is not None:
+            self.fcs = []
+            self.fcs_bn = []
+            last_length = convs[-1]
+            if global_pool is not None:
+                if global_pool == 'max':
+                    self.global_pool = nn.MaxPool1d(pools[-1])
+                elif global_pool == 'avg':
+                    self.global_pool = nn.AvgPool1d(pools[-1])
+                else:
+                    assert False, 'global_pool %s is not defined' % global_pool
+            else:
+                last_length *= pools[-1]
+            if fcs[0] == last_length:
+                fcs = fcs[1:]
+            for length in fcs:
+                self.fcs.append(nn.Linear(last_length, length))
+                self.fcs_bn.append(nn.InstanceNorm1d(length))
+                last_length = length
+            self.fcs = nn.ModuleList(self.fcs)
+            self.fcs_bn = nn.ModuleList(self.fcs_bn)
+        self.convs = nn.ModuleList(self.convs)
+        reset_params(self)
+
+    def forward(self, x):
+        fe, meshes = x
+        encoder_outs = []
+        for conv in self.convs:
+            fe, before_pool = conv((fe, meshes))
+            encoder_outs.append(before_pool)
+        if self.fcs is not None:
+            if self.global_pool is not None:
+                fe = self.global_pool(fe)
+            fe = fe.contiguous().view(fe.size()[0], -1)
+            for i in range(len(self.fcs)):
+                fe = self.fcs[i](fe)
+                if self.fcs_bn:
+                    x = fe.unsqueeze(1)
+                    fe = self.fcs_bn[i](x).squeeze(1)
+                if i < len(self.fcs) - 1:
+                    fe = F.relu(fe)
+        return fe, encoder_outs
+
+    def __call__(self, x):
+        return self.forward(x)
+
+
+class MeshDecoderFace(nn.Module):
+    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=True, symm_oper=None):
+        super(MeshDecoderFace, self).__init__()
+        self.up_convs = []
+        for i in range(len(convs) - 2):
+            if i < len(unrolls):
+                unroll = unrolls[i]
+            else:
+                unroll = 0
+            self.up_convs.append(UpConvFace(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
+                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
+        self.final_conv = UpConvFace(convs[-2], convs[-1], blocks=blocks, unroll=False,
+                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
+        self.up_convs = nn.ModuleList(self.up_convs)
+        reset_params(self)
+
+    def forward(self, x, encoder_outs=None):
+        fe, meshes = x
+        for i, up_conv in enumerate(self.up_convs):
+            before_pool = None
+            if encoder_outs is not None:
+                before_pool = encoder_outs[-(i + 2)]
+            fe = up_conv((fe, meshes), before_pool)
+        fe = self.final_conv((fe, meshes))
+        return fe
+
+    def __call__(self, x, encoder_outs=None):
+        return self.forward(x, encoder_outs)
 
 def reset_params(model):  # todo replace with my init
     for i, m in enumerate(model.modules()):
@@ -635,9 +745,8 @@ class DownConvFace(nn.Module):
             x2 = F.leaky_relu(x2, negative_slope=0.2)
             x1 = x2
         x2 = x2.squeeze(3)
-        before_pool = None
+        before_pool = x2
         if self.pool:
-            before_pool = x2
             x2 = self.pool(x2, meshes)
         return x2, before_pool
 
