@@ -149,11 +149,27 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
         up_convs = ncf[::-1] + [nclasses]
         pool_res = [ninput_features] + opt.pool_res
         if feat_from == 'edge':
-            net = MeshEncoderDecoder(pool_res, down_convs, up_convs, blocks=opt.resblocks,
+            net = MeshEncoderDecoder(pool_res,
+                                     down_convs,
+                                     up_convs,
+                                     blocks=opt.resblocks,
                                      transfer_data=True)
         elif feat_from == 'face':
-            net = MeshEncoderDecoderFace(pool_res, down_convs, up_convs, blocks=opt.resblocks,
-                                     transfer_data=True, symm_oper=opt.symm_oper)
+            net = MeshEncoderDecoderFace(pool_res,
+                                         down_convs,
+                                         up_convs,
+                                         blocks=opt.resblocks,
+                                         transfer_data=True,
+                                         symm_oper=opt.symm_oper)
+        elif feat_from == 'point':
+            net = MeshEncoderDecoderPoint(pool_res,
+                                          down_convs,
+                                          up_convs,
+                                          blocks=opt.resblocks,
+                                          transfer_data=True,
+                                          symm_oper=opt.symm_oper,
+                                          n_neighbors=opt.n_neighbors,
+                                          neighbor_order=opt.neighbor_order)
     elif arch == 'meshGAN':
         down_convs = [input_nc] + ncf
         up_convs = [1] + ncf[::-1] + [9]
@@ -412,6 +428,7 @@ class MeshEncoderDecoder(nn.Module):
     def __call__(self, x, meshes):
         return self.forward(x, meshes)
 
+
 class MeshEncoderDecoderFace(nn.Module):
     """Network for fully-convolutional tasks (segmentation) using face-based features
     """
@@ -422,7 +439,42 @@ class MeshEncoderDecoderFace(nn.Module):
         self.encoder = MeshEncoderFace(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
-        self.decoder = MeshDecoderFace(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data, symm_oper=symm_oper)
+        self.decoder = MeshDecoderFace(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data,
+                                       symm_oper=symm_oper)
+
+    def forward(self, x, meshes):
+        fe, before_pool = self.encoder((x, meshes))
+        fe = self.decoder((fe, meshes), before_pool)
+        return fe
+
+    def __call__(self, x, meshes):
+        return self.forward(x, meshes)
+
+
+class MeshEncoderDecoderPoint(nn.Module):
+    """Network for fully-convolutional tasks (segmentation) using face-based features
+    """
+
+    def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=None, n_neighbors=3,
+                 neighbor_order='closest_d'):
+        super(MeshEncoderDecoderPoint, self).__init__()
+        self.transfer_data = transfer_data
+
+        self.encoder = MeshEncoderPointSeg(pools,
+                                           down_convs,
+                                           blocks=blocks,
+                                           symm_oper=symm_oper,
+                                           n_neighbors=n_neighbors,
+                                           neighbor_order=neighbor_order)
+        unrolls = pools[:-1].copy()
+        unrolls.reverse()
+        self.decoder = MeshDecoderPointSeg(unrolls,
+                                           up_convs,
+                                           blocks=blocks,
+                                           transfer_data=transfer_data,
+                                           symm_oper=symm_oper,
+                                           n_neighbors=n_neighbors,
+                                           neighbor_order=neighbor_order)
 
     def forward(self, x, meshes):
         fe, before_pool = self.encoder((x, meshes))
@@ -612,6 +664,7 @@ class MeshDecoder(nn.Module):
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
 
+
 class MeshEncoderFace(nn.Module):
     def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None):
         super(MeshEncoderFace, self).__init__()
@@ -681,9 +734,9 @@ class MeshDecoderFace(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvFace(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                        batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
+                                            batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
         self.final_conv = UpConvFace(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                 batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
+                                     batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
         self.up_convs = nn.ModuleList(self.up_convs)
         reset_params(self)
 
@@ -699,6 +752,115 @@ class MeshDecoderFace(nn.Module):
 
     def __call__(self, x, encoder_outs=None):
         return self.forward(x, encoder_outs)
+
+
+class MeshEncoderPointSeg(nn.Module):
+    def __init__(self, pools, convs, fcs=None, blocks=0, global_pool=None, symm_oper=None, n_neighbors=3,
+                 neighbor_order='closest_d'):
+        super(MeshEncoderPointSeg, self).__init__()
+        self.fcs = None
+        self.convs = []
+        for i in range(len(convs) - 1):
+            if i + 1 < len(pools):
+                pool = pools[i + 1]
+            else:
+                pool = 0
+            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper,
+                                            n_neighbors=n_neighbors, neighbor_order=neighbor_order))
+        self.global_pool = None
+        if fcs is not None:
+            self.fcs = []
+            self.fcs_bn = []
+            last_length = convs[-1]
+            if global_pool is not None:
+                if global_pool == 'max':
+                    self.global_pool = nn.MaxPool1d(pools[-1])
+                elif global_pool == 'avg':
+                    self.global_pool = nn.AvgPool1d(pools[-1])
+                else:
+                    assert False, 'global_pool %s is not defined' % global_pool
+            else:
+                last_length *= pools[-1]
+            if fcs[0] == last_length:
+                fcs = fcs[1:]
+            for length in fcs:
+                self.fcs.append(nn.Linear(last_length, length))
+                self.fcs_bn.append(nn.InstanceNorm1d(length))
+                last_length = length
+            self.fcs = nn.ModuleList(self.fcs)
+            self.fcs_bn = nn.ModuleList(self.fcs_bn)
+        self.convs = nn.ModuleList(self.convs)
+        reset_params(self)
+
+    def forward(self, x):
+        fe, meshes = x
+        encoder_outs = []
+        for conv in self.convs:
+            fe, before_pool = conv((fe, meshes))
+            encoder_outs.append(before_pool)
+        if self.fcs is not None:
+            if self.global_pool is not None:
+                fe = self.global_pool(fe)
+            fe = fe.contiguous().view(fe.size()[0], -1)
+            for i in range(len(self.fcs)):
+                fe = self.fcs[i](fe)
+                if self.fcs_bn:
+                    x = fe.unsqueeze(1)
+                    fe = self.fcs_bn[i](x).squeeze(1)
+                if i < len(self.fcs) - 1:
+                    fe = F.relu(fe)
+        return fe, encoder_outs
+
+    def __call__(self, x):
+        return self.forward(x)
+
+
+class MeshDecoderPointSeg(nn.Module):
+    def __init__(self, unrolls, convs, blocks=0, batch_norm=True, transfer_data=True, symm_oper=None, n_neighbors=3,
+                 neighbor_order='closest_d'):
+        super(MeshDecoderPointSeg, self).__init__()
+        self.up_convs = []
+        for i in range(len(convs) - 2):
+            if i < len(unrolls):
+                unroll = unrolls[i]
+            else:
+                unroll = 0
+            self.up_convs.append(UpConvPoint(convs[i],
+                                             convs[i + 1],
+                                             blocks=blocks,
+                                             unroll=unroll,
+                                             batch_norm=batch_norm,
+                                             transfer_data=transfer_data,
+                                             symm_oper=symm_oper,
+                                             n_neighbors=n_neighbors,
+                                             neighbor_order=neighbor_order,
+                                             relu=True))
+        self.final_conv = UpConvPoint(convs[-2],
+                                      convs[-1],
+                                      blocks=blocks,
+                                      unroll=False,
+                                      batch_norm=batch_norm,
+                                      transfer_data=False,
+                                      symm_oper=symm_oper,
+                                      n_neighbors=n_neighbors,
+                                      neighbor_order=neighbor_order,
+                                      relu=True)
+        self.up_convs = nn.ModuleList(self.up_convs)
+        reset_params(self)
+
+    def forward(self, x, encoder_outs=None):
+        fe, meshes = x
+        for i, up_conv in enumerate(self.up_convs):
+            before_pool = None
+            if encoder_outs is not None:
+                before_pool = encoder_outs[-(i + 2)]
+            fe = up_conv((fe, meshes), before_pool)
+        fe = self.final_conv((fe, meshes))
+        return fe
+
+    def __call__(self, x, encoder_outs=None):
+        return self.forward(x, encoder_outs)
+
 
 def reset_params(model):  # todo replace with my init
     for i, m in enumerate(model.modules()):
@@ -941,21 +1103,26 @@ class MeshGenerator(nn.Module):
 class UpConvPoint(nn.Module):
 
     def __init__(self, in_channels, out_channels, blocks=0, unroll=0, residual=True,
-                 batch_norm=True, transfer_data=True, symm_oper=None, relu=False, n_neighbors=6, neighbor_order='random'):
+                 batch_norm=True, transfer_data=True, symm_oper=None, relu=False, n_neighbors=6,
+                 neighbor_order='random'):
         super(UpConvPoint, self).__init__()
         self.residual = residual
         self.bn = []
         self.unroll = None
         self.transfer_data = transfer_data
         self.relu = relu
-        self.up_conv = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors, neighbor_order=neighbor_order)
+        self.up_conv = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                                     neighbor_order=neighbor_order)
         if transfer_data:
-            self.conv1 = MeshConvPoint(2 * out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors, neighbor_order=neighbor_order)
+            self.conv1 = MeshConvPoint(2 * out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                                       neighbor_order=neighbor_order)
         else:
-            self.conv1 = MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors, neighbor_order=neighbor_order)
+            self.conv1 = MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                                       neighbor_order=neighbor_order)
         self.conv2 = []
         for _ in range(blocks):
-            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors, neighbor_order=neighbor_order))
+            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                                            neighbor_order=neighbor_order))
             self.conv2 = nn.ModuleList(self.conv2)
         if batch_norm:
             for _ in range(blocks + 1):
@@ -998,15 +1165,18 @@ class UpConvPoint(nn.Module):
 
 
 class DownConvPoint(nn.Module):
-    def __init__(self, in_channels, out_channels, blocks=0, pool=0, symm_oper=None, relu=True, n_neighbors=6, neighbor_order='random'):
+    def __init__(self, in_channels, out_channels, blocks=0, pool=0, symm_oper=None, relu=True, n_neighbors=6,
+                 neighbor_order='random'):
         super(DownConvPoint, self).__init__()
         self.bn = []
         self.pool = None
-        self.conv1 = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors, neighbor_order=neighbor_order)
+        self.conv1 = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                                   neighbor_order=neighbor_order)
         self.conv2 = []
         self.relu = relu
         for _ in range(blocks):
-            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors, neighbor_order=neighbor_order))
+            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                                            neighbor_order=neighbor_order))
             self.conv2 = nn.ModuleList(self.conv2)
         for _ in range(blocks + 1):
             self.bn.append(nn.InstanceNorm2d(out_channels))
@@ -1339,7 +1509,8 @@ class MeshAutoencoder(nn.Module):
 
 
 class MeshEncoderPoint(nn.Module):
-    def __init__(self, pools, convs, z_dim, fcs=None, blocks=0, global_pool=None, symm_oper=None, variational=False, opt=None):
+    def __init__(self, pools, convs, z_dim, fcs=None, blocks=0, global_pool=None, symm_oper=None, variational=False,
+                 opt=None):
         super(MeshEncoderPoint, self).__init__()
         self.fcs = None
         self.convs = []

@@ -51,7 +51,7 @@ def seg_accuracy(predicted, ssegs, meshes, feature_type='edge'):
             correct += (correct_vec.float() * face_areas).sum()
         elif feature_type == 'point':
             correct_vec = correct_mat[mesh_id, :mesh.vs_count, 0]
-            correct += (correct_vec.float()).sum()
+            correct += (correct_vec.float()).sum() / mesh.vs_count
     return correct
 
 def print_network(net):
