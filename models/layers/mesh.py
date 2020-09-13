@@ -9,16 +9,17 @@ from models.layers.mesh_prepare import fill_mesh
 
 class Mesh:
 
-    def __init__(self, file=None, opt=None, hold_history=False, export_folder='', faces=None,vertices=None,
+    def __init__(self, file=None, opt=None, hold_history=False, export_folder='', faces=None, vertices=None,
                  feat_from='face', export_filename='unknown'):
-        if opt!=None:
+        if opt != None:
             feat_from = opt.feat_from
+        self.opt = opt
         self.vs = self.v_mask = self.filename = self.features = self.edge_areas = None
         self.edges = self.gemm_edges = self.sides = None
         self.pool_count = self.face_count = 0
         self.faces = self.face_areas = self.gemm_faces = None
         # Extracts information from OBJ meshes (vertices, edges, features etc.)
-        fill_mesh(self, file, opt,faces=faces,vertices=vertices, feat_from=feat_from)
+        fill_mesh(self, file, opt, faces=faces, vertices=vertices, feat_from=feat_from)
         self.export_folder = export_folder
         self.history_data = None
         if hold_history:
@@ -54,7 +55,7 @@ class Mesh:
 
         vertices = torch.Tensor(self.vs)
         faces = torch.Tensor(self.faces).long()
-        
+
         if vertices.is_cuda:
             dist_uni = torch.distributions.Uniform(
                 torch.tensor([0.0]).cuda(), torch.tensor([1.0]).cuda())
@@ -81,7 +82,7 @@ class Mesh:
         points = (1 - u) * v0 + (u * (1 - v)) * v1 + u * v * v2
 
         return points, face_choices
-    
+
     def extract_features(self):
         return self.features
 
@@ -103,7 +104,6 @@ class Mesh:
         mask = self.edges == edge[1]
         self.ve[edge[0]].extend(self.ve[edge[1]])
         self.edges[mask] = edge[0]
-
 
     def remove_vertex(self, v):
         self.v_mask[v] = False
@@ -152,7 +152,6 @@ class Mesh:
         self.vs = self.vs[self.v_mask]
         # self.gemm_vs = self.gemm_vs[self.v_mask]
 
-
         new_ve = []
         edges_mask = np.concatenate([edges_mask, [False]])
         new_indices = np.zeros(edges_mask.shape[0], dtype=np.int32)
@@ -172,7 +171,7 @@ class Mesh:
         new_vs_indices = np.zeros(v_mask.shape[0], dtype=np.int32)
         new_vs_indices[-1] = -1
         new_vs_indices[v_mask] = np.arange(0, np.ma.where(v_mask)[0].shape[0])
-        self.edges = new_vs_indices[self.edges[:,:]]
+        self.edges = new_vs_indices[self.edges[:, :]]
         new_gemm_vs = [set() for _ in range(self.vs.shape[0])]
         for v_index, gemm in enumerate(self.gemm_vs):
             if self.v_mask[v_index]:
@@ -182,7 +181,7 @@ class Mesh:
 
         for vt, gemm in enumerate(new_gemm_vs):
             for n in gemm:
-                    assert(vt in new_gemm_vs[n])
+                assert (vt in new_gemm_vs[n])
 
         self.gemm_vs = new_gemm_vs
 
@@ -193,12 +192,12 @@ class Mesh:
 
     def cleanWithFace(self, edges_mask, face_mask, groups):
         edges_mask = edges_mask.astype(bool)
-        torch_mask = torch.from_numpy(edges_mask.copy())
         self.gemm_edges = self.gemm_edges[edges_mask]
         self.edges = self.edges[edges_mask]
         self.sides = self.sides[edges_mask]
 
         face_mask = face_mask.astype(bool)
+        torch_mask = torch.from_numpy(face_mask.copy())
         self.gemm_faces = self.gemm_faces[face_mask]
         self.faces = self.faces[face_mask]
         self.face_areas = self.face_areas[face_mask]
@@ -245,8 +244,8 @@ class Mesh:
         if file is None:
             if self.export_folder:
                 filename, file_extension = os.path.splitext(self.filename)
-                if(file_extension==''):
-                    file_extension=extension
+                if (file_extension == ''):
+                    file_extension = extension
                 file = '%s/%s_%d%s' % (self.export_folder, filename, self.pool_count, file_extension)
             else:
                 return
@@ -273,8 +272,8 @@ class Mesh:
         if file is None:
             if self.export_folder:
                 filename, file_extension = os.path.splitext(self.filename)
-                if(file_extension==''):
-                    file_extension=extension
+                if (file_extension == ''):
+                    file_extension = extension
                 file = '%s/%s_%d%s' % (self.export_folder, filename, self.pool_count, file_extension)
             else:
                 return
@@ -284,7 +283,8 @@ class Mesh:
                 vcol = ' %f %f %f' % (vcolor[vi, 0], vcolor[vi, 1], vcolor[vi, 2]) if vcolor is not None else ''
                 f.write("v %f %f %f%s\n" % (v[0], v[1], v[2], vcol))
             for face_id in range(len(self.faces) - 1):
-                f.write("f %d %d %d\n" % (self.faces[face_id][0] + 1, self.faces[face_id][1] + 1, self.faces[face_id][2] + 1))
+                f.write("f %d %d %d\n" % (
+                self.faces[face_id][0] + 1, self.faces[face_id][1] + 1, self.faces[face_id][2] + 1))
             f.write("f %d %d %d" % (self.faces[-1][0] + 1, self.faces[-1][1] + 1, self.faces[-1][2] + 1))
             # for edge in self.edges:
             #     f.write("\ne %d %d" % (new_indices[edge[0]] + 1, new_indices[edge[1]] + 1))
@@ -341,21 +341,45 @@ class Mesh:
         return face
 
     def init_history(self):
-        self.history_data = {
-                               'groups': [],
-                               'gemm_edges': [self.gemm_edges.copy()],
-                               'occurrences': [],
-                               'old2current': np.arange(self.edges_count, dtype=np.int32),
-                               'current2old': np.arange(self.edges_count, dtype=np.int32),
-                               'edges_mask': [torch.ones(self.edges_count,dtype=torch.bool)],
-                               'edges_count': [self.edges_count],
-                              }
-        if self.export_folder:
-            self.history_data['collapses'] = MeshUnion(self.edges_count)
+        if self.opt.feat_from == 'edge':
+            self.history_data = {
+                'groups': [],
+                'gemm_edges': [self.gemm_edges.copy()],
+                'occurrences': [],
+                'old2current': np.arange(self.edges_count, dtype=np.int32),
+                'current2old': np.arange(self.edges_count, dtype=np.int32),
+                'edges_mask': [torch.ones(self.edges_count, dtype=torch.bool)],
+                'edges_count': [self.edges_count],
+                'v_mask': [self.v_mask.copy()],
+                'edges': [self.edges.copy()],
+                'sides': [self.sides.copy()],
+                'face_areas': [self.face_areas.copy()]
+            }
+            if self.export_folder:
+                self.history_data['collapses'] = MeshUnion(self.edges_count)
+        elif self.opt.feat_from == 'face':
+            self.history_data = {
+                'groups': [],
+                'gemm_faces': [self.gemm_faces.copy()],
+                'gemm_edges': [self.gemm_edges.copy()],
+                'occurrences': [],
+                'old2current': np.arange(self.face_count, dtype=np.int32),
+                'current2old': np.arange(self.face_count, dtype=np.int32),
+                'edges_mask': [torch.ones(self.face_count, dtype=torch.bool)],
+                'edges_count': [self.edges_count],
+                'face_count': [self.face_count],
+                'v_mask': [self.v_mask.copy()],
+                'edges': [self.edges.copy()],
+                'sides': [self.sides.copy()],
+                'face_areas': [self.face_areas.copy()]
+            }
+            if self.export_folder:
+                self.history_data['collapses'] = MeshUnion(self.face_count)
 
     def union_groups(self, source, target):
         if self.export_folder and self.history_data:
-            self.history_data['collapses'].union(self.history_data['current2old'][source], self.history_data['current2old'][target])
+            self.history_data['collapses'].union(self.history_data['current2old'][source],
+                                                 self.history_data['current2old'][target])
         return
 
     def remove_group(self, index):
@@ -370,24 +394,58 @@ class Mesh:
 
     def get_occurrences(self):
         return self.history_data['occurrences'].pop()
-    
+
     def __clean_history(self, groups, pool_mask):
         if self.history_data is not None:
-            mask = self.history_data['old2current'] != -1
-            self.history_data['old2current'][mask] = np.arange(self.edges_count, dtype=np.int32)
-            self.history_data['current2old'][0: self.edges_count] = np.ma.where(mask)[0]
-            if self.export_folder != '':
-                self.history_data['edges_mask'].append(self.history_data['edges_mask'][-1].clone())
-            self.history_data['occurrences'].append(groups.get_occurrences())
-            self.history_data['groups'].append(groups.get_groups(pool_mask))
-            self.history_data['gemm_edges'].append(self.gemm_edges.copy())
-            self.history_data['edges_count'].append(self.edges_count)
-    
+            if self.opt.feat_from == 'edge':
+                mask = self.history_data['old2current'] != -1
+                self.history_data['old2current'][mask] = np.arange(self.edges_count, dtype=np.int32)
+                self.history_data['current2old'][0: self.edges_count] = np.ma.where(mask)[0]
+                if self.export_folder != '':
+                    self.history_data['edges_mask'].append(self.history_data['edges_mask'][-1].clone())
+                self.history_data['occurrences'].append(groups.get_occurrences())
+                self.history_data['groups'].append(groups.get_groups(pool_mask))
+                self.history_data['gemm_edges'].append(self.gemm_edges.copy())
+                self.history_data['edges_count'].append(self.edges_count)
+            elif self.opt.feat_from == 'face':
+                mask = self.history_data['old2current'] != -1
+                self.history_data['old2current'][mask] = np.arange(self.face_count, dtype=np.int32)
+                self.history_data['current2old'][0: self.face_count] = np.ma.where(mask)[0]
+                if self.export_folder != '':
+                    self.history_data['edges_mask'].append(self.history_data['edges_mask'][-1].clone())
+                self.history_data['occurrences'].append(groups.get_occurrences())
+                self.history_data['groups'].append(groups.get_groups(pool_mask))
+                self.history_data['gemm_edges'].append(self.gemm_edges.copy())
+                self.history_data['gemm_faces'].append(self.gemm_faces.copy())
+                # self.history_data['faces'].append(self.faces.copy())
+                self.history_data['edges_count'].append(self.edges_count)
+                self.history_data['face_count'].append(self.face_count)
+
+            self.history_data['v_mask'].append(self.v_mask.copy())
+            self.history_data['edges'].append(self.edges.copy())
+            self.history_data['sides'].append(self.sides.copy())
+            self.history_data['face_areas'].append(self.face_areas.copy())
+
     def unroll_gemm(self):
         self.history_data['gemm_edges'].pop()
         self.gemm_edges = self.history_data['gemm_edges'][-1]
         self.history_data['edges_count'].pop()
         self.edges_count = self.history_data['edges_count'][-1]
+        self.history_data['v_mask'].pop()
+        self.v_mask = self.history_data['v_mask'][-1]
+        self.history_data['edges'].pop()
+        self.edges = self.history_data['edges'][-1]
+        self.history_data['sides'].pop()
+        self.sides = self.history_data['sides'][-1]
+        self.history_data['face_areas'].pop()
+        self.face_areas = self.history_data['face_areas'][-1]
+        if self.opt.feat_from == 'face':
+            self.history_data['gemm_faces'].pop()
+            self.gemm_faces = self.history_data['gemm_faces'][-1]
+            # self.history_data['faces'].pop()
+            # self.faces = self.history_data['faces'][-1]
+            self.history_data['face_count'].pop()
+            self.face_count = self.history_data['face_count'][-1]
 
     def get_edge_areas(self):
         return self.edge_areas

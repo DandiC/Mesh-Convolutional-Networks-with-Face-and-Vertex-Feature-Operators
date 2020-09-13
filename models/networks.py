@@ -10,6 +10,7 @@ from models.layers.mesh_pool import MeshPool
 from models.layers.mesh_pool_face import MeshPoolFace
 from models.layers.mesh_unpool import MeshUnpool
 from models.layers.mesh_unpool_face import MeshUnpoolFace
+from models.layers.mesh_unpool_f import MeshUnpool_F
 from models.layers.mesh_conv_point import MeshConvPoint
 from models.layers.mesh_unpool_point import MeshUnpoolPoint
 from models.layers.mesh_pool_point import MeshPoolPoint
@@ -312,7 +313,6 @@ class MeshConvNetFace(nn.Module):
         self.fc2 = nn.Linear(fc_n, nclasses)
 
     def forward(self, x, mesh):
-
         for i in range(len(self.k) - 1):
             x = getattr(self, 'conv{}'.format(i))(x, mesh)
             x = F.relu(getattr(self, 'norm{}'.format(i))(x))
@@ -423,6 +423,7 @@ class MeshEncoderDecoder(nn.Module):
     def forward(self, x, meshes):
         fe, before_pool = self.encoder((x, meshes))
         fe = self.decoder((fe, meshes), before_pool)
+        # meshes[0].export(file=meshes[0].filename)
         return fe
 
     def __call__(self, x, meshes):
@@ -445,6 +446,7 @@ class MeshEncoderDecoderFace(nn.Module):
     def forward(self, x, meshes):
         fe, before_pool = self.encoder((x, meshes))
         fe = self.decoder((fe, meshes), before_pool)
+        # meshes[0].export(file=meshes[0].filename)
         return fe
 
     def __call__(self, x, meshes):
@@ -704,8 +706,12 @@ class MeshEncoderFace(nn.Module):
     def forward(self, x):
         fe, meshes = x
         encoder_outs = []
+        # meshes[0].export(file='pool_0.obj')
+        i = 1
         for conv in self.convs:
             fe, before_pool = conv((fe, meshes))
+            # meshes[0].export(file='pool_'+str(i)+'.obj')
+            i += 1
             encoder_outs.append(before_pool)
         if self.fcs is not None:
             if self.global_pool is not None:
@@ -742,11 +748,13 @@ class MeshDecoderFace(nn.Module):
 
     def forward(self, x, encoder_outs=None):
         fe, meshes = x
+        # meshes[0].export(file='unpool_' + str(0) + '.obj')
         for i, up_conv in enumerate(self.up_convs):
             before_pool = None
             if encoder_outs is not None:
                 before_pool = encoder_outs[-(i + 2)]
             fe = up_conv((fe, meshes), before_pool)
+            # meshes[0].export(file='unpool_' + str(i+1) + '.obj')
         fe = self.final_conv((fe, meshes))
         return fe
 
@@ -936,7 +944,7 @@ class UpConvFace(nn.Module):
                 self.bn.append(nn.BatchNorm2d(out_channels))
             self.bn = nn.ModuleList(self.bn)
         if unroll:
-            self.unroll = MeshUnpoolFace(unroll)
+            self.unroll = MeshUnpool_F(unroll)
 
     def __call__(self, x, from_down=None):
         return self.forward(x, from_down)
