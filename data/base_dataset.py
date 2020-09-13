@@ -40,6 +40,9 @@ class BaseDataset(data.Dataset):
                     nfaces = data['mesh'].faces.shape[0]
             mean = mean / (i + 1)
             std = std / (i + 1)
+            if 0 in std:
+                print('WARNING: ZERO value in STD')
+                std[std == 0] = 1
             transform_dict = {'mean': mean[:, np.newaxis], 'std': std[:, np.newaxis],
                               'ninput_channels': len(mean)}
             with open(mean_std_cache, 'wb') as f:
