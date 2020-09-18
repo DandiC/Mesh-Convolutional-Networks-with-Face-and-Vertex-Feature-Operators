@@ -49,7 +49,8 @@ class MeshPoolFace(nn.Module):
             return
 
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
-        face_mask = np.ones(mesh.face_count, dtype=np.bool)
+        face_mask = np.ones(fe.shape[1], dtype=np.bool)
+        face_mask[mesh.face_count:] = False
         edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
 
         while mesh.face_count > self.__out_target:
