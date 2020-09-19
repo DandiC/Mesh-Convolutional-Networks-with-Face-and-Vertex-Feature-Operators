@@ -219,7 +219,10 @@ class MeshPoolFace(nn.Module):
             edge_mask[edge_key] = False
 
         # Get faces adjacent to vertex. Remove 2 and keep 1
-        faces = np.where(mesh.faces == list(vertex)[0])[0]
+        faces = set()
+        for edge_key in invalid_edges:
+            faces |= set(np.where(mesh.edges_in_face == edge_key)[0])
+        faces = np.array(list(faces))
         faces = faces[face_mask[faces]]
         assert len(faces) == 3
         face_mask[faces[1:]] = 0
@@ -234,14 +237,16 @@ class MeshPoolFace(nn.Module):
         neighbors = neighbors[neighbors != faces[0]]
         n1 = neighbors[neighbors != faces[2]][0]
         mesh.gemm_faces[faces[0], np.where(mesh.gemm_faces[faces[0]] == faces[1])[0][0]] = n1
-        mesh.gemm_faces[n1, np.where(mesh.gemm_faces[n1] == faces[1])[0][0]] = faces[0]
+        if n1 != -1:
+            mesh.gemm_faces[n1, np.where(mesh.gemm_faces[n1] == faces[1])[0][0]] = faces[0]
 
 
         neighbors = mesh.gemm_faces[faces[2]]
         neighbors = neighbors[neighbors != faces[0]]
         n2 = neighbors[neighbors != faces[1]][0]
         mesh.gemm_faces[faces[0], np.where(mesh.gemm_faces[faces[0]] == faces[2])[0][0]] = n2
-        mesh.gemm_faces[n2, np.where(mesh.gemm_faces[n2] == faces[2])[0][0]] = faces[0]
+        if n2 != -1:
+            mesh.gemm_faces[n2, np.where(mesh.gemm_faces[n2] == faces[2])[0][0]] = faces[0]
 
         # Udate edges in face of new face
         edges = mesh.edges_in_face[faces[0]]
