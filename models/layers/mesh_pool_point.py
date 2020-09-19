@@ -45,60 +45,59 @@ class MeshPoolPoint(nn.Module):
         # recycle = []
         # last_queue_len = len(queue)
         last_count = mesh.edges_count + 1
-        mask = np.ones(mesh.edges_count, dtype=np.bool)
-        edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
+        edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
+        vertex_groups = MeshUnion(mesh.vs_count, self.__fe.device)
         while mesh.vs_count > self.__out_target:
             value, vt_id, n_id = heappop(queue)
             vt_id = int(vt_id)
             n_id = int(n_id)
 
-            edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == vt_id, mesh.edges[:, 1] == n_id),
-                                              np.logical_and(mesh.edges[:, 0] == n_id, mesh.edges[:, 1] == vt_id)))
-            if mask[edge_id]:
-                self.__pool_edge(mesh, edge_id, mask, edge_groups)
-                assert(mesh.vs_count == mesh.v_mask.sum())
-        fe = self.__fe[mesh_index]
-        v_mask = np.zeros((fe.shape[1]), dtype=bool)
-        v_mask[:mesh.v_mask.shape[0]] = mesh.v_mask
-        # TODO: Need to clean faces too in order for decoder to work
-        mesh.cleanWithPoint(mask, edge_groups)
-        fe = fe[:,v_mask]
+            if mesh.v_mask[vt_id] and mesh.v_mask[n_id]:
+                edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == vt_id, mesh.edges[:, 1] == n_id),
+                                                  np.logical_and(mesh.edges[:, 0] == n_id, mesh.edges[:, 1] == vt_id)))
+                if edge_mask[edge_id]:
+                    self.__pool_edge(mesh, edge_id, edge_mask, vertex_groups)
+                    # assert(mesh.vs_count == mesh.v_mask.sum())
 
-        padding_b = self.__out_target - fe.shape[1]
-        if padding_b > 0:
-            padding_b = ConstantPad2d((0, padding_b, 0, 0), 0)
-            fe = padding_b(fe.squeeze(-1))
+        # Copy vertex mask so that it can be used when rebuilding the features
+        v_mask = mesh.v_mask.copy()
+        # TODO: Need to clean faces too in order for decoder to work
+        mesh.cleanWithPoint(edge_mask, vertex_groups)
+
+        fe = vertex_groups.rebuild_features(self.__fe[mesh_index], v_mask, self.__out_target)
 
         self.__updated_fe[mesh_index] = fe
 
-    def __pool_edge(self, mesh, edge_id, mask, edge_groups):
+    def __pool_edge(self, mesh, edge_id, mask, vertex_groups):
         # Not pool if the edge or one of its neighbors is in a boundary
         if self.has_boundaries(mesh, edge_id):
             return False
-        elif self.__clean_side(mesh, edge_id, mask, edge_groups, 0)\
-            and self.__clean_side(mesh, edge_id, mask, edge_groups, 2) \
+        elif self.__clean_side(mesh, edge_id, mask, vertex_groups, 0)\
+            and self.__clean_side(mesh, edge_id, mask, vertex_groups, 2) \
             and self.__is_one_ring_valid(mesh, edge_id):
-            self.__merge_edges[0] = self.__pool_side(mesh, edge_id, mask, edge_groups, 0)
-            self.__merge_edges[1] = self.__pool_side(mesh, edge_id, mask, edge_groups, 2)
-            mesh.merge_vertices(edge_id)
+            self.__merge_edges[0] = self.__pool_side(mesh, edge_id, mask, vertex_groups, 0)
+            self.__merge_edges[1] = self.__pool_side(mesh, edge_id, mask, vertex_groups, 2)
+            # Keeps the first component of edge_id (updated accordingly) and deletes the second.
+            updated_v, removed_v = mesh.merge_vertices(edge_id)
             mask[edge_id] = False
-            MeshPoolPoint.__remove_group(mesh, edge_groups, edge_id)
+            MeshPoolPoint.__union_groups(mesh, vertex_groups, removed_v, updated_v)
+            MeshPoolPoint.__remove_group(mesh, vertex_groups, removed_v)
             mesh.edges_count -= 1
             return True
         else:
             return False
 
-    def __clean_side(self, mesh, edge_id, mask, edge_groups, side):
+    def __clean_side(self, mesh, edge_id, mask, vertex_groups, side):
         if mesh.edges_count <= self.__out_target:
             return False
-        invalid_edges = MeshPoolPoint.__get_invalids(mesh, edge_id, edge_groups, side)
+        invalid_edges = MeshPoolPoint.__get_invalids(mesh, edge_id, vertex_groups, side)
         while len(invalid_edges) != 0 and mesh.edges_count > self.__out_target:
-            self.__remove_triplete(mesh, mask, edge_groups, invalid_edges)
+            self.__remove_triplete(mesh, mask, vertex_groups, invalid_edges)
             if mesh.edges_count <= self.__out_target:
                 return False
             if self.has_boundaries(mesh, edge_id):
                 return False
-            invalid_edges = self.__get_invalids(mesh, edge_id, edge_groups, side)
+            invalid_edges = self.__get_invalids(mesh, edge_id, vertex_groups, side)
         return True
 
     @staticmethod
@@ -116,21 +115,18 @@ class MeshPoolPoint(nn.Module):
         shared = v_a & v_b - set(mesh.edges[edge_id])
         return len(shared) == 2
 
-    def __pool_side(self, mesh, edge_id, mask, edge_groups, side):
+    def __pool_side(self, mesh, edge_id, mask, vertex_groups, side):
         info = MeshPoolPoint.__get_face_info(mesh, edge_id, side)
         key_a, key_b, side_a, side_b, _, other_side_b, _, other_keys_b = info
         self.__redirect_edges(mesh, key_a, side_a - side_a % 2, other_keys_b[0], mesh.sides[key_b, other_side_b])
         self.__redirect_edges(mesh, key_a, side_a - side_a % 2 + 1, other_keys_b[1], mesh.sides[key_b, other_side_b + 1])
-        MeshPoolPoint.__union_groups(mesh, edge_groups, key_b, key_a)
-        MeshPoolPoint.__union_groups(mesh, edge_groups, edge_id, key_a)
         mask[key_b] = False
-        MeshPoolPoint.__remove_group(mesh, edge_groups, key_b)
         mesh.remove_edge(key_b)
         mesh.edges_count -= 1
         return key_a
 
     @staticmethod
-    def __get_invalids(mesh, edge_id, edge_groups, side):
+    def __get_invalids(mesh, edge_id, vertex_groups, side):
         info = MeshPoolPoint.__get_face_info(mesh, edge_id, side)
         key_a, key_b, side_a, side_b, other_side_a, other_side_b, other_keys_a, other_keys_b = info
         shared_items = MeshPoolPoint.__get_shared_items(other_keys_a, other_keys_b)
@@ -146,12 +142,6 @@ class MeshPoolPoint(nn.Module):
             MeshPoolPoint.__redirect_edges(mesh, edge_id, side, update_key_a, update_side_a)
             MeshPoolPoint.__redirect_edges(mesh, edge_id, side + 1, update_key_b, update_side_b)
             MeshPoolPoint.__redirect_edges(mesh, update_key_a, MeshPoolPoint.__get_other_side(update_side_a), update_key_b, MeshPoolPoint.__get_other_side(update_side_b))
-            MeshPoolPoint.__union_groups(mesh, edge_groups, key_a, edge_id)
-            MeshPoolPoint.__union_groups(mesh, edge_groups, key_b, edge_id)
-            MeshPoolPoint.__union_groups(mesh, edge_groups, key_a, update_key_a)
-            MeshPoolPoint.__union_groups(mesh, edge_groups, middle_edge, update_key_a)
-            MeshPoolPoint.__union_groups(mesh, edge_groups, key_b, update_key_b)
-            MeshPoolPoint.__union_groups(mesh, edge_groups, middle_edge, update_key_b)
             return [key_a, key_b, middle_edge]
 
     @staticmethod
@@ -187,16 +177,21 @@ class MeshPoolPoint(nn.Module):
         return key_a, key_b, side_a, side_b, other_side_a, other_side_b, other_keys_a, other_keys_b
 
     @staticmethod
-    def __remove_triplete(mesh, mask, edge_groups, invalid_edges):
+    def __remove_triplete(mesh, mask, vertex_groups, invalid_edges):
         vertex = set(mesh.edges[invalid_edges[0]])
+        vertices = set(mesh.edges[invalid_edges[0]])
         for edge_key in invalid_edges:
             vertex &= set(mesh.edges[edge_key])
+            vertices |= set(mesh.edges[edge_key])
             mask[edge_key] = False
-            MeshPoolPoint.__remove_group(mesh, edge_groups, edge_key)
+        vertices = vertices.difference(vertex)
         mesh.edges_count -= 3
         vertex = list(vertex)
         assert(len(vertex) == 1)
         mesh.remove_vertex(vertex[0])
+        for neighbor in vertices:
+            MeshPoolPoint.__union_groups(mesh, vertex_groups, vertex[0], neighbor)
+        MeshPoolPoint.__remove_group(mesh, vertex_groups, vertex[0])
 
     def __build_queue(self, features, mesh):
         # delete edges with smallest norm
@@ -217,12 +212,12 @@ class MeshPoolPoint(nn.Module):
         return heap
 
     @staticmethod
-    def __union_groups(mesh, edge_groups, source, target):
-        edge_groups.union(source, target)
+    def __union_groups(mesh, vertex_groups, source, target):
+        vertex_groups.union(source, target)
         mesh.union_groups(source, target)
 
     @staticmethod
-    def __remove_group(mesh, edge_groups, index):
-        edge_groups.remove_group(index)
+    def __remove_group(mesh, vertex_groups, index):
+        vertex_groups.remove_group(index)
         mesh.remove_group(index)
 

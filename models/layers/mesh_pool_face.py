@@ -92,7 +92,7 @@ class MeshPoolFace(nn.Module):
             # Merge side edges
             self.__merge_edges[0] = self.__pool_side(mesh, edge_id, edge_mask, face_groups, 0)
             self.__merge_edges[1] = self.__pool_side(mesh, edge_id, edge_mask, face_groups, 2)
-            mesh.merge_vertices(edge_id)
+            _, _ = mesh.merge_vertices(edge_id)
 
             # Remove edge
             edge_mask[edge_id] = False

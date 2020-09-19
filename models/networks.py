@@ -1137,7 +1137,7 @@ class UpConvPoint(nn.Module):
                 self.bn.append(nn.InstanceNorm2d(out_channels))
             self.bn = nn.ModuleList(self.bn)
         if unroll:
-            self.unroll = MeshUnpoolPoint(unroll)
+            self.unroll = MeshUnpool(unroll)
 
     def __call__(self, x, from_down=None):
         return self.forward(x, from_down)
