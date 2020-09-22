@@ -243,13 +243,13 @@ class MeshConvNetPoint(nn.Module):
 
 
 class MResConvPoint(nn.Module):
-    def __init__(self, in_channels, out_channels, skips=1, symm_oper=None, relu=True, n_neighbors=6):
+    def __init__(self, in_channels, out_channels, skips=1, symm_oper=None, relu=True, n_neighbors=6, neighbor_order='random'):
         super(MResConvPoint, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
         self.conv0 = MeshConvPoint(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper,
-                                   n_neighbors=n_neighbors)
+                                   n_neighbors=n_neighbors, neighbor_order=neighbor_order)
         self.relu = relu
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))
@@ -444,8 +444,12 @@ class MeshEncoderDecoderFace(nn.Module):
                                        symm_oper=symm_oper)
 
     def forward(self, x, meshes):
+        print(meshes[0].filename)
+        print(x[0])
         fe, before_pool = self.encoder((x, meshes))
+        print(fe[0])
         fe = self.decoder((fe, meshes), before_pool)
+        print(fe[0])
         # meshes[0].export(file=meshes[0].filename)
         return fe
 
