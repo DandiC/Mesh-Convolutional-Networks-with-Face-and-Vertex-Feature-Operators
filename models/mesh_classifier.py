@@ -134,6 +134,6 @@ class ClassifierModel:
             if not os.path.exists(export_folder):
                 os.makedirs(export_folder)
             for meshi, mesh in enumerate(self.mesh):
-                prediction = pred_seg[meshi].numpy()
+                prediction = pred_seg[meshi].numpy() + 1
                 np.savetxt(os.path.join(export_folder, mesh.filename.replace('.obj', '.eseg')), prediction, fmt='%i')
                 mesh.export_segments(pred_seg[meshi, :])
