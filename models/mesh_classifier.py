@@ -1,8 +1,9 @@
 import torch
 from . import networks
-from os.path import join
 from util.util import seg_accuracy, print_network
 import wandb
+import numpy as np
+import os
 
 class ClassifierModel:
     """ Class for training Model weights
@@ -17,7 +18,7 @@ class ClassifierModel:
         self.gpu_ids = opt.gpu_ids
         self.is_train = opt.is_train
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
-        self.save_dir = join(opt.checkpoints_dir, opt.name)
+        self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
         self.optimizer = None
         self.features = None
         self.labels = None
@@ -74,7 +75,7 @@ class ClassifierModel:
     def load_network(self, which_epoch):
         """load model from disk"""
         save_filename = '%s_net.pth' % which_epoch
-        load_path = join(self.save_dir, save_filename)
+        load_path = os.path.join(self.save_dir, save_filename)
         net = self.net
         if isinstance(net, torch.nn.DataParallel):
             net = net.module
@@ -90,7 +91,7 @@ class ClassifierModel:
     def save_network(self, which_epoch, wandb_save=False, dataset_mode=None):
         """save model to disk"""
         save_filename = '%s_net.pth' % (which_epoch)
-        save_path = join(self.save_dir, save_filename)
+        save_path = os.path.join(self.save_dir, save_filename)
         if len(self.gpu_ids) > 0 and torch.cuda.is_available():
             torch.save(self.net.module.cpu().state_dict(), save_path)
             self.net.cuda(self.gpu_ids[0])
@@ -129,5 +130,10 @@ class ClassifierModel:
 
     def export_segmentation(self, pred_seg):
         if self.opt.dataset_mode == 'segmentation':
+            export_folder = os.path.join(self.opt.checkpoints_dir, self.opt.name, 'segments')
+            if not os.path.exists(export_folder):
+                os.makedirs(export_folder)
             for meshi, mesh in enumerate(self.mesh):
+                prediction = pred_seg[meshi].numpy()
+                np.savetxt(os.path.join(export_folder, mesh.filename.replace('.obj', '.eseg')), prediction, fmt='%i')
                 mesh.export_segments(pred_seg[meshi, :])
