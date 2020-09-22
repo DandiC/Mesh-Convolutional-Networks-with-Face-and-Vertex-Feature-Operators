@@ -43,8 +43,6 @@ class BaseDataset(data.Dataset):
             if 0 in std:
                 print('WARNING: ZERO value in STD')
                 std[std == 0] = 1
-            print('Mean:', mean)
-            print('STD:', std)
             transform_dict = {'mean': mean[:, np.newaxis], 'std': std[:, np.newaxis],
                               'ninput_channels': len(mean)}
             with open(mean_std_cache, 'wb') as f:
@@ -58,6 +56,9 @@ class BaseDataset(data.Dataset):
             self.mean = transform_dict['mean']
             self.std = transform_dict['std']
             self.ninput_channels = transform_dict['ninput_channels']
+
+        print('Mean:', self.mean)
+        print('STD:', self.std)
 
 
 def collate_fn(batch):
