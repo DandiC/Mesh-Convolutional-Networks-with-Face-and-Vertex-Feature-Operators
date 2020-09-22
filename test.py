@@ -104,7 +104,6 @@ def run_test(epoch=-1, import_opt=False):
             model.set_input(data)
             ncorrect, nexamples = model.test()
             writer.update_counter(ncorrect, nexamples)
-            break
         writer.print_acc(epoch, writer.acc)
         return writer.acc
 
