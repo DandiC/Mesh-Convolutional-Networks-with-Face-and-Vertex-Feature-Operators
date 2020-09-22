@@ -46,13 +46,6 @@ def run_test(epoch=-1, import_opt=False):
 
     dataset = DataLoader(opt)
     model = create_model(opt)
-
-    file = open(os.path.join(opt.checkpoints_dir, opt.name, 'weights.txt'), 'w')
-    for param in model.net.parameters():
-        file.write(str(param.data))
-        file.write('\n')
-    file.close()
-    
     writer = Writer(opt)
     # test
     writer.reset_counter()
