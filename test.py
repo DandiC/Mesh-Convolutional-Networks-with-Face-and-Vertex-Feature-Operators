@@ -33,6 +33,7 @@ def run_test(epoch=-1, import_opt=False):
         opt = TestOptions().parse()
     opt.clean_data = False
     opt.serial_batches = True  # no shuffle
+    opt.is_train = False
 
     if opt.name == 'sweep':
         if wandb.run.id != None:
