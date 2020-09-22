@@ -43,8 +43,6 @@ class BaseDataset(data.Dataset):
             if 0 in std:
                 print('WARNING: ZERO value in STD')
                 std[std == 0] = 1
-            print('Mean:', mean)
-            print('STD:', std)
             transform_dict = {'mean': mean[:, np.newaxis], 'std': std[:, np.newaxis],
                               'ninput_channels': len(mean)}
             with open(mean_std_cache, 'wb') as f:
