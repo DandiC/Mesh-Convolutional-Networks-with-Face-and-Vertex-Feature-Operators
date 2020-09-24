@@ -892,7 +892,7 @@ class DownConvFace(nn.Module):
             self.conv2.append(MeshConvFace(out_channels, out_channels, symm_oper=symm_oper))
             self.conv2 = nn.ModuleList(self.conv2)
         for _ in range(blocks + 1):
-            self.bn.append(nn.BatchNorm2d(out_channels))
+            self.bn.append(nn.InstanceNorm2d(out_channels))
             self.bn = nn.ModuleList(self.bn)
         if pool:
             self.pool = MeshPoolFace(pool)
@@ -905,14 +905,14 @@ class DownConvFace(nn.Module):
         x1 = self.conv1(fe, meshes)
         if self.bn:
             x1 = self.bn[0](x1)
-        x1 = F.leaky_relu(x1, negative_slope=0.2)
+        x1 = F.relu(x1)
         x2 = x1
         for idx, conv in enumerate(self.conv2):
             x2 = conv(x1, meshes)
             if self.bn:
                 x2 = self.bn[idx + 1](x2)
             x2 = x2 + x1
-            x2 = F.leaky_relu(x2, negative_slope=0.2)
+            x2 = F.relu(x2)
             x1 = x2
         x2 = x2.squeeze(3)
         before_pool = x2
@@ -941,7 +941,7 @@ class UpConvFace(nn.Module):
             self.conv2 = nn.ModuleList(self.conv2)
         if batch_norm:
             for _ in range(blocks + 1):
-                self.bn.append(nn.BatchNorm2d(out_channels))
+                self.bn.append(nn.InstanceNorm2d(out_channels))
             self.bn = nn.ModuleList(self.bn)
         if unroll:
             self.unroll = MeshUnpool_F(unroll)
