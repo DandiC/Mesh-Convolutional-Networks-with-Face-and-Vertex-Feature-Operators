@@ -103,7 +103,7 @@ class MeshConvPoint(nn.Module):
 
         if self.neighbor_order == 'random_sum':
             # Return the features of the vertex and the sum of the features of its randomly selected neighbors.
-            return torch.cat([torch.unsqueeze(f[:, :, :, 0], dim=3), torch.sum(f[:, :, :, 1:], axis=3)], dim=3)
+            return torch.cat([f[:, :, :, 0].unsqueeze(3), torch.sum(f[:, :, :, 1:], axis=3).unsqueeze(3)], dim=3)
         else:
             return f
 
