@@ -144,7 +144,8 @@ def define_classifier(input_nc, ncf, ninput_features, nclasses, opt, gpu_ids, ar
                                   opt.resblocks, symm_oper=opt.symm_oper)
         elif feat_from == 'point':
             net = MeshConvNetPoint(norm_layer, input_nc, ncf, nclasses, ninput_features, opt.pool_res, opt.fc_n,
-                                   opt.resblocks, symm_oper=opt.symm_oper, n_neighbors=opt.n_neighbors)
+                                   opt.resblocks, symm_oper=opt.symm_oper, n_neighbors=opt.n_neighbors,
+                                   neighbor_order=opt.neighbor_order)
     elif arch == 'meshunet':
         down_convs = [input_nc] + ncf
         up_convs = ncf[::-1] + [nclasses]
@@ -210,7 +211,7 @@ class MeshConvNetPoint(nn.Module):
     """
 
     def __init__(self, norm_layer, nf0, conv_res, nclasses, input_res, pool_res, fc_n,
-                 nresblocks=3, symm_oper=None, n_neighbors=6):
+                 nresblocks=3, symm_oper=None, n_neighbors=6, neighbor_order='closest_d'):
         super(MeshConvNetPoint, self).__init__()
         self.k = [nf0] + conv_res
         self.res = [input_res] + pool_res
@@ -218,7 +219,8 @@ class MeshConvNetPoint(nn.Module):
 
         for i, ki in enumerate(self.k[:-1]):
             setattr(self, 'conv{}'.format(i),
-                    MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, n_neighbors=n_neighbors))
+                    MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                                  neighbor_order=neighbor_order))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'pool{}'.format(i), MeshPoolPoint(self.res[i + 1]))
 
@@ -243,13 +245,14 @@ class MeshConvNetPoint(nn.Module):
 
 
 class MResConvPoint(nn.Module):
-    def __init__(self, in_channels, out_channels, skips=1, symm_oper=None, relu=True, n_neighbors=6):
+    def __init__(self, in_channels, out_channels, skips=1, symm_oper=None, relu=True, n_neighbors=6,
+                 neighbor_order='closest_d'):
         super(MResConvPoint, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
         self.conv0 = MeshConvPoint(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper,
-                                   n_neighbors=n_neighbors)
+                                   n_neighbors=n_neighbors, neighbor_order=neighbor_order)
         self.relu = relu
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))

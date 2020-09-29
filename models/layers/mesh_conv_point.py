@@ -13,15 +13,16 @@ class MeshConvPoint(nn.Module):
         self.n_neighbors = n_neighbors
         self.neighbor_order = neighbor_order
 
-        if neighbor_order == 'random':
-            if n_neighbors==0:
-                self.symm_oper = []
-            elif n_neighbors == -1:
-                self.symm_oper = [1]
-
-            self.k = 1+len(self.symm_oper)
+        # Set the size of the convolutional filter
+        if n_neighbors == 0:
+            self.k = 1
         else:
-            self.k = 4
+            if neighbor_order == 'random_sum':
+                self.k = 2
+            elif neighbor_order in ['mean_c', 'gaussian_c', 'median_d']:
+                self.k = 4
+            else:
+                self.k = 1 + self.n_neighbors
 
         self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(1, self.k),
                               bias=bias)
@@ -36,7 +37,7 @@ class MeshConvPoint(nn.Module):
         if self.n_neighbors==-1:
             G = self.create_GeMM_average(x, mesh)
         else:
-            if self.neighbor_order == 'random':
+            if 'random' in self.neighbor_order:
                 G = torch.cat([self.pad_gemm_random(i, x.shape[2], x.device) for i in mesh], 0)
             else:
                 G = torch.cat([self.pad_gemm_ordered(i, x.shape[2], x.device) for i in mesh], 0)
@@ -100,37 +101,11 @@ class MeshConvPoint(nn.Module):
         f = f.view(Gishape[0], Gishape[1], Gishape[2], -1)
         f = f.permute(0, 3, 1, 2)
 
-        # Features without symmetric functions
-        # x_1 = f[:, :, :, 1]
-        # x_2 = f[:, :, :, 2]
-        # x_3 = f[:, :, :, 3]
-        if self.neighbor_order == 'random':
-            #Symmetric functions
-            complete_f = torch.unsqueeze(f[:, :, :, 0], dim=3)
-            if 1 in self.symm_oper:
-                x_1 = f[:, :, :, 1] + f[:, :, :, 2] + f[:, :, :, 3]
-                complete_f = torch.cat([complete_f, torch.unsqueeze(x_1, 3)], dim=3)
-            if 2 in self.symm_oper:
-                x_2 = f[:, :, :, 1] * f[:, :, :, 2] * f[:, :, :, 3]
-                complete_f = torch.cat([complete_f, torch.unsqueeze(x_2, 3)], dim=3)
-            if 3 in self.symm_oper:
-                x_3 = f[:, :, :, 1] * f[:, :, :, 2] + f[:, :, :, 1] * f[:, :, :, 3] + f[:, :, :, 2] * f[:, :, :, 3]
-                complete_f = torch.cat([complete_f, torch.unsqueeze(x_3, 3)], dim=3)
-            if 4 in self.symm_oper:
-                x_4 = f[:, :, :, 1] * f[:, :, :, 1] + f[:, :, :, 2] * f[:, :, :, 2] + f[:, :, :, 3] * f[:, :, :, 3]
-                complete_f = torch.cat([complete_f, torch.unsqueeze(x_4, 3)], dim=3)
-            if 5 in self.symm_oper:
-                x_5 = torch.abs(f[:, :, :, 1] - f[:, :, :, 2]) + torch.abs(f[:, :, :, 1] - f[:, :, :, 3]) + torch.abs(
-                    f[:, :, :, 2] - f[:, :, :, 3])
-                complete_f = torch.cat([complete_f, torch.unsqueeze(x_5, 3)], dim=3)
-            if 6 in self.symm_oper:
-                x_6 = f[:, :, :, 1] * f[:, :, :, 1] * f[:, :, :, 1] + f[:, :, :, 2] * f[:, :, :, 2] * f[:, :, :, 2] \
-                      + f[:, :, :, 3] * f[:, :, :, 3] * f[:, :, :, 3]
-                complete_f = torch.cat([complete_f, torch.unsqueeze(x_6, 3)], dim=3)
+        if self.neighbor_order == 'random_sum':
+            # Return the features of the vertex and the sum of the features of its randomly selected neighbors.
+            return torch.cat([torch.unsqueeze(f[:, :, :, 0], dim=3), torch.sum(f[:, :, :, 1:], axis=3)], dim=3)
         else:
             return f
-
-        return complete_f
 
     def pad_gemm_random(self, m, xsz, device):
         """ extracts face neighbors (3x for trimesh) -> m.gemm_faces
@@ -140,8 +115,8 @@ class MeshConvPoint(nn.Module):
         """
         rand_gemm = -np.ones((m.vs.shape[0], self.n_neighbors), dtype=int)
         for i, gemm in enumerate(m.gemm_vs):
-            if self.n_neighbors>len(gemm):
-                rand_gemm[i,0:len(gemm)] = np.array(list(gemm))
+            if self.n_neighbors > len(gemm):
+                rand_gemm[i, 0:len(gemm)] = np.array(list(gemm))
             else:
                 rand_gemm[i,:] = np.array(random.sample(gemm,self.n_neighbors))
         padded_gemm = torch.tensor(rand_gemm, device=device).float()
@@ -159,27 +134,33 @@ class MeshConvPoint(nn.Module):
         then pad to desired size e.g., xsz x 4
         """
 
-        ord_gemm = -np.ones((m.vs.shape[0], 3), dtype=int)
+        if self.neighbor_order in ['mean_c', 'gaussian_c', 'median_d']:
+            ord_gemm = -np.ones((m.vs.shape[0], 3), dtype=int)
+        else:
+            ord_gemm = -np.ones((m.vs.shape[0], self.n_neighbors), dtype=int)
+
         for i, gemm in enumerate(m.gemm_vs):
-            # TODO: This code assumes that features are [x, y, z, mean_c, gaussian_c]. Make this generic in the future
+            # TODO: This code assumes that features are [mean_c, gaussian_c]. Make this generic in the future
             # TODO: Only closest_d is prepared to handle vertices with less than 2 neighbors
             l_gemm = list(gemm)
             if self.neighbor_order == 'mean_c':
-                curv = m.features[3,l_gemm]
+                curv = m.features[0,l_gemm]
                 order = np.argsort(curv)
                 ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[order.size // 2]], l_gemm[order[0]]]
             elif self.neighbor_order == 'gaussian_c':
-                curv = m.features[4, l_gemm]
+                curv = m.features[1, l_gemm]
                 order = np.argsort(curv)
                 ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[order.size // 2]], l_gemm[order[0]]]
             elif self.neighbor_order == 'closest_d':
                 dist = np.linalg.norm(m.vs[l_gemm]-m.vs[i],axis=1)
                 order = np.argsort(dist)
-                ord_gemm[i, :min(3,len(gemm))] = np.asarray(l_gemm)[order[:min(3,len(gemm))]]
+                ord_gemm[i, :min(self.n_neighbors, len(gemm))] = np.asarray(l_gemm)[order[:min(self.n_neighbors,
+                                                                                               len(gemm))]]
             elif self.neighbor_order == 'farthest_d':
                 dist = np.linalg.norm(m.vs[l_gemm] - m.vs[i], axis=1)
-                order = np.argsort(dist)
-                ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[-2]], l_gemm[order[-3]]]
+                order = np.argsort(-dist)
+                ord_gemm[i, :min(self.n_neighbors, len(gemm))] = np.asarray(l_gemm)[order[:min(self.n_neighbors,
+                                                                                               len(gemm))]]
             elif self.neighbor_order == 'median_d':
                 dist = np.linalg.norm(m.vs[l_gemm] - m.vs[i], axis=1)
                 order = np.argsort(dist)
