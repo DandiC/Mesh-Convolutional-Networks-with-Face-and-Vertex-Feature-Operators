@@ -17,7 +17,7 @@ class MeshConvPoint(nn.Module):
         if n_neighbors == 0:
             self.k = 1
         else:
-            if neighbor_order == 'random_sum':
+            if 'sum' in neighbor_order:
                 self.k = 2
             elif neighbor_order in ['mean_c', 'gaussian_c', 'median_d']:
                 self.k = 4
@@ -101,7 +101,7 @@ class MeshConvPoint(nn.Module):
         f = f.view(Gishape[0], Gishape[1], Gishape[2], -1)
         f = f.permute(0, 3, 1, 2)
 
-        if self.neighbor_order == 'random_sum':
+        if 'sum' in self.neighbor_order:
             # Return the features of the vertex and the sum of the features of its randomly selected neighbors.
             return torch.cat([f[:, :, :, 0].unsqueeze(3), torch.sum(f[:, :, :, 1:], axis=3).unsqueeze(3)], dim=3)
         else:
@@ -151,7 +151,7 @@ class MeshConvPoint(nn.Module):
                 curv = m.features[1, l_gemm]
                 order = np.argsort(curv)
                 ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[order.size // 2]], l_gemm[order[0]]]
-            elif self.neighbor_order == 'closest_d':
+            elif  'closest_d' in self.neighbor_order:
                 dist = np.linalg.norm(m.vs[l_gemm]-m.vs[i],axis=1)
                 order = np.argsort(dist)
                 ord_gemm[i, :min(self.n_neighbors, len(gemm))] = np.asarray(l_gemm)[order[:min(self.n_neighbors,
