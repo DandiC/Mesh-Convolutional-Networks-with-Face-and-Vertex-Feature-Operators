@@ -116,7 +116,8 @@ class ClassifierModel:
             # compute number of correct
             pred_class = out.data.max(1)[1]
             label_class = self.labels
-            self.export_segmentation(pred_class.cpu())
+            if self.opt.export_segments:
+                self.export_segmentation(pred_class.cpu())
             correct = self.get_accuracy(pred_class, label_class)
         return correct, len(label_class)
 

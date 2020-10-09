@@ -53,8 +53,8 @@ if __name__ == '__main__':
 
     gen_model_id = 0
 
-    for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
-    # for epoch in range(1):
+    # for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
+    for epoch in range(1):
         epoch_start_time = time.time()
         iter_data_time = time.time()
         epoch_iter = 0
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         if epoch % opt.save_epoch_freq == 0:
             print('saving the model at the end of epoch %d, iters %d' %
                   (epoch, total_steps))
-            model.save_network('latest', wandb_save=False, dataset_mode=opt.dataset_mode)
+            model.save_network('latest', wandb_save=True, dataset_mode=opt.dataset_mode)
             # model.save_network(epoch, dataset_mode=opt.dataset_mode)
 
         print('End of epoch %d / %d \t Time Taken: %d sec' %
