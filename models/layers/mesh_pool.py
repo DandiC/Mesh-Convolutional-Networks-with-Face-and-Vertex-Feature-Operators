@@ -47,6 +47,11 @@ class MeshPool(nn.Module):
         mask = np.ones(mesh.edges_count, dtype=np.bool)
         edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
         while mesh.edges_count > self.__out_target:
+            if not queue:
+                print('Run out of edges to pool')
+                print(' Mesh:', mesh.filename)
+                print(' # of current edges', mesh.edges_count)
+                print(' Target:', self.__out_target)
             value, edge_id = heappop(queue)
             edge_id = int(edge_id)
             if mask[edge_id]:
