@@ -57,7 +57,7 @@ class MeshPoolPoint(nn.Module):
                                                   np.logical_and(mesh.edges[:, 0] == n_id, mesh.edges[:, 1] == vt_id)))
                 if edge_mask[edge_id]:
                     self.__pool_edge(mesh, edge_id, edge_mask, vertex_groups)
-                    # assert(mesh.vs_count == mesh.v_mask.sum())
+                    assert(mesh.vs_count == mesh.v_mask.sum())
 
         # Copy vertex mask so that it can be used when rebuilding the features
         v_mask = mesh.v_mask.copy()
@@ -93,7 +93,7 @@ class MeshPoolPoint(nn.Module):
         invalid_edges = MeshPoolPoint.__get_invalids(mesh, edge_id, vertex_groups, side)
         while len(invalid_edges) != 0 and mesh.edges_count > self.__out_target:
             self.__remove_triplete(mesh, mask, vertex_groups, invalid_edges)
-            if mesh.edges_count <= self.__out_target:
+            if mesh.vs_count <= self.__out_target:
                 return False
             if self.has_boundaries(mesh, edge_id):
                 return False

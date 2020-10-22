@@ -109,8 +109,10 @@ class Mesh:
         return to_keep, to_remove
 
     def remove_vertex(self, v):
+        if self.v_mask[v]:
+            self.vs_count -= 1
         self.v_mask[v] = False
-        self.vs_count -= 1
+
         # for index, vt in enumerate(self.gemm_vs[v]):
         #     self.gemm_vs[vt].remove(v)
 
