@@ -439,6 +439,7 @@ class Mesh:
                 self.history_data['face_count'].append(self.face_count)
 
             elif self.opt.feat_from == 'point':
+                # TODO: This happens when target ~ 250 in mesh segmentation with (at least) scape__mesh001.obj
                 if np.count_nonzero(mask) > self.vs_count:
                     print(self.filename)
                 self.history_data['old2current'][mask] = np.arange(self.vs_count, dtype=np.int32)
