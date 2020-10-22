@@ -439,6 +439,8 @@ class Mesh:
                 self.history_data['face_count'].append(self.face_count)
 
             elif self.opt.feat_from == 'point':
+                if np.count_nonzero(mask) > self.vs_count:
+                    print(self.filename)
                 self.history_data['old2current'][mask] = np.arange(self.vs_count, dtype=np.int32)
                 self.history_data['current2old'][0: self.vs_count] = np.ma.where(mask)[0]
                 self.history_data['gemm_faces'].append(self.gemm_faces.copy())
