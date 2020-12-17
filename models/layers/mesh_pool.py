@@ -41,6 +41,10 @@ class MeshPool(nn.Module):
     def __pool_main(self, mesh_index):
         mesh = self.__meshes[mesh_index]
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.edges_count], mesh.edges_count)
+        fe = self.__fe[mesh_index]
+        if mesh.edges_count <= self.__out_target:
+            self.__updated_fe[mesh_index] = fe[:, :self.__out_target]
+            return
         # recycle = []
         # last_queue_len = len(queue)
         last_count = mesh.edges_count + 1
