@@ -98,8 +98,11 @@ class Mesh:
         self.remove_vertex(edge[1])
         for index, vt in enumerate(self.gemm_vs[edge[1]]):
             if vt != edge[0]:
-                self.gemm_vs[vt].add(edge[0])
-                self.gemm_vs[edge[0]].add(vt)
+                # TODO: Optimize this?
+                if edge[0] not in self.gemm_vs[vt]:
+                    self.gemm_vs[vt].append(edge[0])
+                if vt not in self.gemm_vs[edge[0]]:
+                    self.gemm_vs[edge[0]].append(vt)
 
         self.faces[self.faces == edge[1]] = edge[0]
         mask = self.edges == edge[1]
@@ -183,11 +186,17 @@ class Mesh:
                     if self.v_mask[vt]:
                         new_gemm_vs[new_vs_indices[v_index]].add(new_vs_indices[vt])
 
+        #TODO: Try replacing this by calling build_gemm_vs from mesh_prepare
+        gemm_vs = []
         for vt, gemm in enumerate(new_gemm_vs):
+            l_gemm = list(gemm)
+            dist = np.linalg.norm(self.vs[l_gemm] - self.vs[vt], axis=1)
+            order = np.argsort(dist)
+            gemm_vs.append(list(np.array(l_gemm)[order]))
             for n in gemm:
                 assert (vt in new_gemm_vs[n])
 
-        self.gemm_vs = new_gemm_vs
+        self.gemm_vs = np.array(gemm_vs)
 
         self.v_mask = self.v_mask[self.v_mask]
         self.__clean_history(groups, torch_mask)

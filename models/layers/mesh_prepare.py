@@ -257,7 +257,7 @@ def build_gemm(mesh):
     #         assert(vt in point_nb[n])
     compute_vs_normals(mesh)
     mesh.edges = np.array(edges, dtype=np.int32)
-    mesh.gemm_vs = np.array(point_nb)
+    mesh.gemm_vs = build_gemm_vs(point_nb, mesh)
     mesh.gemm_edges = np.array(edge_nb, dtype=np.int64)
     mesh.gemm_faces = face_nb.astype(np.int64)
     mesh.sides = np.array(sides, dtype=np.int64)
@@ -275,6 +275,18 @@ def build_gemm(mesh):
     #     for ve_id, edge in enumerate(ve):
     #         ve[ve_id] = np.where(ridx==edge)[0][0]
 
+
+def build_gemm_vs(point_nb, mesh):
+    gemm_vs = []
+
+    for i, gemm in enumerate(point_nb):
+        l_gemm = list(gemm)
+
+        dist = np.linalg.norm(mesh.vs[l_gemm] - mesh.vs[i], axis=1)
+        order = np.argsort(dist)
+        gemm_vs.append(list(np.array(l_gemm)[order]))
+
+    return np.array(gemm_vs)
 
 def compute_vs_normals(mesh):
     mesh.vs_normals = np.zeros(mesh.vs.shape)

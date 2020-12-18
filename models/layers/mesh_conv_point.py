@@ -152,10 +152,7 @@ class MeshConvPoint(nn.Module):
                 order = np.argsort(curv)
                 ord_gemm[i, :] = [l_gemm[order[-1]], l_gemm[order[order.size // 2]], l_gemm[order[0]]]
             elif  'closest_d' in self.neighbor_order:
-                dist = np.linalg.norm(m.vs[l_gemm]-m.vs[i],axis=1)
-                order = np.argsort(dist)
-                ord_gemm[i, :min(self.n_neighbors, len(gemm))] = np.asarray(l_gemm)[order[:min(self.n_neighbors,
-                                                                                               len(gemm))]]
+                ord_gemm[i, :min(self.n_neighbors, len(gemm))] = np.asarray(l_gemm)[:min(self.n_neighbors, len(gemm))]
             elif self.neighbor_order == 'farthest_d':
                 dist = np.linalg.norm(m.vs[l_gemm] - m.vs[i], axis=1)
                 order = np.argsort(-dist)
