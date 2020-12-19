@@ -219,7 +219,7 @@ class MeshConvNetPoint(nn.Module):
 
         for i, ki in enumerate(self.k[:-1]):
             setattr(self, 'conv{}'.format(i),
-                    MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, n_neighbors=n_neighbors,
+                    MResConvPoint(ki, self.k[i + 1], nresblocks, n_neighbors=n_neighbors,
                                   neighbor_order=neighbor_order))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'pool{}'.format(i), MeshPoolPoint(self.res[i + 1]))
@@ -251,13 +251,13 @@ class MResConvPoint(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
-        self.conv0 = MeshConvPoint(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper,
+        self.conv0 = MeshConvPoint(self.in_channels, self.out_channels, bias=False,
                                    n_neighbors=n_neighbors, neighbor_order=neighbor_order)
         self.relu = relu
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))
             setattr(self, 'conv{}'.format(i + 1),
-                    MeshConvPoint(self.out_channels, self.out_channels, bias=False, symm_oper=symm_oper))
+                    MeshConvPoint(self.out_channels, self.out_channels, bias=False))
 
     def forward(self, x, mesh):
         x = self.conv0(x, mesh)
@@ -277,11 +277,11 @@ class MResConvFace(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
-        self.conv0 = MeshConvFace(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper)
+        self.conv0 = MeshConvFace(self.in_channels, self.out_channels, bias=False)
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))
             setattr(self, 'conv{}'.format(i + 1),
-                    MeshConvFace(self.out_channels, self.out_channels, bias=False, symm_oper=symm_oper))
+                    MeshConvFace(self.out_channels, self.out_channels, bias=False))
 
     def forward(self, x, mesh):
         x = self.conv0(x, mesh)
@@ -306,7 +306,7 @@ class MeshConvNetFace(nn.Module):
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
-            setattr(self, 'conv{}'.format(i), MResConvFace(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper))
+            setattr(self, 'conv{}'.format(i), MResConvFace(ki, self.k[i + 1], nresblocks))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'pool{}'.format(i), MeshPoolFace(self.res[i + 1]))
 
@@ -335,11 +335,11 @@ class MResConvFace(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.skips = skips
-        self.conv0 = MeshConvFace(self.in_channels, self.out_channels, bias=False, symm_oper=symm_oper)
+        self.conv0 = MeshConvFace(self.in_channels, self.out_channels, bias=False)
         for i in range(self.skips):
             setattr(self, 'bn{}'.format(i + 1), nn.BatchNorm2d(self.out_channels))
             setattr(self, 'conv{}'.format(i + 1),
-                    MeshConvFace(self.out_channels, self.out_channels, bias=False, symm_oper=symm_oper))
+                    MeshConvFace(self.out_channels, self.out_channels, bias=False))
 
     def forward(self, x, mesh):
         x = self.conv0(x, mesh)
@@ -440,7 +440,7 @@ class MeshEncoderDecoderFace(nn.Module):
     def __init__(self, pools, down_convs, up_convs, blocks=0, transfer_data=True, symm_oper=None):
         super(MeshEncoderDecoderFace, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderFace(pools, down_convs, blocks=blocks, symm_oper=symm_oper)
+        self.encoder = MeshEncoderFace(pools, down_convs, blocks=blocks)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
         self.decoder = MeshDecoderFace(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data,
@@ -680,7 +680,7 @@ class MeshEncoderFace(nn.Module):
                 pool = pools[i + 1]
             else:
                 pool = 0
-            self.convs.append(DownConvFace(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper))
+            self.convs.append(DownConvFace(convs[i], convs[i + 1], blocks=blocks, pool=pool))
         self.global_pool = None
         if fcs is not None:
             self.fcs = []
@@ -743,9 +743,9 @@ class MeshDecoderFace(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvFace(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                            batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
+                                            batch_norm=batch_norm, transfer_data=transfer_data))
         self.final_conv = UpConvFace(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                     batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper)
+                                     batch_norm=batch_norm, transfer_data=False)
         self.up_convs = nn.ModuleList(self.up_convs)
         reset_params(self)
 
@@ -776,7 +776,7 @@ class MeshEncoderPointSeg(nn.Module):
                 pool = pools[i + 1]
             else:
                 pool = 0
-            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper,
+            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool,
                                             n_neighbors=n_neighbors, neighbor_order=neighbor_order))
         self.global_pool = None
         if fcs is not None:
@@ -889,10 +889,10 @@ class DownConvFace(nn.Module):
         super(DownConvFace, self).__init__()
         self.bn = []
         self.pool = None
-        self.conv1 = MeshConvFace(in_channels, out_channels, symm_oper=symm_oper)
+        self.conv1 = MeshConvFace(in_channels, out_channels)
         self.conv2 = []
         for _ in range(blocks):
-            self.conv2.append(MeshConvFace(out_channels, out_channels, symm_oper=symm_oper))
+            self.conv2.append(MeshConvFace(out_channels, out_channels))
             self.conv2 = nn.ModuleList(self.conv2)
         for _ in range(blocks + 1):
             self.bn.append(nn.InstanceNorm2d(out_channels))
@@ -932,15 +932,15 @@ class UpConvFace(nn.Module):
         self.bn = []
         self.unroll = None
         self.transfer_data = transfer_data
-        self.up_conv = MeshConvFace(in_channels, out_channels, symm_oper=symm_oper)
+        self.up_conv = MeshConvFace(in_channels, out_channels)
         self.relu = relu
         if transfer_data:
-            self.conv1 = MeshConvFace(2 * out_channels, out_channels, symm_oper=symm_oper)
+            self.conv1 = MeshConvFace(2 * out_channels, out_channels)
         else:
-            self.conv1 = MeshConvFace(out_channels, out_channels, symm_oper=symm_oper)
+            self.conv1 = MeshConvFace(out_channels, out_channels)
         self.conv2 = []
         for _ in range(blocks):
-            self.conv2.append(MeshConvFace(out_channels, out_channels, symm_oper=symm_oper))
+            self.conv2.append(MeshConvFace(out_channels, out_channels))
             self.conv2 = nn.ModuleList(self.conv2)
         if batch_norm:
             for _ in range(blocks + 1):
@@ -1015,7 +1015,7 @@ class MeshDiscriminator(nn.Module):
                 pool = pools[i + 1]
             else:
                 pool = 0
-            self.convs.append(DownConvFace(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper))
+            self.convs.append(DownConvFace(convs[i], convs[i + 1], blocks=blocks, pool=pool))
         self.global_pool = None
         if fcs is not None:
             self.fcs = []
@@ -1075,9 +1075,9 @@ class MeshGenerator(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvFace(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                            batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper))
+                                            batch_norm=batch_norm, transfer_data=transfer_data))
         self.final_conv = UpConvFace(convs[-1], convs[-1], blocks=blocks, unroll=False,
-                                     batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper, relu=False)
+                                     batch_norm=batch_norm, transfer_data=False, relu=False)
         self.up_convs = nn.ModuleList(self.up_convs)
         self.final_activation = nn.Tanh()
         reset_params(self)
@@ -1122,17 +1122,17 @@ class UpConvPoint(nn.Module):
         self.unroll = None
         self.transfer_data = transfer_data
         self.relu = relu
-        self.up_conv = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+        self.up_conv = MeshConvPoint(in_channels, out_channels, n_neighbors=n_neighbors,
                                      neighbor_order=neighbor_order)
         if transfer_data:
-            self.conv1 = MeshConvPoint(2 * out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+            self.conv1 = MeshConvPoint(2 * out_channels, out_channels, n_neighbors=n_neighbors,
                                        neighbor_order=neighbor_order)
         else:
-            self.conv1 = MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+            self.conv1 = MeshConvPoint(out_channels, out_channels, n_neighbors=n_neighbors,
                                        neighbor_order=neighbor_order)
         self.conv2 = []
         for _ in range(blocks):
-            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+            self.conv2.append(MeshConvPoint(out_channels, out_channels, n_neighbors=n_neighbors,
                                             neighbor_order=neighbor_order))
             self.conv2 = nn.ModuleList(self.conv2)
         if batch_norm:
@@ -1181,12 +1181,12 @@ class DownConvPoint(nn.Module):
         super(DownConvPoint, self).__init__()
         self.bn = []
         self.pool = None
-        self.conv1 = MeshConvPoint(in_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+        self.conv1 = MeshConvPoint(in_channels, out_channels, n_neighbors=n_neighbors,
                                    neighbor_order=neighbor_order)
         self.conv2 = []
         self.relu = relu
         for _ in range(blocks):
-            self.conv2.append(MeshConvPoint(out_channels, out_channels, symm_oper=symm_oper, n_neighbors=n_neighbors,
+            self.conv2.append(MeshConvPoint(out_channels, out_channels, n_neighbors=n_neighbors,
                                             neighbor_order=neighbor_order))
             self.conv2 = nn.ModuleList(self.conv2)
         for _ in range(blocks + 1):
@@ -1260,7 +1260,7 @@ class MeshPointDiscriminator(nn.Module):
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
-            setattr(self, 'conv{}'.format(i), MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper))
+            setattr(self, 'conv{}'.format(i), MResConvPoint(ki, self.k[i + 1], nresblocks))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'pool{}'.format(i), MeshPoolPoint(self.res[i + 1]))
 
@@ -1310,15 +1310,15 @@ class MeshPointGenerator(nn.Module):
 
         for i, ki in enumerate(self.k[:-1]):
             setattr(self, 'conv{}'.format(i),
-                    MResConvPoint(ki, self.k[i + 1], nresblocks, symm_oper=symm_oper, relu=False))
+                    MResConvPoint(ki, self.k[i + 1], nresblocks, relu=False))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
             setattr(self, 'unpool{}'.format(i), MeshUnpoolPoint(self.res[i]))
 
         if self.dilation:
-            self.final_conv = MResConvPoint(self.k[-1], 1, nresblocks, symm_oper=symm_oper, relu=False)
+            self.final_conv = MResConvPoint(self.k[-1], 1, nresblocks, relu=False)
             self.final_activation = nn.Sigmoid()
         else:
-            self.final_conv = MResConvPoint(self.k[-1], 3, nresblocks, symm_oper=symm_oper, relu=False)
+            self.final_conv = MResConvPoint(self.k[-1], 3, nresblocks, relu=False)
             self.final_activation = nn.Tanh()
 
     def forward(self, input):
@@ -1423,7 +1423,7 @@ class MeshVAE(nn.Module):
     def __init__(self, pools, down_convs, up_convs, z_dim, blocks=0, transfer_data=False, symm_oper=1, opt=None):
         super(MeshVAE, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, z_dim, blocks=blocks, symm_oper=symm_oper, variational=True,
+        self.encoder = MeshEncoderPoint(pools, down_convs, z_dim, blocks=blocks, variational=True,
                                         opt=opt)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
@@ -1482,7 +1482,7 @@ class MeshAutoencoder(nn.Module):
     def __init__(self, pools, down_convs, up_convs, z_dim, blocks=0, transfer_data=True, symm_oper=1, opt=None):
         super(MeshAutoencoder, self).__init__()
         self.transfer_data = transfer_data
-        self.encoder = MeshEncoderPoint(pools, down_convs, z_dim, blocks=blocks, symm_oper=symm_oper, opt=opt)
+        self.encoder = MeshEncoderPoint(pools, down_convs, z_dim, blocks=blocks, opt=opt)
         unrolls = pools[:-1].copy()
         unrolls.reverse()
         self.decoder = MeshDecoderPoint(unrolls, up_convs, blocks=blocks, transfer_data=transfer_data,
@@ -1532,7 +1532,7 @@ class MeshEncoderPoint(nn.Module):
                 pool = pools[i + 1]
             else:
                 pool = 0
-            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool, symm_oper=symm_oper,
+            self.convs.append(DownConvPoint(convs[i], convs[i + 1], blocks=blocks, pool=pool,
                                             n_neighbors=opt.n_neighbors, neighbor_order=opt.neighbor_order))
         self.global_pool = None
 
@@ -1618,10 +1618,10 @@ class MeshDecoderPoint(nn.Module):
             else:
                 unroll = 0
             self.up_convs.append(UpConvPoint(convs[i], convs[i + 1], blocks=blocks, unroll=unroll,
-                                             batch_norm=batch_norm, transfer_data=transfer_data, symm_oper=symm_oper,
+                                             batch_norm=batch_norm, transfer_data=transfer_data,
                                              relu=True, n_neighbors=opt.n_neighbors, neighbor_order=opt.neighbor_order))
         self.final_conv = UpConvPoint(convs[-2], convs[-1], blocks=blocks, unroll=False,
-                                      batch_norm=batch_norm, transfer_data=False, symm_oper=symm_oper,
+                                      batch_norm=batch_norm, transfer_data=False,
                                       n_neighbors=opt.n_neighbors, neighbor_order=opt.neighbor_order)
         self.up_convs = nn.ModuleList(self.up_convs)
         self.final_activation = nn.Tanh()

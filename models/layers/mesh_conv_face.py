@@ -10,16 +10,13 @@ class MeshConvFace(nn.Module):
     and a mesh data-structure (mesh)
     and applies convolution
     """
-    # TODO: Set neighbors (k) automatically to adapt meshes different than trimesh
-    def __init__(self, in_channels, out_channels, k=3, bias=True, symm_oper=None):
+    def __init__(self, in_channels, out_channels, bias=True):
         super(MeshConvFace, self).__init__()
-        self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(1, len(symm_oper)+1), bias=bias)
-        self.symm_oper = symm_oper
-        self.k = len(symm_oper)+1
+        self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(1, 2), bias=bias)
+        self.k = 2
 
     def __call__(self, edge_f, mesh):
         return self.forward(edge_f, mesh)
-
 
     def forward(self, x, mesh):
         x = x.squeeze(-1)
@@ -65,35 +62,8 @@ class MeshConvFace(nn.Module):
         f = f.view(Gishape[0], Gishape[1], Gishape[2], -1)
         f = f.permute(0, 3, 1, 2)
 
-        # Features without symmetric functions
-        # x_1 = f[:, :, :, 1]
-        # x_2 = f[:, :, :, 2]
-        # x_3 = f[:, :, :, 3]
-
-        #Symmetric functions
-        complete_f = torch.unsqueeze(f[:, :, :, 0], dim=3)
-        if 1 in self.symm_oper:
-            x_1 = f[:, :, :, 1] + f[:, :, :, 2] + f[:, :, :, 3]
-            complete_f = torch.cat([complete_f, torch.unsqueeze(x_1, 3)], dim=3)
-        if 2 in self.symm_oper:
-            x_2 = f[:, :, :, 1] * f[:, :, :, 2] * f[:, :, :, 3]
-            complete_f = torch.cat([complete_f, torch.unsqueeze(x_2, 3)], dim=3)
-        if 3 in self.symm_oper:
-            x_3 = f[:, :, :, 1] * f[:, :, :, 2] + f[:, :, :, 1] * f[:, :, :, 3] + f[:, :, :, 2] * f[:, :, :, 3]
-            complete_f = torch.cat([complete_f, torch.unsqueeze(x_3, 3)], dim=3)
-        if 4 in self.symm_oper:
-            x_4 = f[:, :, :, 1] * f[:, :, :, 1] + f[:, :, :, 2] * f[:, :, :, 2] + f[:, :, :, 3] * f[:, :, :, 3]
-            complete_f = torch.cat([complete_f, torch.unsqueeze(x_4, 3)], dim=3)
-        if 5 in self.symm_oper:
-            x_5 = torch.abs(f[:, :, :, 1] - f[:, :, :, 2]) + torch.abs(f[:, :, :, 1] - f[:, :, :, 3]) + torch.abs(
-                f[:, :, :, 2] - f[:, :, :, 3])
-            complete_f = torch.cat([complete_f, torch.unsqueeze(x_5, 3)], dim=3)
-        if 6 in self.symm_oper:
-            x_6 = f[:, :, :, 1] * f[:, :, :, 1] * f[:, :, :, 1] + f[:, :, :, 2] * f[:, :, :, 2] * f[:, :, :, 2] \
-                  + f[:, :, :, 3] * f[:, :, :, 3] * f[:, :, :, 3]
-            complete_f = torch.cat([complete_f, torch.unsqueeze(x_6, 3)], dim=3)
-
-        return complete_f
+        # Concatenate face features with summation of neighbors.
+        return torch.cat([torch.unsqueeze(f[:, :, :, 0], dim=3), torch.sum(f[:, :, :, 1:], dim=3).unsqueeze(3)], dim=3)
 
     def pad_gemm(self, m, xsz, device):
         """ extracts face neighbors (3x for trimesh) -> m.gemm_faces
