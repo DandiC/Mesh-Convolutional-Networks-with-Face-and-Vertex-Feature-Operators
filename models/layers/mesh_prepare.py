@@ -86,7 +86,7 @@ def from_scratch(file, opt):
     mesh_data.vs_count = mesh_data.vs.shape[0]
     if opt.num_aug > 1:
         mesh_data.faces = augmentation(mesh_data, opt, mesh_data.faces)
-    build_gemm(mesh_data)
+    build_gemm(mesh_data, n_neighbors=opt.n_neighbors)
     if opt.num_aug > 1:
         post_augmentation(mesh_data, opt)
     mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data, vf=opt.vertex_features)
@@ -181,7 +181,7 @@ def remove_non_manifolds(mesh, faces):
     return faces[mask], face_areas[mask], face_normals[mask]
 
 
-def build_gemm(mesh):
+def build_gemm(mesh, n_neighbors=6):
     mesh.ve = [[] for _ in mesh.vs]
     mesh.vf = [[] for _ in mesh.vs]
     edge_nb = []
@@ -257,7 +257,7 @@ def build_gemm(mesh):
     #         assert(vt in point_nb[n])
     compute_vs_normals(mesh)
     mesh.edges = np.array(edges, dtype=np.int32)
-    mesh.gemm_vs = build_gemm_vs(point_nb, mesh)
+    mesh.gemm_vs = build_gemm_vs(point_nb, mesh, n_neighbors)
     mesh.gemm_edges = np.array(edge_nb, dtype=np.int64)
     mesh.gemm_faces = face_nb.astype(np.int64)
     mesh.sides = np.array(sides, dtype=np.int64)
@@ -276,17 +276,17 @@ def build_gemm(mesh):
     #         ve[ve_id] = np.where(ridx==edge)[0][0]
 
 
-def build_gemm_vs(point_nb, mesh):
-    gemm_vs = []
+def build_gemm_vs(point_nb, mesh, n_neighbors):
+    gemm_vs = -np.ones((mesh.vs.shape[0], n_neighbors), dtype=int)
 
     for i, gemm in enumerate(point_nb):
         l_gemm = list(gemm)
 
         dist = np.linalg.norm(mesh.vs[l_gemm] - mesh.vs[i], axis=1)
         order = np.argsort(dist)
-        gemm_vs.append(list(np.array(l_gemm)[order]))
+        gemm_vs[i, :min(n_neighbors, len(gemm))] = np.asarray(l_gemm)[order[:min(n_neighbors, len(gemm))]]
 
-    return np.array(gemm_vs)
+    return gemm_vs
 
 def compute_vs_normals(mesh):
     mesh.vs_normals = np.zeros(mesh.vs.shape)

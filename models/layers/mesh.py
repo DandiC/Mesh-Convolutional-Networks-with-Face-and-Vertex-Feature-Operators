@@ -4,7 +4,7 @@ import torch
 import numpy as np
 import os
 from models.layers.mesh_union import MeshUnion
-from models.layers.mesh_prepare import fill_mesh
+from models.layers.mesh_prepare import fill_mesh, build_gemm_vs
 
 
 class Mesh:
@@ -100,9 +100,9 @@ class Mesh:
             if vt != edge[0]:
                 # TODO: Optimize this?
                 if edge[0] not in self.gemm_vs[vt]:
-                    self.gemm_vs[vt].append(edge[0])
+                    np.append(self.gemm_vs[vt], edge[0])
                 if vt not in self.gemm_vs[edge[0]]:
-                    self.gemm_vs[edge[0]].append(vt)
+                    np.append(self.gemm_vs[edge[0]], vt)
 
         self.faces[self.faces == edge[1]] = edge[0]
         mask = self.edges == edge[1]
@@ -186,17 +186,7 @@ class Mesh:
                     if self.v_mask[vt]:
                         new_gemm_vs[new_vs_indices[v_index]].add(new_vs_indices[vt])
 
-        #TODO: Try replacing this by calling build_gemm_vs from mesh_prepare
-        gemm_vs = []
-        for vt, gemm in enumerate(new_gemm_vs):
-            l_gemm = list(gemm)
-            dist = np.linalg.norm(self.vs[l_gemm] - self.vs[vt], axis=1)
-            order = np.argsort(dist)
-            gemm_vs.append(list(np.array(l_gemm)[order]))
-            for n in gemm:
-                assert (vt in new_gemm_vs[n])
-
-        self.gemm_vs = np.array(gemm_vs)
+        self.gemm_vs = build_gemm_vs(new_gemm_vs, self, self.gemm_vs.shape[1])
 
         self.v_mask = self.v_mask[self.v_mask]
         self.__clean_history(groups, torch_mask)
