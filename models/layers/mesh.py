@@ -96,13 +96,10 @@ class Mesh:
         v_a.__iadd__(v_b)
         v_a.__itruediv__(2)
         self.remove_vertex(edge[1])
-        for index, vt in enumerate(self.gemm_vs[edge[1]]):
+        for index, vt in enumerate(self.gemm_vs_raw[edge[1]]):
             if vt != edge[0]:
-                # TODO: Optimize this?
-                if edge[0] not in self.gemm_vs[vt]:
-                    np.append(self.gemm_vs[vt], edge[0])
-                if vt not in self.gemm_vs[edge[0]]:
-                    np.append(self.gemm_vs[edge[0]], vt)
+                self.gemm_vs_raw[vt].add(edge[0])
+                self.gemm_vs_raw[edge[0]].add(vt)
 
         self.faces[self.faces == edge[1]] = edge[0]
         mask = self.edges == edge[1]
@@ -180,12 +177,13 @@ class Mesh:
         new_vs_indices[v_mask] = np.arange(0, np.ma.where(v_mask)[0].shape[0])
         self.edges = new_vs_indices[self.edges[:, :]]
         new_gemm_vs = [set() for _ in range(self.vs.shape[0])]
-        for v_index, gemm in enumerate(self.gemm_vs):
+        for v_index, gemm in enumerate(self.gemm_vs_raw):
             if self.v_mask[v_index]:
                 for vt in gemm:
                     if self.v_mask[vt]:
                         new_gemm_vs[new_vs_indices[v_index]].add(new_vs_indices[vt])
 
+        self.gemm_vs_raw = new_gemm_vs
         self.gemm_vs = build_gemm_vs(new_gemm_vs, self, self.gemm_vs.shape[1])
 
         self.v_mask = self.v_mask[self.v_mask]

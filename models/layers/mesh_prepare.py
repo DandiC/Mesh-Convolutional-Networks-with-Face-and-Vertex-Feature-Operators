@@ -15,17 +15,19 @@ def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='fa
             mesh_data = from_scratch(file, opt)
             np.savez_compressed(load_path, gemm_edges=mesh_data.gemm_edges, vs=mesh_data.vs, edges=mesh_data.edges,
                                 edges_count=mesh_data.edges_count, ve=mesh_data.ve, v_mask=mesh_data.v_mask,
-                                filename=mesh_data.filename, sides=mesh_data.sides,
-                                edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
-                                edge_features=mesh_data.edge_features, face_features=mesh_data.face_features,
-                                faces=mesh_data.faces, face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
+                                filename=mesh_data.filename, sides=mesh_data.sides, edge_lengths=mesh_data.edge_lengths,
+                                edge_areas=mesh_data.edge_areas, edge_features=mesh_data.edge_features,
+                                face_features=mesh_data.face_features, faces=mesh_data.faces,
+                                face_areas=mesh_data.face_areas, gemm_faces=mesh_data.gemm_faces,
                                 face_count=mesh_data.face_count, edges_in_face=mesh_data.edges_in_face, ef=mesh_data.ef,
-                                gemm_vs=mesh_data.gemm_vs, vs_count=mesh_data.vs_count, vf=mesh_data.vf,
-                                vs_normals=mesh_data.vs_normals, vertex_features=mesh_data.vertex_features)
+                                gemm_vs=mesh_data.gemm_vs, gemm_vs_raw=mesh_data.gemm_vs_raw,
+                                vs_count=mesh_data.vs_count, vf=mesh_data.vf, vs_normals=mesh_data.vs_normals,
+                                vertex_features=mesh_data.vertex_features)
 
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.vs_count = int(mesh_data['vs_count'])
     mesh2fill.gemm_vs = mesh_data['gemm_vs']
+    mesh2fill.gemm_vs_raw = mesh_data['gemm_vs_raw']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
     mesh2fill.edges_count = int(mesh_data['edges_count'])
@@ -257,6 +259,7 @@ def build_gemm(mesh, n_neighbors=6):
     #         assert(vt in point_nb[n])
     compute_vs_normals(mesh)
     mesh.edges = np.array(edges, dtype=np.int32)
+    mesh.gemm_vs_raw = point_nb
     mesh.gemm_vs = build_gemm_vs(point_nb, mesh, n_neighbors)
     mesh.gemm_edges = np.array(edge_nb, dtype=np.int64)
     mesh.gemm_faces = face_nb.astype(np.int64)
@@ -497,7 +500,7 @@ def gaussian_curvature(mesh):
     for v_i, vt in enumerate(mesh.vs):
         Ai = np.sum(mesh.face_areas[mesh.vf[v_i]]) / 3
         if Ai == 0:
-            # TODO: This is a quick fix to avoid dividing by 0. Consider alternatives
+            # To avoid dividing by 0.
             gaussian_curv[0, v_i] = 0
         else:
             for j, f_j in enumerate(mesh.vf[v_i]):
@@ -520,7 +523,7 @@ def get_cotangent_laplacian_beltrami(mesh, edge_features):
             # TODO: This is a quick fix to avoid dividing by 0. Consider alternatives
             laplacian[v_i,:] = 0
         else:
-            for j, v_j in enumerate(mesh.gemm_vs[v_i]):
+            for j, v_j in enumerate(mesh.gemm_vs_raw[v_i]):
                 #Get edge between two vertices
                 # TODO: Optimize this
                 edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == v_i, mesh.edges[:, 1] == v_j),
