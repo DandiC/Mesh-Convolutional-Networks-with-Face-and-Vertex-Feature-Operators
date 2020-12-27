@@ -45,7 +45,7 @@ class MeshPoolFace(nn.Module):
             self.__updated_fe[mesh_index] = fe[:, :self.__out_target]
             return
 
-        queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.face_count], mesh.face_count)
+        queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.face_count], mesh)
         orig_queue = queue.copy()
 
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
@@ -53,29 +53,20 @@ class MeshPoolFace(nn.Module):
         face_groups = MeshUnion(mesh.face_count, self.__fe.device)
 
         while mesh.face_count > self.__out_target:
-            if queue==[]:
+            if not queue:
                 print('Run out of faces to pool')
                 print(' Mesh:', mesh.filename)
                 print(' # of current faces', mesh.face_count)
                 print(' Target:', self._MeshPoolFace__out_target)
 
-            value, face_id = heappop(queue)
+            value, face_id, n_id = heappop(queue)
             face_id = int(face_id)
-            neighbors = mesh.gemm_faces[face_id]
-            if face_mask[face_id]:
-                min_val = float("inf")
-                min_n = -1
-                for n in neighbors:
-                    n_idx = np.where(np.asarray(orig_queue)[:, 1] == n)[0]
-                    if face_mask[n] and n_idx.size == 1:
-                        val = orig_queue[n_idx[0]][0]
-                        if val < min_val:
-                            min_val = val
-                            min_n = n
-                if min_n != -1:
-                    edge_id = int(np.intersect1d(mesh.edges_in_face[face_id], mesh.edges_in_face[min_n])[0])
-                    if edge_mask[edge_id]:
-                        self.__pool_edge(mesh, edge_id, edge_mask, face_mask, face_groups, face_id, min_n)
+            n_id = int(n_id)
+
+            if face_mask[face_id] and face_mask[n_id]:
+                edge_id = int(np.intersect1d(mesh.edges_in_face[face_id], mesh.edges_in_face[n_id])[0])
+                if edge_mask[edge_id]:
+                    self.__pool_edge(mesh, edge_id, edge_mask, face_mask, face_groups, face_id, n_id)
         mesh.cleanWithFace(edge_mask, face_mask, face_groups)
         fe = face_groups.rebuild_features(self.__fe[mesh_index], face_mask, self.__out_target)
         self.__updated_fe[mesh_index] = fe
@@ -272,14 +263,23 @@ class MeshPoolFace(nn.Module):
         assert len(vertices) == 1
         mesh.faces[faces[0], np.where(mesh.faces[faces[0]] == vertex[0])[0][0]] = vertices[0]
 
-    def __build_queue(self, features, face_count):
+    def __build_queue(self, features, mesh):
         # delete edges with smallest norm
         squared_magnitude = torch.sum(features * features, 0)
         if squared_magnitude.shape[-1] != 1:
             squared_magnitude = squared_magnitude.unsqueeze(-1)
-        face_ids = torch.arange(face_count, device=squared_magnitude.device, dtype=torch.float32).unsqueeze(-1)
-        heap = torch.cat((squared_magnitude, face_ids), dim=-1).tolist()
-        heapify(heap)
+
+        heap = []
+        pairs_in_heap = set()
+        for i in range(mesh.face_count):
+            for n in list(mesh.gemm_faces[i]):
+                if (i, n) not in pairs_in_heap:
+                    m = (squared_magnitude[i, 0].data + squared_magnitude[n, 0].data).tolist()
+                    heap.append([m, i, n])
+                    pairs_in_heap.add((i, n))
+                    pairs_in_heap.add((n, i))
+
+        heapify(heap, )
         return heap
 
     @staticmethod

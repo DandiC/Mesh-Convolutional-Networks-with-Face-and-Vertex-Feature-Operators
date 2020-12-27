@@ -53,6 +53,12 @@ class MeshPoolPoint(nn.Module):
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         vertex_groups = MeshUnion(mesh.vs_count, self.__fe.device)
         while mesh.vs_count > self.__out_target:
+            if not queue:
+                print('Run out of vertices to pool')
+                print(' Mesh:', mesh.filename)
+                print(' # of current vertices', mesh.vs_count)
+                print(' Target:', self.__out_target)
+
             value, vt_id, n_id = heappop(queue)
             vt_id = int(vt_id)
             n_id = int(n_id)
@@ -204,14 +210,14 @@ class MeshPoolPoint(nn.Module):
         if squared_magnitude.shape[-1] != 1:
             squared_magnitude = squared_magnitude.unsqueeze(-1)
         heap = []
-        pairs_in_heap = {}
+        pairs_in_heap = set()
         for i in range(mesh.vs_count):
             for n in list(mesh.gemm_vs[i]):
                 if (i, n) not in pairs_in_heap:
                     m = (squared_magnitude[i, 0].data + squared_magnitude[n, 0].data).tolist()
                     heap.append([m, i, n])
-                    pairs_in_heap[(i, n)] = True
-                    pairs_in_heap[(n, i)] = True
+                    pairs_in_heap.add((i, n))
+                    pairs_in_heap.add((n, i))
 
         heapify(heap, )
         return heap
