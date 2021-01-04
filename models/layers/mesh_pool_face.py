@@ -46,7 +46,7 @@ class MeshPoolFace(nn.Module):
             return
 
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.face_count], mesh)
-        orig_queue = queue.copy()
+        # orig_queue = queue.copy()
 
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         face_mask = np.ones(mesh.face_count, dtype=np.bool)
@@ -56,7 +56,7 @@ class MeshPoolFace(nn.Module):
             if not queue:
                 print('Run out of faces to pool')
                 print(' Mesh:', mesh.filename)
-                print(' # of current faces', mesh.face_count)
+                print(' # of current faces:', mesh.face_count)
                 print(' Target:', self._MeshPoolFace__out_target)
 
             value, face_id, n_id = heappop(queue)
@@ -70,7 +70,6 @@ class MeshPoolFace(nn.Module):
         mesh.cleanWithFace(edge_mask, face_mask, face_groups)
         fe = face_groups.rebuild_features(self.__fe[mesh_index], face_mask, self.__out_target)
         self.__updated_fe[mesh_index] = fe
-        # self.__updated_fe[mesh_index] = fe[:, face_mask]
 
     def __pool_edge(self, mesh, edge_id, edge_mask, face_mask, face_groups, f1, f2):
         # Not pool if the edge or one of its neighbors is in a boundary

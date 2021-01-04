@@ -49,14 +49,14 @@ class MeshPoolPoint(nn.Module):
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.vs_count], mesh)
         # recycle = []
         # last_queue_len = len(queue)
-        last_count = mesh.edges_count + 1
+        # last_count = mesh.edges_count + 1
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         vertex_groups = MeshUnion(mesh.vs_count, self.__fe.device)
         while mesh.vs_count > self.__out_target:
             if not queue:
                 print('Run out of vertices to pool')
                 print(' Mesh:', mesh.filename)
-                print(' # of current vertices', mesh.vs_count)
+                print(' # of current vertices:', mesh.vs_count)
                 print(' Target:', self.__out_target)
 
             value, vt_id, n_id = heappop(queue)
@@ -72,7 +72,6 @@ class MeshPoolPoint(nn.Module):
 
         # Copy vertex mask so that it can be used when rebuilding the features
         v_mask = mesh.v_mask.copy()
-        # TODO: Need to clean faces too in order for decoder to work
         mesh.cleanWithPoint(edge_mask, vertex_groups)
 
         fe = vertex_groups.rebuild_features(self.__fe[mesh_index], v_mask, self.__out_target)
