@@ -145,14 +145,6 @@ def fill_from_file(mesh, file):
     vs = np.asarray(vs)
     faces = np.asarray(faces, dtype=int)
 
-    # Randomize faces (experiment to see if the order of the vertices matters)
-    # ridx = np.random.permutation(faces.shape[0])
-    # faces = faces[ridx,:]
-
-    #Shift faces (experiment to see if the ordering matters)
-    # rint = 0 #random.randint(0, faces.shape[0]-1)
-    # faces = np.roll(faces, rint, axis=0)
-
     assert np.logical_and(faces >= 0, faces < len(vs)).all()
     return vs, faces
 
@@ -245,18 +237,12 @@ def build_gemm(mesh, n_neighbors=6):
             edge_nb[edge_key][nb_count[edge_key] + 1] = edge2key[face_edges[(idx + 2) % 3]]
             nb_count[edge_key] += 2
 
-            #Face neighbors
-            a=1
-        # TODO: Implement face_sides to optimize face pooling (explanation of sides in ranahanocka's repo)
         for idx, edge in enumerate(face_edges):
             edge_key = edge2key[edge]
             sides[edge_key][nb_count[edge_key] - 2] = nb_count[edge2key[face_edges[(idx + 1) % 3]]] - 1
             sides[edge_key][nb_count[edge_key] - 1] = nb_count[edge2key[face_edges[(idx + 2) % 3]]] - 2
         faces_edges.append(face_edges)
 
-    # for vt, gemm in enumerate(point_nb):
-    #     for n in gemm:
-    #         assert(vt in point_nb[n])
     compute_vs_normals(mesh)
     mesh.edges = np.array(edges, dtype=np.int32)
     mesh.gemm_vs_raw = point_nb
@@ -268,15 +254,6 @@ def build_gemm(mesh, n_neighbors=6):
     mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(mesh.face_areas) #todo whats the difference between edge_areas and edge_lenghts?
     mesh.edges_in_face = edges_in_faces.astype(np.int64)
     mesh.ef = np.array(ef, dtype=np.int64)
-    # Randomize edges (experiment to see if the order of the vertices matters)
-    # ridx = np.random.permutation(mesh.edges.shape[0])
-    # mesh.edges = mesh.edges[ridx,:]
-    # mesh.gemm_edges = mesh.gemm_edges[ridx, :]
-    # mesh.sides = mesh.sides[ridx, :]
-    # mesh.edge_areas = mesh.edge_areas[ridx]
-    # for ve in mesh.ve:
-    #     for ve_id, edge in enumerate(ve):
-    #         ve[ve_id] = np.where(ridx==edge)[0][0]
 
 
 def build_gemm_vs(point_nb, mesh, n_neighbors):
@@ -367,8 +344,6 @@ def flip_edges(mesh, prct, faces):
     edge_count, edge_faces, edges_dict = get_edge_faces(faces)
     dihedral = angles_from_faces(mesh, edge_faces[:, 2:], faces)
     edges2flip = np.random.permutation(edge_count)
-    # print(dihedral.min())
-    # print(dihedral.max())
     target = int(prct * edge_count)
     flipped = 0
     for edge_key in edges2flip:
@@ -400,7 +375,6 @@ def flip_edges(mesh, prct, faces):
                                 if face_nb == edge_info[2 + (i + 1) % 2]:
                                     edge_faces[cur_edge_key, 2 + idx] = face_id
                 flipped += 1
-    # print(flipped)
     return faces
 
 
@@ -520,7 +494,6 @@ def get_cotangent_laplacian_beltrami(mesh, edge_features):
     for v_i, vt in enumerate(mesh.vs):
         Ai=np.sum(mesh.face_areas[mesh.vf[v_i]])/3
         if Ai == 0:
-            # TODO: This is a quick fix to avoid dividing by 0. Consider alternatives
             laplacian[v_i,:] = 0
         else:
             for j, v_j in enumerate(mesh.gemm_vs_raw[v_i]):
@@ -556,10 +529,9 @@ def get_angles(mesh, side):
 
     edges_a /= fixed_division(np.linalg.norm(edges_a, ord=2, axis=1), epsilon=0.1)[:, np.newaxis]
     edges_b /= fixed_division(np.linalg.norm(edges_b, ord=2, axis=1), epsilon=0.1)[:, np.newaxis]
-    dot = np.sum(edges_a * edges_b, axis=1).clip(-1, 1) #TODO: why clipping?
+    dot = np.sum(edges_a * edges_b, axis=1).clip(-1, 1)
     return np.arccos(dot)
 
-# TODO: Generalize for other types of mesh (not only trimesh)
 def face_dihedral_angles(mesh):
 
     #Get normals from neighbors
@@ -573,7 +545,6 @@ def face_dihedral_angles(mesh):
     dot_c = np.sum(normals_c * mesh.face_normals, axis=1).clip(-1, 1)
 
     #Dihedral angle between two faces is 180-arccos(dot product)
-    #TODO: If an angle is greater than 180, this method does not return the proper value
     angles_a = np.pi - np.arccos(dot_a)
     angles_b = np.pi - np.arccos(dot_b)
     angles_c = np.pi - np.arccos(dot_c)
@@ -596,7 +567,6 @@ def area_ratios(mesh):
     areas_c = mesh.face_areas[mesh.gemm_faces[:, 2]]
 
     # Mask if neighbor does not exist
-    #TODO: Compare this approach against duplicating a neighbor
     mask = mesh.gemm_faces == -1
     areas_a[mask[:, 0]] = 0
     areas_b[mask[:, 1]] = 0
@@ -606,7 +576,7 @@ def area_ratios(mesh):
     ratios = np.concatenate((np.expand_dims(areas_a / mesh.face_areas, 0),
                              np.expand_dims(areas_b / mesh.face_areas, 0),
                              np.expand_dims(areas_c / mesh.face_areas, 0)), axis=0)
-    #TODO: Think and check if sorting is a good idea
+
     return np.sort(ratios, axis=0)
 
 def dihedral_angle(mesh, edge_points):
@@ -644,14 +614,10 @@ def get_edge_points(mesh):
     edge_points = np.zeros([mesh.edges_count, 4], dtype=np.int32)
     for edge_id, edge in enumerate(mesh.edges):
         edge_points[edge_id] = get_side_points(mesh, edge_id)
-        # edge_points[edge_id, 3:] = mesh.get_side_points(edge_id, 2)
     return edge_points
 
 
 def get_side_points(mesh, edge_id):
-    # if mesh.gemm_edges[edge_id, side] == -1:
-    #     return mesh.get_side_points(edge_id, ((side + 2) % 4))
-    # else:
     edge_a = mesh.edges[edge_id]
 
     if mesh.gemm_edges[edge_id, 0] == -1:

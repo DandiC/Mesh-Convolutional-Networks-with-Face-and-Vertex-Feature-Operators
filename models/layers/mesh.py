@@ -26,63 +26,6 @@ class Mesh:
             self.init_history()
         self.export()
 
-    def sample(self, num_samples: int, eps: float = 1e-10):
-        # TODO: This is taken from kaolin and might be worth it to look into optimizing it for our project
-        r""" Uniformly samples the surface of a mesh.
-            Args:
-                num_samples (int): number of points to sample
-                eps (float): a small number to prevent division by zero
-                             for small surface areas.
-            Returns:
-                (torch.Tensor, torch.Tensor) uniformly sampled points and
-                    the face idexes which each point corresponds to.
-            Example:
-                points, chosen_faces = mesh.sample(10)
-                points
-                tensor([[ 0.0293,  0.2179,  0.2168],
-                        [ 0.2003, -0.3367,  0.2187],
-                        [ 0.2152, -0.0943,  0.1907],
-                        [-0.1852,  0.1686, -0.0522],
-                        [-0.2167,  0.3171,  0.0737],
-                        [ 0.2219, -0.0289,  0.1531],
-                        [ 0.2217, -0.0115,  0.1247],
-                        [-0.1400,  0.0364, -0.1618],
-                        [ 0.0658, -0.0310, -0.2198],
-                        [ 0.1926, -0.1867, -0.2153]])
-                chosen_faces
-                tensor([ 953,  38,  6, 3480,  563,  393,  395, 3309, 373, 271])
-        """
-
-        vertices = torch.Tensor(self.vs)
-        faces = torch.Tensor(self.faces).long()
-
-        if vertices.is_cuda:
-            dist_uni = torch.distributions.Uniform(
-                torch.tensor([0.0]).cuda(), torch.tensor([1.0]).cuda())
-        else:
-            dist_uni = torch.distributions.Uniform(
-                torch.tensor([0.0]), torch.tensor([1.0]))
-
-        # calculate area of each face
-        Areas = torch.tensor(self.face_areas).unsqueeze(1)
-        # percentage of each face w.r.t. full surface area
-        Areas = Areas / (torch.sum(Areas) + eps)
-
-        # define descrete distribution w.r.t. face area ratios caluclated
-        cat_dist = torch.distributions.Categorical(Areas.view(-1))
-        face_choices = cat_dist.sample([num_samples])
-
-        # from each face sample a point
-        select_faces = faces[face_choices]
-        v0 = torch.index_select(vertices, 0, select_faces[:, 0])
-        v1 = torch.index_select(vertices, 0, select_faces[:, 1])
-        v2 = torch.index_select(vertices, 0, select_faces[:, 2])
-        u = torch.sqrt(dist_uni.sample([num_samples]))
-        v = dist_uni.sample([num_samples])
-        points = (1 - u) * v0 + (u * (1 - v)) * v1 + u * v * v2
-
-        return points, face_choices
-
     def extract_features(self):
         return self.features
 
@@ -113,16 +56,13 @@ class Mesh:
             self.vs_count -= 1
         self.v_mask[v] = False
 
-        # for index, vt in enumerate(self.gemm_vs[v]):
-        #     self.gemm_vs[vt].remove(v)
-
     def remove_edge(self, edge_id):
         vs = self.edges[edge_id]
         for v in vs:
-            # TODO: Sometimes the edge is not in the ve[v] list. This was observed in coseg_aliens 103.obj
             if edge_id in self.ve[v]:
                 self.ve[v].remove(edge_id)
 
+    # TODO: Combine clean, cleanWithPoint and cleanWithFace into one.
     def clean(self, edges_mask, groups):
         edges_mask = edges_mask.astype(bool)
         torch_mask = torch.from_numpy(edges_mask.copy())
@@ -137,7 +77,6 @@ class Mesh:
         self.gemm_edges[:, :] = new_indices[self.gemm_edges[:, :]]
         for v_index, ve in enumerate(self.ve):
             update_ve = []
-            # if self.v_mask[v_index]:
             for e in ve:
                 update_ve.append(new_indices[e])
             new_ve.append(update_ve)
@@ -154,7 +93,6 @@ class Mesh:
         self.sides = self.sides[edges_mask]
 
         self.vs = self.vs[self.v_mask]
-        # self.gemm_vs = self.gemm_vs[self.v_mask]
 
         new_ve = []
         edges_mask = np.concatenate([edges_mask, [False]])
@@ -220,7 +158,6 @@ class Mesh:
 
         for v_index, ve in enumerate(self.ve):
             update_ve = []
-            # if self.v_mask[v_index]:
             for e in ve:
                 update_ve.append(new_edge_indices[e])
             new_ve.append(update_ve)
@@ -438,9 +375,6 @@ class Mesh:
                 self.history_data['face_count'].append(self.face_count)
 
             elif self.opt.feat_from == 'point':
-                # TODO: Remove this if statement
-                if np.count_nonzero(mask) > self.vs_count:
-                    print(self.filename)
                 self.history_data['old2current'][mask] = np.arange(self.vs_count, dtype=np.int32)
                 self.history_data['current2old'][0: self.vs_count] = np.ma.where(mask)[0]
                 self.history_data['gemm_faces'].append(self.gemm_faces.copy())
