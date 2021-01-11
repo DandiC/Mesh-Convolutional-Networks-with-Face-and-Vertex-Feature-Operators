@@ -14,7 +14,7 @@ class BaseOptions:
         self.parser.add_argument('--dataroot', default='datasets/shrec_16e',
                                  help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation"}, default='classification')
-        self.parser.add_argument('--ninput_features', type=int, default=500,
+        self.parser.add_argument('--ninput_features', type=int, default=252,
                                  help='# of input features (will include dummy features)')
 
         # network params
@@ -24,7 +24,7 @@ class BaseOptions:
         self.parser.add_argument('--resblocks', type=int, default=1, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')
         self.parser.add_argument('--ncf', nargs='+', default=[128, 256, 256, 512], type=int, help='conv filters')
-        self.parser.add_argument('--pool_res', nargs='+', default=[500, 400, 300, 200, 120], type=int,
+        self.parser.add_argument('--pool_res', nargs='+', default=[252, 200, 180, 170, 150], type=int,
                                  help='pooling res')
         self.parser.add_argument('--norm', type=str, default='batch',
                                  help='instance normalization or batch normalization or group normalization')
@@ -38,17 +38,10 @@ class BaseOptions:
                                  help='Number of neighbors selected for vertex-based convolution.')
         self.parser.add_argument('--skip_connections', default=False, action='store_true',
                                  help='If true, there are skip connections between encoder and decoder')
-        # TODO: Delete these 3
-        self.parser.add_argument('--neighbor_order', type=str, default='mean_c',
-                                 help='Method to select the neighbors per vertex. One of: random, mean_c, gaussian_c')
-        self.parser.add_argument('--symm_oper', nargs='+', default=[1], type=int, help='pooling res')
-        self.parser.add_argument('--vertex_features', nargs='+', type=str, default=['mean_c', 'gaussian_c'],
-                                 help='Type of vertex features to be used (for vertex convolution). '
-                                      'Options are coord (for coordinates), norm (for normals), mean_c '
-                                      '(for mean curvature) and gaussian_c (for gaussian curvature)')
+
         # general params
         # TODO: Change point to vertex
-        self.parser.add_argument('--feat_from', type=str, default='face',
+        self.parser.add_argument('--feat_from', type=str, default='point',
                                  help='Primitive to extract features from. One of: edge, face, point')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
@@ -58,7 +51,7 @@ class BaseOptions:
         self.parser.add_argument('--serial_batches', action='store_true',
                                  help='if true, takes meshes in order, otherwise takes them randomly')
         self.parser.add_argument('--seed', type=int, help='if specified, uses seed')
-        self.parser.add_argument('--clean_data',  default=False, action='store_true',
+        self.parser.add_argument('--clean_data',  default=True, action='store_true',
                                  help='If true, it deletes the cache NPZ files in the dataset before training.')
         # # visualization params
         self.parser.add_argument('--export_folder', type=str, default='',

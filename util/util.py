@@ -12,9 +12,6 @@ def clean_data(opt):
     mean_files = glob.glob(opt.dataroot + '/*.p')
     for file in mean_files:
         os.remove(file)
-    latent_files = glob.glob('datasets/latent/cache/'+opt.latent_path.replace('datasets/latent/','').replace('.obj','*npz'))
-    for file in latent_files:
-        os.remove(file)
 
 def mkdir(path):
     if not os.path.exists(path):

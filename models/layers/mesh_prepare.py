@@ -1,12 +1,12 @@
 import numpy as np
 import os
 import ntpath
-import random
 import math
 
-def fill_mesh(mesh2fill, file: str, opt, faces=None,vertices=None, feat_from='face'):
-    if file==None:
-        mesh_data = from_faces_and_vertices(faces,vertices, vertex_features=opt.vertex_features)
+
+def fill_mesh(mesh2fill, file: str, opt, faces=None, vertices=None, feat_from='face'):
+    if not file:
+        mesh_data = from_faces_and_vertices(faces, vertices)
     else:
         load_path = get_mesh_path(file, opt.num_aug)
         if os.path.exists(load_path):
@@ -91,10 +91,11 @@ def from_scratch(file, opt):
     build_gemm(mesh_data, n_neighbors=opt.n_neighbors)
     if opt.num_aug > 1:
         post_augmentation(mesh_data, opt)
-    mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data, vf=opt.vertex_features)
+    mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data)
     return mesh_data
 
-def from_faces_and_vertices(faces,vertices, vertex_features=None):
+
+def from_faces_and_vertices(faces,vertices):
 
     class MeshPrep:
         def __getitem__(self, item):
@@ -113,13 +114,12 @@ def from_faces_and_vertices(faces,vertices, vertex_features=None):
     mesh_data.edge_areas = []
     mesh_data.v_mask = np.ones(len(mesh_data.vs), dtype=bool)
     mesh_data.faces, mesh_data.face_areas, mesh_data.face_normals = remove_non_manifolds(mesh_data, faces)
-    # mesh_data.face_normals, mesh_data.face_areas = compute_face_normals_and_areas(mesh_data, faces)
     mesh_data.face_count = mesh_data.faces.shape[0]
     mesh_data.vs_count = mesh_data.vs.shape[0]
 
     build_gemm(mesh_data)
 
-    mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data, vf=vertex_features)
+    mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data)
 
     return mesh_data
 # Fills vertices and faces by reading the OBJ file line by line
@@ -420,7 +420,7 @@ def set_edge_lengths(mesh, edge_points=None):
     mesh.edge_lengths = edge_lengths
 
 
-def extract_features(mesh, vf=None):
+def extract_features(mesh):
    #Extraction of Edge Features
     edge_features = []
     edge_points = get_edge_points(mesh)
@@ -450,24 +450,15 @@ def extract_features(mesh, vf=None):
     vertex_features = []
     with np.errstate(divide='raise'):
         try:
-            for f in vf:
-                if f == 'coord':
-                    feature = vertex_coordinates(mesh)
-                elif f == 'norm':
-                    feature = vertex_normals(mesh)
-                elif f == 'mean_c':
-                    feature = mean_curvature(mesh, edge_features)
-                elif f == 'gaussian_c':
-                    feature = gaussian_curvature(mesh)
-                else:
-                    raise ValueError(vertex_features, 'Wrong value value in --vertex_features')
-                vertex_features.append(feature)
+            vertex_features.append(mean_curvature(mesh, edge_features))
+            vertex_features.append(gaussian_curvature(mesh))
             vertex_features = np.concatenate(vertex_features, axis=0)
         except Exception as e:
             print(e)
             raise ValueError(mesh.filename, 'bad vertex features')
 
     return edge_features, face_features, vertex_features
+
 
 def gaussian_curvature(mesh):
     gaussian_curv = np.zeros((1,mesh.vs.shape[0]))
@@ -489,6 +480,7 @@ def gaussian_curvature(mesh):
             gaussian_curv[0,v_i] = (2*np.pi - gaussian_curv[0,v_i])/Ai
     return gaussian_curv
 
+
 def get_cotangent_laplacian_beltrami(mesh, edge_features):
     laplacian = np.zeros(mesh.vs.shape)
     for v_i, vt in enumerate(mesh.vs):
@@ -506,15 +498,11 @@ def get_cotangent_laplacian_beltrami(mesh, edge_features):
             laplacian[v_i,:] = laplacian[v_i]/(2*Ai)
     return laplacian
 
+
 def mean_curvature(mesh, edge_features):
     laplacians = get_cotangent_laplacian_beltrami(mesh, edge_features)
     return np.expand_dims(np.linalg.norm(laplacians, axis=1)/2, 0)
 
-def vertex_normals(mesh):
-    return np.transpose(mesh.vs_normals)
-
-def vertex_coordinates(mesh):
-    return np.transpose(mesh.vs)
 
 def face_angles(mesh):
     angles_a = get_angles(mesh, 0)
@@ -534,22 +522,22 @@ def get_angles(mesh, side):
 
 def face_dihedral_angles(mesh):
 
-    #Get normals from neighbors
+    # Get normals from neighbors.
     normals_a = mesh.face_normals[mesh.gemm_faces[:,0]]
     normals_b = mesh.face_normals[mesh.gemm_faces[:, 1]]
     normals_c = mesh.face_normals[mesh.gemm_faces[:, 2]]
 
-    #Dot product between normals
+    # Dot product between normals.
     dot_a = np.sum(normals_a * mesh.face_normals, axis=1).clip(-1, 1)
     dot_b = np.sum(normals_b * mesh.face_normals, axis=1).clip(-1, 1)
     dot_c = np.sum(normals_c * mesh.face_normals, axis=1).clip(-1, 1)
 
-    #Dihedral angle between two faces is 180-arccos(dot product)
+    # Dihedral angle between two faces is 180-arccos(dot product).
     angles_a = np.pi - np.arccos(dot_a)
     angles_b = np.pi - np.arccos(dot_b)
     angles_c = np.pi - np.arccos(dot_c)
 
-    #Mask if neighbor does not exist
+    # Mask if neighbor does not exist.
     mask = mesh.gemm_faces == -1
     angles_a[mask[:,0]] = 0
     angles_b[mask[:,1]] = 0
@@ -561,23 +549,24 @@ def face_dihedral_angles(mesh):
 
 def area_ratios(mesh):
 
-    #Get areas from neighbors
+    # Get areas from neighbors.
     areas_a = mesh.face_areas[mesh.gemm_faces[:,0]]
     areas_b = mesh.face_areas[mesh.gemm_faces[:, 1]]
     areas_c = mesh.face_areas[mesh.gemm_faces[:, 2]]
 
-    # Mask if neighbor does not exist
+    # Mask if neighbor does not exist.
     mask = mesh.gemm_faces == -1
     areas_a[mask[:, 0]] = 0
     areas_b[mask[:, 1]] = 0
     areas_c[mask[:, 2]] = 0
 
-    #compute ratios
+    # Compute ratios.
     ratios = np.concatenate((np.expand_dims(areas_a / mesh.face_areas, 0),
                              np.expand_dims(areas_b / mesh.face_areas, 0),
                              np.expand_dims(areas_c / mesh.face_areas, 0)), axis=0)
 
     return np.sort(ratios, axis=0)
+
 
 def dihedral_angle(mesh, edge_points):
     normals_a = get_normals(mesh, edge_points, 0)
@@ -651,6 +640,7 @@ def get_normals(mesh, edge_points, side):
     div = fixed_division(np.linalg.norm(normals, ord=2, axis=1), epsilon=0.1)
     normals /= div[:, np.newaxis]
     return normals
+
 
 def get_opposite_angles(mesh, edge_points, side):
     edges_a = mesh.vs[edge_points[:, side // 2]] - mesh.vs[edge_points[:, side // 2 + 2]]
