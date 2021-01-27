@@ -9,20 +9,8 @@ import torch.nn.functional as F
 from models.layers.mesh_pool import MeshPool
 from models.layers.mesh_pool_face import MeshPoolFace
 from models.layers.mesh_unpool import MeshUnpool
-from models.layers.mesh_unpool_face import MeshUnpoolFace
-from models.layers.mesh_unpool_f import MeshUnpool_F
 from models.layers.mesh_conv_point import MeshConvPoint
-from models.layers.mesh_unpool_point import MeshUnpoolPoint
 from models.layers.mesh_pool_point import MeshPoolPoint
-from models.layers.mesh import Mesh
-from models.layers.mesh_prepare import build_gemm
-import numpy as np
-from util.util import pad
-import os
-import wandb
-
-
-# from memory_profiler import profile
 
 ###############################################################################
 # Helper Functions
@@ -162,7 +150,7 @@ def define_loss(opt):
 ##############################################################################
 # Classes For Classification / Segmentation Networks
 ##############################################################################
-# TODO: Try combining vertex, face and edge in same methods.
+# TODO: Delete repeated code.
 class MeshConvNetPoint(nn.Module):
     """Network for learning a global shape descriptor (classification)
     """
@@ -837,7 +825,7 @@ class UpConvFace(nn.Module):
                 self.bn.append(nn.InstanceNorm2d(out_channels))
             self.bn = nn.ModuleList(self.bn)
         if unroll:
-            self.unroll = MeshUnpool_F(unroll)
+            self.unroll = MeshUnpool(unroll)
 
     def __call__(self, x, from_down=None):
         return self.forward(x, from_down)

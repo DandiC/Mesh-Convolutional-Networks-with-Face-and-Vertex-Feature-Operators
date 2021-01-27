@@ -1,7 +1,6 @@
 import torch
 from . import networks
 from util.util import seg_accuracy, print_network
-import wandb
 import numpy as np
 import os
 
@@ -38,8 +37,7 @@ class ClassifierModel:
         if self.is_train:
             self.optimizer = torch.optim.Adam(self.net.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.scheduler = networks.get_scheduler(self.optimizer, opt)
-            num_params = print_network(self.net)
-            wandb.log({"Params": num_params})
+            _ = print_network(self.net)
 
         if not self.is_train or opt.continue_train:
             self.load_network(opt.which_epoch)
@@ -85,8 +83,7 @@ class ClassifierModel:
             del state_dict._metadata
         net.load_state_dict(state_dict)
 
-
-    def save_network(self, which_epoch, wandb_save=False, dataset_mode=None):
+    def save_network(self, which_epoch):
         """save model to disk"""
         save_filename = '%s_net.pth' % (which_epoch)
         save_path = os.path.join(self.save_dir, save_filename)
@@ -95,9 +92,6 @@ class ClassifierModel:
             self.net.cuda(self.gpu_ids[0])
         else:
             torch.save(self.net.cpu().state_dict(), save_path)
-
-        if wandb_save:
-            wandb.save(save_path)
 
     def update_learning_rate(self):
         """update learning rate (called once every epoch)"""

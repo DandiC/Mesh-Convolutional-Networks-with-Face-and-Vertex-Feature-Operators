@@ -45,13 +45,13 @@ class BaseOptions:
                                  help='Primitive to extract features from. One of: edge, face, point')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        self.parser.add_argument('--name', type=str, default='default_experiment',
+        self.parser.add_argument('--name', type=str, default='shrec_face',
                                  help='name of the experiment. It decides where to store samples and models')
         self.parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         self.parser.add_argument('--serial_batches', action='store_true',
                                  help='if true, takes meshes in order, otherwise takes them randomly')
         self.parser.add_argument('--seed', type=int, help='if specified, uses seed')
-        self.parser.add_argument('--clean_data',  default=True, action='store_true',
+        self.parser.add_argument('--clean_data',  default=False, action='store_true',
                                  help='If true, it deletes the cache NPZ files in the dataset before training.')
         # # visualization params
         self.parser.add_argument('--export_folder', type=str, default='',
