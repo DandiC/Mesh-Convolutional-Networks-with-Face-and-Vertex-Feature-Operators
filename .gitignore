@@ -8,6 +8,5 @@ checkpoints
 datasets
 runs
 wandb
-scripts
 mprofile*
 backup
