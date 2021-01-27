@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 
 
-
 class MeshUnpool(nn.Module):
     def __init__(self, unroll_target):
         super(MeshUnpool, self).__init__()

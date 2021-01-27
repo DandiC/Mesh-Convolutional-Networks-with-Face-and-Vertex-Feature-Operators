@@ -4,7 +4,6 @@ from threading import Thread
 from models.layers.mesh_union import MeshUnion
 import numpy as np
 from heapq import heappop, heapify
-from torch.nn import ConstantPad2d
 
 class MeshPoolPoint(nn.Module):
     
@@ -47,9 +46,6 @@ class MeshPoolPoint(nn.Module):
             return
 
         queue = self.__build_queue(self.__fe[mesh_index, :, :mesh.vs_count], mesh)
-        # recycle = []
-        # last_queue_len = len(queue)
-        # last_count = mesh.edges_count + 1
         edge_mask = np.ones(mesh.edges_count, dtype=np.bool)
         vertex_groups = MeshUnion(mesh.vs_count, self.__fe.device)
         while mesh.vs_count > self.__out_target:
@@ -72,7 +68,7 @@ class MeshPoolPoint(nn.Module):
 
         # Copy vertex mask so that it can be used when rebuilding the features
         v_mask = mesh.v_mask.copy()
-        mesh.cleanWithPoint(edge_mask, vertex_groups)
+        mesh.clean_point(edge_mask, vertex_groups)
 
         fe = vertex_groups.rebuild_features(self.__fe[mesh_index], v_mask, self.__out_target)
 
@@ -129,7 +125,8 @@ class MeshPoolPoint(nn.Module):
         info = MeshPoolPoint.__get_face_info(mesh, edge_id, side)
         key_a, key_b, side_a, side_b, _, other_side_b, _, other_keys_b = info
         self.__redirect_edges(mesh, key_a, side_a - side_a % 2, other_keys_b[0], mesh.sides[key_b, other_side_b])
-        self.__redirect_edges(mesh, key_a, side_a - side_a % 2 + 1, other_keys_b[1], mesh.sides[key_b, other_side_b + 1])
+        self.__redirect_edges(mesh, key_a, side_a - side_a % 2 + 1, other_keys_b[1],
+                              mesh.sides[key_b, other_side_b + 1])
         mask[key_b] = False
         mesh.remove_edge(key_b)
         mesh.edges_count -= 1
@@ -151,7 +148,8 @@ class MeshPoolPoint(nn.Module):
             update_side_b = mesh.sides[key_b, other_side_b + 1 - shared_items[1]]
             MeshPoolPoint.__redirect_edges(mesh, edge_id, side, update_key_a, update_side_a)
             MeshPoolPoint.__redirect_edges(mesh, edge_id, side + 1, update_key_b, update_side_b)
-            MeshPoolPoint.__redirect_edges(mesh, update_key_a, MeshPoolPoint.__get_other_side(update_side_a), update_key_b, MeshPoolPoint.__get_other_side(update_side_b))
+            MeshPoolPoint.__redirect_edges(mesh, update_key_a, MeshPoolPoint.__get_other_side(update_side_a),
+                                           update_key_b, MeshPoolPoint.__get_other_side(update_side_b))
             return [key_a, key_b, middle_edge]
 
     @staticmethod

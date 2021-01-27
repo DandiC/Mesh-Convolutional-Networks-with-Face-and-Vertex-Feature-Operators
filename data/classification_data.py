@@ -4,6 +4,7 @@ from data.base_dataset import BaseDataset
 from util.util import is_mesh_file, pad
 from models.layers.mesh import Mesh
 
+
 # Dataset for clasification.
 class ClassificationData(BaseDataset):
 
@@ -40,7 +41,7 @@ class ClassificationData(BaseDataset):
     def __len__(self):
         return self.size
 
-    # this is when the folders are organized by class...
+    # Extracts classes from directories.
     @staticmethod
     def find_classes(dir):
         classes = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]

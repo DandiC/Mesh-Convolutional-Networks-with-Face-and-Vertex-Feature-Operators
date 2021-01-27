@@ -4,9 +4,9 @@ import torch.nn.functional as F
 
 
 class MeshConvFace(nn.Module):
-    """ Computes convolution between edges and 4 incident (1-ring) edge neighbors
+    """ Computes convolution between faces and 3 incident (1-ring) face neighbors
     in the forward pass:
-    takes edge features (x)
+    takes face features (x)
     and a mesh data-structure (mesh)
     and applies convolution
     """
@@ -38,10 +38,10 @@ class MeshConvFace(nn.Module):
         return Gi
 
     def create_GeMM(self, x, Gi):
-        """ gathers the edge features (x) with from the 1-ring indices (Gi)
-        applys symmetric functions to handle order invariance
+        """ gathers the face features (x) with from the 1-ring indices (Gi)
+        applies symmetric functions to handle order invariance
         returns a 'fake image' which can use 2d convolution on
-        output dimensions: Batch x Channels x Edges x 5
+        output dimensions: Batch x Channels x Faces x 2
         """
         Gishape = Gi.shape
         # pad the first row of  every sample in batch with zeros
@@ -67,8 +67,8 @@ class MeshConvFace(nn.Module):
 
     def pad_gemm(self, m, xsz, device):
         """ extracts face neighbors (3x for trimesh) -> m.gemm_faces
-        which is of size #edges x 3
-        add the edge_id itself to make #edges x 4
+        which is of size #faces x 3
+        add the face_id itself to make #faces x 4
         then pad to desired size e.g., xsz x 4
         """
         padded_gemm = torch.tensor(m.gemm_faces, device=device).float()

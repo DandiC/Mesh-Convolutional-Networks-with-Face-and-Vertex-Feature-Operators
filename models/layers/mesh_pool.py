@@ -56,6 +56,7 @@ class MeshPool(nn.Module):
                 print(' Mesh:', mesh.filename)
                 print(' # of current edges', mesh.edges_count)
                 print(' Target:', self.__out_target)
+
             value, edge_id = heappop(queue)
             edge_id = int(edge_id)
             if mask[edge_id]:

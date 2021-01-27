@@ -67,7 +67,7 @@ class MeshPoolFace(nn.Module):
                 edge_id = int(np.intersect1d(mesh.edges_in_face[face_id], mesh.edges_in_face[n_id])[0])
                 if edge_mask[edge_id]:
                     self.__pool_edge(mesh, edge_id, edge_mask, face_mask, face_groups, face_id, n_id)
-        mesh.cleanWithFace(edge_mask, face_mask, face_groups)
+        mesh.clean_face(edge_mask, face_mask, face_groups)
         fe = face_groups.rebuild_features(self.__fe[mesh_index], face_mask, self.__out_target)
         self.__updated_fe[mesh_index] = fe
 

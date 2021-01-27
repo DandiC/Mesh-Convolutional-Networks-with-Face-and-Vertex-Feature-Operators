@@ -1,9 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-import random
-# from memory_profiler import profile
 
 class MeshConvPoint(nn.Module):
 
@@ -46,11 +43,6 @@ class MeshConvPoint(nn.Module):
         return Gi
 
     def create_GeMM(self, x, Gi):
-        """ gathers the edge features (x) with from the 1-ring indices (Gi)
-        applys symmetric functions to handle order invariance
-        returns a 'fake image' which can use 2d convolution on
-        output dimensions: Batch x Channels x Edges x 5
-        """
         Gishape = Gi.shape
         # pad the first row of  every sample in batch with zeros
         padding = torch.zeros((x.shape[0], x.shape[1], 1), requires_grad=True, device=x.device)
@@ -73,12 +65,6 @@ class MeshConvPoint(nn.Module):
         return f
 
     def pad_gemm(self, m, xsz, device):
-        """ extracts face neighbors (3x for trimesh) -> m.gemm_faces
-        which is of size #edges x 3
-        add the edge_id itself to make #edges x 4
-        then pad to desired size e.g., xsz x 4
-        """
-
         padded_gemm = torch.tensor(m.gemm_vs, device=device).float()
         padded_gemm = padded_gemm.requires_grad_()
         padded_gemm = torch.cat((torch.arange(m.vs.shape[0], device=device).float().unsqueeze(1), padded_gemm), dim=1)

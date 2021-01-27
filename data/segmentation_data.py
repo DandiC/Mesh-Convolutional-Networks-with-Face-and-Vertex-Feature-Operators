@@ -5,6 +5,7 @@ from util.util import is_mesh_file, pad
 import numpy as np
 from models.layers.mesh import Mesh
 
+
 class SegmentationData(BaseDataset):
 
     def __init__(self, opt):

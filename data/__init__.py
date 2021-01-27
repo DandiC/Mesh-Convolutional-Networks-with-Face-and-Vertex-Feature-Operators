@@ -1,6 +1,7 @@
 import torch.utils.data
 from data.base_dataset import collate_fn
 
+
 def CreateDataset(opt):
     """loads dataset class"""
 

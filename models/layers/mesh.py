@@ -10,8 +10,8 @@ from models.layers.mesh_prepare import fill_mesh, build_gemm_vs
 class Mesh:
 
     def __init__(self, file=None, opt=None, hold_history=False, export_folder='', faces=None, vertices=None,
-                 feat_from='face', export_filename='unknown'):
-        if opt != None:
+                 feat_from='face'):
+        if opt:
             feat_from = opt.feat_from
         self.opt = opt
         self.vs = self.v_mask = self.filename = self.features = self.edge_areas = None
@@ -62,7 +62,7 @@ class Mesh:
             if edge_id in self.ve[v]:
                 self.ve[v].remove(edge_id)
 
-    # TODO: Combine clean, cleanWithPoint and cleanWithFace into one.
+    # TODO: Combine clean, clean_point and clean_face into one.
     def clean(self, edges_mask, groups):
         edges_mask = edges_mask.astype(bool)
         torch_mask = torch.from_numpy(edges_mask.copy())
@@ -85,7 +85,7 @@ class Mesh:
         self.pool_count += 1
         self.export()
 
-    def cleanWithPoint(self, edges_mask, groups):
+    def clean_point(self, edges_mask, groups):
         edges_mask = edges_mask.astype(bool)
         torch_mask = torch.from_numpy(self.v_mask.copy())
         self.gemm_edges = self.gemm_edges[edges_mask]
@@ -129,7 +129,7 @@ class Mesh:
         self.pool_count += 1
         self.export()
 
-    def cleanWithFace(self, edges_mask, face_mask, groups):
+    def clean_face(self, edges_mask, face_mask, groups):
         edges_mask = edges_mask.astype(bool)
         self.gemm_edges = self.gemm_edges[edges_mask]
         self.edges = self.edges[edges_mask]
@@ -224,8 +224,6 @@ class Mesh:
                 f.write("f %d %d %d\n" % (
                 self.faces[face_id][0] + 1, self.faces[face_id][1] + 1, self.faces[face_id][2] + 1))
             f.write("f %d %d %d" % (self.faces[-1][0] + 1, self.faces[-1][1] + 1, self.faces[-1][2] + 1))
-            # for edge in self.edges:
-            #     f.write("\ne %d %d" % (new_indices[edge[0]] + 1, new_indices[edge[1]] + 1))
 
     def export_segments(self, segments):
         if not self.export_folder:
@@ -381,9 +379,6 @@ class Mesh:
                 self.history_data['face_count'].append(self.face_count)
                 self.history_data['vs'].append(self.vs.copy())
                 self.history_data['vs_count'].append(self.vs_count)
-
-
-
 
     def unroll_gemm(self):
         self.history_data['gemm_edges'].pop()

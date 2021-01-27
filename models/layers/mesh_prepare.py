@@ -122,6 +122,8 @@ def from_faces_and_vertices(faces,vertices):
     mesh_data.edge_features, mesh_data.face_features, mesh_data.vertex_features = extract_features(mesh_data)
 
     return mesh_data
+
+
 # Fills vertices and faces by reading the OBJ file line by line
 def fill_from_file(mesh, file):
     mesh.filename = ntpath.split(file)[1]
@@ -251,7 +253,7 @@ def build_gemm(mesh, n_neighbors=6):
     mesh.gemm_faces = face_nb.astype(np.int64)
     mesh.sides = np.array(sides, dtype=np.int64)
     mesh.edges_count = edges_count
-    mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(mesh.face_areas) #todo whats the difference between edge_areas and edge_lenghts?
+    mesh.edge_areas = np.array(mesh.edge_areas, dtype=np.float32) / np.sum(mesh.face_areas)
     mesh.edges_in_face = edges_in_faces.astype(np.int64)
     mesh.ef = np.array(ef, dtype=np.int64)
 
@@ -303,7 +305,7 @@ def post_augmentation(mesh, opt):
 
 def slide_verts(mesh, prct):
     edge_points = get_edge_points(mesh)
-    dihedral = dihedral_angle(mesh, edge_points).squeeze() #todo make fixed_division epsilon=0
+    dihedral = dihedral_angle(mesh, edge_points).squeeze()
     thr = np.mean(dihedral) + np.std(dihedral)
     vids = np.random.permutation(len(mesh.ve))
     target = int(prct * len(vids))
@@ -386,6 +388,7 @@ def rebuild_face(face, new_face):
             break
     return face
 
+
 def check_area(mesh, faces):
     face_normals = np.cross(mesh.vs[faces[:, 1]] - mesh.vs[faces[:, 0]],
                             mesh.vs[faces[:, 2]] - mesh.vs[faces[:, 1]])
@@ -434,6 +437,7 @@ def extract_features(mesh):
         except Exception as e:
             print(e)
             raise ValueError(mesh.filename, 'bad edge features')
+
     # Extraction of Face Features
     face_features = []
     with np.errstate(divide='raise'):
@@ -489,7 +493,7 @@ def get_cotangent_laplacian_beltrami(mesh, edge_features):
             laplacian[v_i,:] = 0
         else:
             for j, v_j in enumerate(mesh.gemm_vs_raw[v_i]):
-                #Get edge between two vertices
+                # Get edge between two vertices.
                 # TODO: Optimize this
                 edge_id = np.argmax(np.logical_or(np.logical_and(mesh.edges[:, 0] == v_i, mesh.edges[:, 1] == v_j),
                                                   np.logical_and(mesh.edges[:, 0] == v_j, mesh.edges[:, 1] == v_i)))
@@ -511,6 +515,7 @@ def face_angles(mesh):
     angles = np.concatenate((np.expand_dims(angles_a, 0), np.expand_dims(angles_b, 0), np.expand_dims(angles_c, 0)), axis=0)
     return np.sort(angles, axis=0)
 
+
 def get_angles(mesh, side):
     edges_a = mesh.vs[mesh.faces[:, (side-1) % 3]] - mesh.vs[mesh.faces[:, side]]
     edges_b = mesh.vs[mesh.faces[:, (side+1) % 3]] - mesh.vs[mesh.faces[:, side]]
@@ -519,6 +524,7 @@ def get_angles(mesh, side):
     edges_b /= fixed_division(np.linalg.norm(edges_b, ord=2, axis=1), epsilon=0.1)[:, np.newaxis]
     dot = np.sum(edges_a * edges_b, axis=1).clip(-1, 1)
     return np.arccos(dot)
+
 
 def face_dihedral_angles(mesh):
 
@@ -546,6 +552,7 @@ def face_dihedral_angles(mesh):
     angles = np.concatenate((np.expand_dims(angles_a, 0), np.expand_dims(angles_b, 0), np.expand_dims(angles_c, 0)), axis=0)
 
     return np.sort(angles, axis=0)
+
 
 def area_ratios(mesh):
 
