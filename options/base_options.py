@@ -11,10 +11,10 @@ class BaseOptions:
 
     def initialize(self):
         # data params
-        self.parser.add_argument('--dataroot', default='datasets/shrec_16e',
+        self.parser.add_argument('--dataroot', default='datasets/shrec',
                                  help='path to meshes (should have subfolders train, test)')
         self.parser.add_argument('--dataset_mode', choices={"classification", "segmentation"}, default='classification')
-        self.parser.add_argument('--ninput_features', type=int, default=252,
+        self.parser.add_argument('--ninput_features', type=int, default=500,
                                  help='# of input features (will include dummy features)')
 
         # network params
@@ -24,9 +24,9 @@ class BaseOptions:
         self.parser.add_argument('--resblocks', type=int, default=1, help='# of res blocks')
         self.parser.add_argument('--fc_n', type=int, default=100, help='# between fc and nclasses')
         self.parser.add_argument('--ncf', nargs='+', default=[128, 256, 256, 512], type=int, help='conv filters')
-        self.parser.add_argument('--pool_res', nargs='+', default=[252, 200, 180, 170, 150], type=int,
+        self.parser.add_argument('--pool_res', nargs='+', default=[500, 400, 300, 200, 120], type=int,
                                  help='pooling res')
-        self.parser.add_argument('--norm', type=str, default='batch',
+        self.parser.add_argument('--norm', type=str, default='group',
                                  help='instance normalization or batch normalization or group normalization')
         self.parser.add_argument('--num_groups', type=int, default=16, help='# of groups for groupnorm')
         self.parser.add_argument('--init_type', type=str, default='normal',
@@ -41,7 +41,7 @@ class BaseOptions:
 
         # general params
         # TODO: Change point to vertex
-        self.parser.add_argument('--feat_from', type=str, default='point',
+        self.parser.add_argument('--feat_from', type=str, default='face',
                                  help='Primitive to extract features from. One of: edge, face, point')
         self.parser.add_argument('--num_threads', default=3, type=int, help='# threads for loading data')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')

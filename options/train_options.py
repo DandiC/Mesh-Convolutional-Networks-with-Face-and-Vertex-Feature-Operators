@@ -33,9 +33,9 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--num_aug', type=int, default=20, help='# of augmentation files')
         self.parser.add_argument('--scale_verts', action='store_true',
                                  help='non-uniformly scale the mesh e.g., in x, y or z')
-        self.parser.add_argument('--slide_verts', type=float, default=0,
+        self.parser.add_argument('--slide_verts', type=float, default=0.2,
                                  help='percent vertices which will be shifted along the mesh surface')
-        self.parser.add_argument('--flip_edges', type=float, default=0,
+        self.parser.add_argument('--flip_edges', type=float, default=0.2,
                                  help='percent of edges to randomly flip')
 
         # tensorboard visualization
