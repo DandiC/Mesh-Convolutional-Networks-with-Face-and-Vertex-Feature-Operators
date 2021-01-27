@@ -6,7 +6,6 @@ from util.util import clean_data
 import glob
 import shutil
 import os
-import wandb
 import torch
 from models.layers.mesh import Mesh
 import copy
@@ -38,12 +37,6 @@ def run_test(epoch=-1, import_opt=False):
     opt.clean_data = False
     opt.serial_batches = True  # no shuffle
     opt.is_train = False
-
-    if opt.name == 'sweep':
-        if wandb.run.id != None:
-            opt.name = wandb.run.id
-        else:
-            raise ValueError(wandb.run.id, 'Wrong value value in wandb.run.name')
 
     if opt.clean_data:
         clean_data(opt)
