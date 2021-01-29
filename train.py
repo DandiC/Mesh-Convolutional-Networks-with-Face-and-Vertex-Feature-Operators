@@ -4,13 +4,7 @@ from data import DataLoader
 from models import create_model
 from util.writer import Writer
 from test import run_test
-import os
-from random import randrange
 from util.util import clean_data
-import torch
-import glob
-import shutil
-import numpy as np
 
 if __name__ == '__main__':
 

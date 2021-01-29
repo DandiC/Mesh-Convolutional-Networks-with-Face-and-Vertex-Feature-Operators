@@ -46,7 +46,6 @@ class MeshConvPoint(nn.Module):
         Gishape = Gi.shape
         # pad the first row of  every sample in batch with zeros
         padding = torch.zeros((x.shape[0], x.shape[1], 1), requires_grad=True, device=x.device)
-        # padding = padding.to(x.device)
         x = torch.cat((padding, x), dim=2)
         Gi = Gi + 1 #shift
 

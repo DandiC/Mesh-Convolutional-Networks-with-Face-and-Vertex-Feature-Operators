@@ -272,7 +272,7 @@ class MeshPoolFace(nn.Module):
         pairs_in_heap = set()
         for i in range(mesh.face_count):
             for n in list(mesh.gemm_faces[i]):
-                if (i, n) not in pairs_in_heap:
+                if n != -1 and (i, n) not in pairs_in_heap:
                     m = (squared_magnitude[i, 0].data + squared_magnitude[n, 0].data).tolist()
                     heap.append([m, i, n])
                     pairs_in_heap.add((i, n))

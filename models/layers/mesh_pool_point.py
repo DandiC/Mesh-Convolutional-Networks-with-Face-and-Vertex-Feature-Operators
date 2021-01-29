@@ -5,6 +5,7 @@ from models.layers.mesh_union import MeshUnion
 import numpy as np
 from heapq import heappop, heapify
 
+
 class MeshPoolPoint(nn.Module):
     
     def __init__(self, target, multi_thread=False):

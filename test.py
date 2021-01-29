@@ -3,21 +3,13 @@ from data import DataLoader
 from models import create_model
 from util.writer import Writer
 from util.util import clean_data
-import glob
-import shutil
 import os
-import torch
-from models.layers.mesh import Mesh
-import copy
-import matplotlib.pyplot as plt
-import numpy as np
 import json
-from argparse import ArgumentParser
+
 
 def run_test(epoch=-1, import_opt=False):
     print('Running Test')
 
-    # TODO: Maybe delete this before release.
     if import_opt:
         test_opt = TestOptions().parse()
         expr_dir = os.path.join(test_opt.checkpoints_dir, test_opt.name)
@@ -54,7 +46,6 @@ def run_test(epoch=-1, import_opt=False):
         writer.update_counter(ncorrect, nexamples)
     writer.print_acc(epoch, writer.acc)
     return writer.acc
-
 
 
 if __name__ == '__main__':

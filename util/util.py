@@ -5,6 +5,7 @@ import os
 import glob
 import shutil
 
+
 def clean_data(opt):
     dirs = glob.glob(opt.dataroot + '/*/*/cache') + glob.glob(opt.dataroot + '/*/cache')
     for dir in dirs:
@@ -12,6 +13,7 @@ def clean_data(opt):
     mean_files = glob.glob(opt.dataroot + '/*.p')
     for file in mean_files:
         os.remove(file)
+
 
 def mkdir(path):
     if not os.path.exists(path):

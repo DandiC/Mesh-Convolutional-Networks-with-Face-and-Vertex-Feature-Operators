@@ -45,9 +45,7 @@ class MeshPool(nn.Module):
         if mesh.edges_count <= self.__out_target:
             self.__updated_fe[mesh_index] = fe[:, :self.__out_target]
             return
-        # recycle = []
-        # last_queue_len = len(queue)
-        last_count = mesh.edges_count + 1
+
         mask = np.ones(mesh.edges_count, dtype=np.bool)
         edge_groups = MeshUnion(mesh.edges_count, self.__fe.device)
         while mesh.edges_count > self.__out_target:

@@ -314,6 +314,7 @@ class Mesh:
                 'groups': [],
                 'gemm_faces': [self.gemm_faces.copy()],
                 'gemm_edges': [self.gemm_edges.copy()],
+                'gemm_vs': [self.gemm_vs.copy()],
                 'occurrences': [],
                 'old2current': np.arange(self.vs_count, dtype=np.int32),
                 'current2old': np.arange(self.vs_count, dtype=np.int32),
@@ -376,6 +377,7 @@ class Mesh:
                 self.history_data['old2current'][mask] = np.arange(self.vs_count, dtype=np.int32)
                 self.history_data['current2old'][0: self.vs_count] = np.ma.where(mask)[0]
                 self.history_data['gemm_faces'].append(self.gemm_faces.copy())
+                self.history_data['gemm_vs'].append(self.gemm_vs.copy())
                 self.history_data['face_count'].append(self.face_count)
                 self.history_data['vs'].append(self.vs.copy())
                 self.history_data['vs_count'].append(self.vs_count)
@@ -404,6 +406,8 @@ class Mesh:
             if self.opt.feat_from == 'point':
                 self.history_data['vs'].pop()
                 self.vs = self.history_data['vs'][-1]
+                self.history_data['gemm_vs'].pop()
+                self.gemm_vs = self.history_data['gemm_vs'][-1]
                 self.history_data['vs_count'].pop()
                 self.vs_count = self.history_data['vs_count'][-1]
 

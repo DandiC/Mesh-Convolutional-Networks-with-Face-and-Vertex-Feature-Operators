@@ -1,11 +1,12 @@
 from .base_options import BaseOptions
 
+
 class TrainOptions(BaseOptions):
     def initialize(self):
         BaseOptions.initialize(self)
-        self.parser.add_argument('--print_freq', type=int, default=160,
+        self.parser.add_argument('--print_freq', type=int, default=10,
                                  help='frequency of showing training results on console')
-        self.parser.add_argument('--save_latest_freq', type=int, default=1600,
+        self.parser.add_argument('--save_latest_freq', type=int, default=250,
                                  help='frequency of saving the latest results')
         self.parser.add_argument('--save_epoch_freq', type=int, default=1,
                                  help='frequency of saving checkpoints at the end of epochs')

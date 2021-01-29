@@ -2,10 +2,10 @@
 
 ## run the training
 python train.py \
---dataroot datasets/shrec \
---name shrec_vertex \
+--dataroot datasets/cubes \
+--name cubes_vertex \
 --ncf 128 256 256 512 \
---pool_res 252 202 152 102 62 \
+--pool_res 200 150 100 70 \
 --norm group \
 --resblocks 1 \
 --flip_edges 0.2 \
