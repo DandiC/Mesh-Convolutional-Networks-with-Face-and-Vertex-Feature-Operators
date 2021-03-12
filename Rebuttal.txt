@@ -1,0 +1,43 @@
+We thank the reviewers for taking the time to read our paper and four their thorough comments and feedback received.
+
+Most of the reviewers have identified our paper as incremental. We agree with this description, as this is an incremental improvement over MeshCNN. However, we think that our paper is of value to the computer graphics community, as it provides new geometric deep learning models that, unlike the previous version, can handle different primitives and have proved to obtain better results.
+
+Below we include a point-to-point response to the comments received by the reviewers. In each case, we mark the reviewer's comment with a "C" and our answer with an "A".
+
+Reviewer 1:
+
+C: "Regarding Table 1: Why are these 6 operations the best ones to consider? How did you arrive at them?".
+A: We arrived at these 6 operations by thinking of operations that could make the order of the 3 triangular faces invariant. After that, we design the experiment described in section 4.1.1 to make a decision about which combination of operations we should include as the symmetric neighbors.
+
+C: "It´s  not clear what is meant by "combination." I'm assuming that this is feature concatenation, but it's never explicitly stated anywhere".
+A: By combination, we mean concatenation. We thank the reviewer for bringing it up and will update this in the paper accordingly.
+
+Reviewer 2:
+
+C: "The details are given. However, it is recommended to release the code before the paper may be published".
+A: We did not release the code yet to ensure anonymity during the review process. Instead, we included the code and data as supplemental material in the submission. Our code is ready for release and we will make it public upon publication.
+
+C: "The comparisons are not fair, since the input features of MeshCNN and the ones used in this paper are quite different. It is unclear the performance boost is caused by the network architecture or the input features".
+A: Our networks are specifically designed to take different features than MeshCNN. In other words, the change in the architecture is necessary so that the models can use the specific features. To make the comparison fair, we tried to keep the face-based and vertex-based features as similar as possible to the previously proposed edge features by MeshCNN.
+
+C: "The “380, 100, 50, 10, and 1” split is not clear in the human body segmentation section. This is a benchmark with a specific train/test split, so have the authors modified this?"
+A: We observed that our architectures (and specifically, the face-based architecture) performed better as the number of training samples in the dataset decreased, which shows how our design is more robust against small datasets. Because of this, we came up with our own subsets of data for all the datasets used in the study.
+
+Reviewer 3:
+
+C: "It could be interesting to think of other places where there is a clear advantage of one type over the other. I would have liked to see something like this for vertices."
+A: Section 5 of our paper demonstrates how a vertex-based approached is preferred in a generative task.
+
+C: "I am confused about how this method is slower than meshCNN, yet faster than point2mesh (which uses meshCNN). Can the authors clarify this?"
+A: Point2Mesh has a “Build ΔV” module that aggregates the output of the network per vertex. Since our networks produces outputs per vertex, it does not need this module, which makes it significantly faster than the original Point2Mesh. Additionally, the networks in Point2Mesh generally don’t use pooling operations, which make the computational time of our networks very similar to the original MeshCNN (Fig. 8). 
+
+C: What they mean by inference vs. training time in Point2Mesh?
+A: "Inference time" refers to the time that the network takes to do a single forward pass, while "training time" is the total time that the network took to train.
+
+Reviewer 5:
+
+C: "I did not understand why the timings should include the methods of this paper without pooling. Does the method even work without pooling?"
+A: We show the comparison with and without pooling to show the reason of why our networks are slower, which ultimately gives direction for future optimizations. All the networks work without pooling, but the results are slightly worse.
+
+
+Thank you for your consideration and for all the thorough feedback. If you have further questions or concerns, please let us know.
