@@ -9,6 +9,6 @@ class TestOptions(BaseOptions):
         self.parser.add_argument('--which_epoch', type=str, default='latest',
                                  help='which epoch to load? set to latest to use latest cached model')
         self.parser.add_argument('--num_aug', type=int, default=1, help='# of augmentation files')
-        self.parser.add_argument('--export_segments', type=bool, default=False,
+        self.parser.add_argument('--export_segments', type=bool, default=True,
                                  help='Determines if segmentation predictions are exported.')
         self.is_train = False

@@ -21,7 +21,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--lr_decay_iters', type=int, default=50, help='multiply by a gamma every lr_decay_iters iterations')
         self.parser.add_argument('--loss', type=str, default='mse', help='mse, chamfer, ptp (point-to-point)')
         # data augmentation stuff
-        self.parser.add_argument('--num_aug', type=int, default=20, help='# of augmentation files')
+        self.parser.add_argument('--num_aug', type=int, default=1, help='# of augmentation files')
         self.parser.add_argument('--scale_verts', action='store_true', help='non-uniformly scale the mesh e.g., in x, y or z')
         self.parser.add_argument('--slide_verts', type=float, default=0, help='percent vertices which will be shifted along the mesh surface')
         self.parser.add_argument('--flip_edges', type=float, default=0, help='percent of edges to randomly flip')

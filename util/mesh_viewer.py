@@ -142,10 +142,8 @@ def view_meshes(*files, offset=.2):
 if __name__=='__main__':
     import argparse
     parser = argparse.ArgumentParser("view meshes")
-    parser.add_argument('--files', nargs='+', default=['checkpoints/shrec16/meshes/T74_0.obj',
-                                                        'checkpoints/shrec16/meshes/T74_3.obj',
-                                                        'checkpoints/shrec16/meshes/T74_4.obj'], type=str,
-                        help="list of 1 or more .obj files")
+    parser.add_argument('--files', nargs='+', default=['../checkpoints/human_seg_380a_edge/faust__tr_reg_000_0.obj'],
+                        type=str, help="list of 1 or more .obj files")
     args = parser.parse_args()
 
     # view meshes

@@ -6,8 +6,8 @@ import os
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()
-    dataset_folder = 'datasets/discs_225v/'
-    latent_mesh = Mesh('datasets/latent/circle_225v.obj', opt=opt)
+    dataset_folder = 'datasets/conoids_21v/'
+    latent_mesh = Mesh('datasets/cone.obj', opt=opt)
 
     mesh = copy.deepcopy(latent_mesh)
 

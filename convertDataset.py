@@ -5,13 +5,13 @@ import subprocess
 if __name__ == '__main__':
     cmd = '"C:\Program Files\VCG\MeshLab\meshlabserver.exe" -i {} -o {}'
 
-    input_folder = 'datasets/ModelNet10'
+    input_folder = 'datasets/badModelnet'
     input_format = '.off'
-    
-    output_folder = 'datasets/ModelNet10_OBJ'
+
+    output_folder = 'datasets/badModelnet'
     output_format = '.obj'
 
-    mesh_files = glob.glob(os.path.join(input_folder, '*/*/*' + input_format))
+    mesh_files = glob.glob(os.path.join(input_folder, '*' + input_format))
 
     for file in mesh_files:
         export_name = file.replace(input_folder, output_folder).replace(input_format, output_format)

@@ -45,10 +45,12 @@ def seg_accuracy(predicted, ssegs, meshes, feature_type='edge'):
             correct_vec = correct_mat[mesh_id, :mesh.edges_count, 0]
             edge_areas = torch.from_numpy(mesh.get_edge_areas())
             correct += (correct_vec.float() * edge_areas).sum()
+            # correct += correct_vec.float().sum() / mesh.edges_count
         elif feature_type == 'face':
             correct_vec = correct_mat[mesh_id, :mesh.face_count, 0]
             face_areas = torch.from_numpy(mesh.face_areas / np.sum(mesh.face_areas))
             correct += (correct_vec.float() * face_areas).sum()
+            # correct += correct_vec.float().sum() / mesh.face_count
         elif feature_type == 'point':
             correct_vec = correct_mat[mesh_id, :mesh.vs_count, 0]
             correct += (correct_vec.float()).sum() / mesh.vs_count
