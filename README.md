@@ -1,5 +1,7 @@
 # Mesh Convolutional Networks With Face and Vertex Feature Operators
+This repository contains the implementation of [Mesh Convolutional Networks With Face and Vertex Feature Operators](https://ieeexplore.ieee.org/abstract/document/9619951). 
 
+The 
 # Citation
 If you find this code useful, please consider citing our paper
 ```
@@ -13,7 +15,6 @@ If you find this code useful, please consider citing our paper
   pages={1678-1690},
   doi={10.1109/TVCG.2021.3129156}}
 ```
-
 
 # Questions / Issues
 If you have questions or issues running this code, please reach out to 2cdanielperez@gmail.com
